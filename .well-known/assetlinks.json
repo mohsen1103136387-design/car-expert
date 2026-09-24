@@ -3,7 +3,14 @@
   "target": {
     "namespace": "android_app",
     "package_name": "ir.autoscope.app",
-    "sha256_cert_fingerprints":
-      ["E2:1F:1B:B6:70:F3:91:91:99:2B:18:D7:9E:A2:EB:8F:8D:7D:5D:49:E0:C4:2E:F8:A8:2F:1B:73:E0:5A:FC:7E"]
+    "sha256_cert_fingerprints": [
+      "E2:1F:1B:B6:70:F3:91:91:99:2B:18:D7:9E:A2:EB:8F:8D:7D:5D:49:E0:C4:2E:F8:A8:2F:1B:73:E0:5A:FC:7E"
+    ]
+  }
+}, {
+  "relation": ["delegate_permission/common.get_login_creds"],
+  "target": {
+    "namespace": "web",
+    "site": "https://mohsen1103136387-design.github.io/car-expert/"
   }
 }]
