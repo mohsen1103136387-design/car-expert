@@ -63,7 +63,7 @@
     color: #94a3b8;
     font-weight: 700;
   }
-  .field input, .field select {
+  .field input {
     width: 100%;
     padding: 12px 14px;
     background: rgba(0,0,0,0.3);
@@ -74,24 +74,80 @@
     font-size: 1rem;
     outline: none;
     transition: border-color .2s, box-shadow .2s;
-    -webkit-appearance: none;
-    appearance: none;
   }
-  .field select {
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-    background-repeat: no-repeat;
-    background-position: left 12px center;
-    background-size: 18px;
-    padding-left: 38px;
-  }
-  .field select option { background: #1e293b; color: #fff; }
-  .field select optgroup { color: #38bdf8; font-weight: 700; background: #0f172a; }
-  .field select option { padding: 8px; }
-  .field input:focus, .field select:focus {
+  .field input:focus {
     border-color: #38bdf8;
     box-shadow: 0 0 0 3px rgba(56,189,248,0.15);
   }
+  .selectbox {
+    width: 100%;
+    padding: 13px 14px;
+    background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 12px;
+    color: #fff;
+    font-family: inherit;
+    font-size: 0.95rem;
+    outline: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    cursor: pointer;
+    text-align: right;
+    transition: border-color .2s, box-shadow .2s;
+  }
+  .selectbox:active { border-color: #38bdf8; box-shadow: 0 0 0 3px rgba(56,189,248,0.15); }
+  .selectbox .chev { flex-shrink: 0; color: #94a3b8; }
+  .selectbox.placeholder #carSelectText { color: #64748b; font-size: 0.9rem; }
   .hint { font-size: 0.78rem; color: #64748b; margin-top: 5px; }
+  .searchbox {
+    width: 100%;
+    padding: 12px 14px;
+    background: rgba(0,0,0,0.35);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 12px;
+    color: #fff;
+    font-family: inherit;
+    font-size: 0.95rem;
+    outline: none;
+    margin-bottom: 10px;
+  }
+  .searchbox:focus { border-color: #38bdf8; }
+  .carlist { max-height: 45vh; overflow: auto; padding-bottom: 6px; }
+  .cgroup {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #7dd3fc;
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 12px 4px 6px;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    margin-bottom: 6px;
+  }
+  .cgroup::before {
+    content: '';
+    width: 3px;
+    height: 14px;
+    border-radius: 2px;
+    background: linear-gradient(180deg, #38bdf8, #818cf8);
+  }
+  .citem {
+    width: 100%;
+    text-align: right;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    color: #e2e8f0;
+    padding: 11px 14px;
+    border-radius: 10px;
+    margin-bottom: 6px;
+    font-family: inherit;
+    font-size: 0.92rem;
+    cursor: pointer;
+    transition: background .15s, border-color .15s;
+  }
+  .citem:active { background: rgba(56,189,248,0.15); border-color: rgba(56,189,248,0.4); }
   .car-section { display: flex; gap: 24px; align-items: flex-start; flex-wrap: wrap; }
   .car-svg-wrap { flex: 0 0 210px; }
   .zone {
@@ -292,100 +348,18 @@
       <h2><span class="step">۱</span> اطلاعات پایه خودرو</h2>
 
       <div class="field" style="margin-bottom: 16px;">
-        <label for="carSelect">🚗 انتخاب سریع از لیست خودروهای بازار ایران:</label>
-        <select id="carSelect">
-          <option value="">— انتخاب کنید یا در کادر پایین تایپ کنید —</option>
-
-          <optgroup label="🏭 ایران خودرو">
-            <option>پژو ۲۰۶ تیپ ۲</option>
-            <option>پژو ۲۰۶ تیپ ۵</option>
-            <option>پژو ۲۰۶ صندوق‌دار V8</option>
-            <option>پژو ۲۰۷ دنده‌ای</option>
-            <option>پژو ۲۰۷ اتوماتیک</option>
-            <option>پژو ۲۰۷ سقف شیشه‌ای</option>
-            <option>پژو پارس TU5</option>
-            <option>پژو پارس XU7</option>
-            <option>پژو پارس ELX</option>
-            <option>پژو پارس LX</option>
-            <option>پژو ۴۰۵ SLX</option>
-            <option>پژو ۴۰۵ GLX</option>
-            <option>سمند LX</option>
-            <option>سمند EF7</option>
-            <option>سمند سریر</option>
-            <option>سمند سورن</option>
-            <option>سمند سورن پلاس</option>
-            <option>دنا معمولی</option>
-            <option>دنا پلاس</option>
-            <option>دنا پلاس توربو</option>
-            <option>دنا پلاس اتوماتیک</option>
-            <option>رانا معمولی</option>
-            <option>رانا پلاس</option>
-            <option>تارا دنده‌ای</option>
-            <option>تارا اتوماتیک</option>
-            <option>هایما S5</option>
-            <option>هایما S7</option>
-            <option>هایما 8S</option>
-          </optgroup>
-
-          <optgroup label="🏭 سایپا">
-            <option>پراید ۱۱۱</option>
-            <option>پراید ۱۳۱</option>
-            <option>پراید ۱۳۲</option>
-            <option>پراید ۱۵۱ (وانت)</option>
-            <option>تیبا صندوق‌دار</option>
-            <option>تیبا ۲ هاچ‌بک</option>
-            <option>ساینا معمولی</option>
-            <option>ساینا S</option>
-            <option>ساینا EX</option>
-            <option>کوییک معمولی</option>
-            <option>کوییک R</option>
-            <option>کوییک S</option>
-            <option>کوییک GX</option>
-            <option>کوییک پلاس اتوماتیک</option>
-            <option>شاهین G</option>
-            <option>شاهین اتوماتیک</option>
-            <option>اطلس</option>
-            <option>سهند</option>
-          </optgroup>
-
-          <optgroup label="🌐 مونتاژی و وارداتی پرفروش">
-            <option>تندر ۹۰ E2</option>
-            <option>تندر ۹۰ پلاس</option>
-            <option>ساندرو معمولی</option>
-            <option>ساندرو استپ‌وی</option>
-            <option>جک J4</option>
-            <option>جک J5</option>
-            <option>جک S3</option>
-            <option>جک S5</option>
-            <option>ام‌وی‌ام X22</option>
-            <option>ام‌وی‌ام X33</option>
-            <option>ام‌وی‌ام X55</option>
-            <option>چری تیگو ۵</option>
-            <option>چری تیگو ۷</option>
-            <option>چری تیگو ۸ پرو</option>
-            <option>برلیانس H320</option>
-            <option>برلیانس H330</option>
-            <option>دانگ‌فنگ H30 کراس</option>
-            <option>ریگان کوپا</option>
-            <option>فیدلیتی پرایم</option>
-            <option>دیگنیتی پرایم</option>
-            <option>دیگنیتی پرستیژ</option>
-            <option>لاماری ایما</option>
-            <option>ریسپکت</option>
-            <option>آریزو ۵</option>
-            <option>آریزو ۶</option>
-            <option>بسترن B30</option>
-            <option>بسترن B70</option>
-            <option>فونیکس FX</option>
-          </optgroup>
-        </select>
-        <div class="hint">اگر خودروی شما در لیست نیست، در کادر زیر دستی تایپ کنید.</div>
+        <label>انتخاب سریع از لیست خودروهای بازار ایران:</label>
+        <button type="button" class="selectbox placeholder" id="carSelectBtn" onclick="openCar()">
+          <span id="carSelectText">انتخاب از لیست (۷۶ خودرو) یا تایپ دستی</span>
+          <svg class="chev" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </button>
+        <div class="hint">با کلیک روی کادر بالا، لیست همراه با جستجو باز می‌شود.</div>
       </div>
 
       <div class="grid2">
         <div class="field" style="grid-column: 1 / -1;">
           <label for="model">نام و مدل خودرو *</label>
-          <input type="text" id="model" placeholder="مثلاً: پژو ۲۰۷ اتوماتیک">
+          <input type="text" id="model" placeholder="مثلاً: پژو ۲۰ اتوماتیک">
         </div>
         <div class="field">
           <label for="year">سال تولید (شمسی) *</label>
@@ -393,8 +367,8 @@
         </div>
         <div class="field">
           <label for="km">کیلومتر کارکرد *</label>
-          <input type="text" id="km" inputmode="numeric" placeholder="مثلاً: ۸۵۰۰۰">
-          <div class="hint">میانگین کارکرد استاندارد: ۲۰٬۰۰۰ کیلومتر در سال</div>
+          <input type="text" id="km" inputmode="numeric" placeholder="مثلاً: ۸۵۰۰">
+          <div class="hint">میانگین کارکرد استاندارد: ۲۰٬۰۰ کیلومتر در سال</div>
         </div>
         <div class="field">
           <label for="newPrice">قیمت نو / قیمت بازار (تومان) *</label>
@@ -451,7 +425,7 @@
           <label><input type="radio" name="paint" value="auto-around"><span>دور رنگ</span></label>
           <label><input type="radio" name="paint" value="auto-full"><span>تمام رنگ</span></label>
         </div>
-        <div class="hint" style="margin-top:8px;">💡 «دور رنگ» = نمای بیرونی رنگ شده (بدون سقف). «تمام رنگ» = همهٔ بدنه رنگ شده.</div>
+        <div class="hint" style="margin-top:8px;">«دور رنگ» = نمای بیرونی رنگ شده (بدون سقف). «تمام رنگ» = همهٔ بدنه رنگ شده.</div>
       </div>
     </div>
 
@@ -577,12 +551,6 @@
     return toPersianDigits(Math.round(num).toLocaleString('en-US'));
   }
 
-  /* ===== لیست کشویی خودروها ===== */
-  document.getElementById('carSelect').addEventListener('change', function(){
-    if(this.value) document.getElementById('model').value = this.value;
-  });
-
-  /* ===== دیاگرام بدنه (هر دو حالت ضربه و رنگ) ===== */
   var ZONES = [
     {name:'سپر جلو',        type:'normal',     x:70,  y:10,  w:80, h:30, rx:6},
     {name:'کاپوت',          type:'normal',     x:70,  y:44,  w:80, h:66, rx:4},
@@ -664,7 +632,6 @@
           if(z.classList.contains('painted')) selectedPaints.push({name:name});
           else selectedPaints = selectedPaints.filter(function(p){ return p.name !== name; });
           renderChips(paintChips, selectedPaints.map(function(p){return p.name;}), 'بدنه بدون رنگ‌شدگی', 'paint');
-          // اگر کاربر دستی کلیک کرد، pill را روی «انتخاب دستی» تنظیم کن
           var manualRadio = document.querySelector('input[name="paint"][value="manual"]');
           if(manualRadio) manualRadio.checked = true;
         }
@@ -683,13 +650,11 @@
     return 1;
   }
 
-  /* ===== منطق دور رنگ و تمام رنگ ===== */
   function clearAllPaint(){
     svgPaint.querySelectorAll('.zone.painted').forEach(function(z){ z.classList.remove('painted'); });
     selectedPaints = [];
   }
   function paintOuterOnly(){
-    // نمای بیرونی: همه به‌جز سقف و شیشه‌ها
     clearAllPaint();
     svgPaint.querySelectorAll('.zone').forEach(function(z){
       var n = z.getAttribute('data-name');
@@ -701,7 +666,6 @@
     renderChips(paintChips, selectedPaints.map(function(p){return p.name;}), 'بدنه بدون رنگ‌شدگی', 'paint');
   }
   function paintAllBody(){
-    // تمام بدنه: همه به‌جز شیشه‌ها
     clearAllPaint();
     svgPaint.querySelectorAll('.zone').forEach(function(z){
       var n = z.getAttribute('data-name');
@@ -718,7 +682,6 @@
       if(this.value === '0'){ clearAllPaint(); renderChips(paintChips, [], 'بدنه بدون رنگ‌شدگی', 'paint'); }
       else if(this.value === 'auto-around'){ paintOuterOnly(); }
       else if(this.value === 'auto-full'){ paintAllBody(); }
-      // اگر «انتخاب دستی» بود، کاری نکن — کاربر خودش روی بدنه کلیک می‌کند
     });
   });
 
@@ -872,7 +835,8 @@
   });
   document.getElementById('btnReset').addEventListener('click', function(){
     form.reset();
-    document.getElementById('carSelect').value = '';
+    document.getElementById('carSelectText').textContent = 'انتخاب از لیست (۷۶ خودرو) یا تایپ دستی';
+    document.getElementById('carSelectBtn').classList.add('placeholder');
     selectedHits = [];
     selectedPaints = [];
     svgHit.querySelectorAll('.zone').forEach(function(z){ z.classList.remove('hit'); });
@@ -932,10 +896,17 @@ body{padding-bottom:86px !important}
   <button class="nb" onclick="openModal('aboutModal',this)"><span class="pill"></span><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 8h.01"/></svg><span class="lb">درباره</span></button>
 </nav>
 
+<div class="modal" id="carModal"><div class="sheet">
+  <div class="handle"></div>
+  <h3>انتخاب خودرو</h3>
+  <input type="text" class="searchbox" id="carSearch" placeholder="جستجو... مثلاً: پژو ۲۰۷ یا شاهین">
+  <div class="carlist" id="carList"></div>
+</div></div>
+
 <div class="modal" id="guideModal"><div class="sheet">
   <div class="handle"></div>
-  <h3>📖 راهنمای استفاده</h3>
-  ۱. خودرو را از لیست کشویی انتخاب کنید یا تایپ کنید.<br>
+  <h3>راهنمای استفاده</h3>
+  ۱. خودرو را از دکمهٔ «انتخاب از لیست» (همراه با جستجو) انتخاب کنید یا دستی تایپ کنید.<br>
   ۲. اطلاعات پایه (سال، کارکرد، قیمت) را وارد کنید.<br>
   ۳. روی بدنهٔ خودرو کلیک کنید: نواحی ضربه‌خورده (قرمز) و رنگ‌شده (نارنجی) را مشخص کنید.<br>
   ۴. برای رنگ‌شدگی می‌توانید از گزینه‌های سریع «دور رنگ» یا «تمام رنگ» استفاده کنید.<br>
@@ -945,7 +916,7 @@ body{padding-bottom:86px !important}
 
 <div class="modal" id="aboutModal"><div class="sheet">
   <div class="handle"></div>
-  <h3>ℹ️ دربارهٔ برنامه</h3>
+  <h3>دربارهٔ برنامه</h3>
   نسخهٔ ۱.۰ — توسعه‌دهنده: AutoScope<br>
   این برنامه بر اساس میانگین قیمت بازار و کسر استهلاک سالانه، قیمت منطقی خودرو را تخمین می‌زند.<br>
   <a id="myketBadge" href="https://myket.ir/app/ir.autoscope.app"><img src="myket-badge.png" onerror="this.remove()" alt="دریافت از مایکت"></a><br>
@@ -953,6 +924,41 @@ body{padding-bottom:86px !important}
 </div></div>
 
 <script>
+var CARS = [
+  {g:'ایران خودرو', items:['پژو ۲۰۶ تیپ ۲','پژو ۲۰۶ تیپ ۵','پژو ۲۰۶ صندوق‌دار V8','پژو ۲۰۷ دنده‌ای','پژو ۲۰۷ اتوماتیک','پژو ۲۰۷ سقف شیشه‌ای','پژو پارس TU5','پژو پارس XU7','پژو پارس ELX','پژو پارس LX','پژو ۴۰۵ SLX','پژو ۴۰ GLX','سمند LX','سمند EF7','سمند سریر','سمند سورن','سمند سورن پلاس','دنا معمولی','دنا پلاس','دنا پلاس توربو','دنا پلاس اتوماتیک','رانا معمولی','رانا پلاس','تارا دنده‌ای','تارا اتوماتیک','هایما S5','هایما S7','هایما 8S']},
+  {g:'سایپا', items:['پراید ۱۱۱','پراید ۱۳۱','پراید ۱۳۲','پراید ۱۵۱ (وانت)','تیبا صندوق‌دار','تیبا ۲ هاچ‌بک','ساینا معمولی','ساینا S','ساینا EX','کوییک معمولی','کوییک R','کوییک S','کوییک GX','کوییک پلاس اتوماتیک','شاهین G','شاهین اتوماتیک','اطلس','سهند']},
+  {g:'مونتاژی و وارداتی پرفروش', items:['تندر ۹۰ E2','تندر ۹۰ پلاس','ساندرو معمولی','ساندرو استپ‌وی','جک J4','جک J5','جک S3','جک S5','ام‌وی‌ام X22','ام‌وی‌ام X33','ام‌وی‌ام X55','چری تیگو ۵','چری تیگو ۷','چری تیگو ۸ پرو','برلیانس H320','برلیانس H330','دانگ‌فنگ H30 کراس','ریگان کوپا','فیدلیتی پرایم','دیگنیتی پرایم','دیگنیتی پرستیژ','لاماری ایما','ریسپکت','آریزو ۵','آریزو ۶','بسترن B30','بسترن B70','فونیکس FX']}
+];
+function renderCarList(q){
+  var box = document.getElementById('carList');
+  var html = '';
+  CARS.forEach(function(gr){
+    var items = gr.items.filter(function(n){ return !q || n.indexOf(q) > -1; });
+    if(items.length === 0) return;
+    html += '<div class="cgroup">' + gr.g + '</div>';
+    items.forEach(function(n){ html += '<button type="button" class="citem" onclick="pickCar(this)">' + n + '</button>'; });
+  });
+  if(!html) html = '<div style="text-align:center;color:#64748b;padding:20px 0;font-size:.9rem;">خودرویی پیدا نشد — می‌توانید دستی تایپ کنید</div>';
+  box.innerHTML = html;
+}
+function pickCar(el){
+  var n = el.textContent;
+  document.getElementById('model').value = n;
+  document.getElementById('carSelectText').textContent = n;
+  document.getElementById('carSelectBtn').classList.remove('placeholder');
+  closeModals();
+}
+function openCar(){
+  closeModals();
+  document.getElementById('carModal').classList.add('open');
+  document.getElementById('carSearch').value = '';
+  renderCarList('');
+  setTimeout(function(){ document.getElementById('carSearch').focus(); }, 350);
+}
+document.getElementById('carSearch').addEventListener('input', function(){ renderCarList(this.value.trim()); });
+document.querySelectorAll('.modal').forEach(function(m){
+  m.addEventListener('click', function(e){ if(e.target === m) closeModals(); });
+});
 window.addEventListener('load',function(){setTimeout(function(){var s=document.getElementById('appSplash');s.classList.add('hide');setTimeout(function(){s.remove()},500)},1500)});
 function openModal(id,btn){closeModals();document.getElementById(id).classList.add('open');setActive(btn)}
 function closeModals(){document.querySelectorAll('.modal').forEach(function(m){m.classList.remove('open')});setActive(document.querySelector('#bottomNav .nb'))}
