@@ -1,19 +1,25 @@
-var CACHE_NAME = 'car-expert-v1';
-var urlsToCache = ['./', './index.html', './manifest.json'];
+const CACHE = 'car-expert-v2';
 
-self.addEventListener('install', function(event) {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then(function(cache) {
-      return cache.addAll(urlsToCache);
-    })
+self.addEventListener('install', e => {
+  self.skipWaiting();
+});
+
+self.addEventListener('activate', e => {
+  e.waitUntil(
+    caches.keys().then(keys =>
+      Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))
+    ).then(() => clients.claim())
   );
 });
 
-self.addEventListener('fetch', function(event) {
-  event.respondWith(
-    caches.match(event.request).then(function(response) {
-      if (response) { return response; }
-      return fetch(event.request);
-    })
+self.addEventListener('fetch', e => {
+  e.respondWith(
+    fetch(e.request).then(res => {
+      const cp = res.clone();
+      caches.open(CACHE).then(c => c.put(e.request, cp));
+      return res;
+    }).catch(() =>
+      caches.match(e.request).then(r => r || caches.match('/car-expert/'))
+    )
   );
 });
