@@ -653,5 +653,56 @@
     });
   }
 </script>
+ <!-- ===== پوستهٔ بومی اپ ===== -->
+<style>
+body{padding-bottom:70px !important}
+#appSplash{position:fixed;inset:0;background:#0f172a;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity .5s}
+#appSplash img{width:96px;height:96px;border-radius:22px;box-shadow:0 6px 24px rgba(0,0,0,.5)}
+#appSplash div{color:#7dd3fc;font-family:Tahoma;margin-top:14px;font-size:16px;font-weight:bold}
+#bottomNav{position:fixed;bottom:0;right:0;left:0;background:#1e293b;display:flex;z-index:900;box-shadow:0 -2px 10px rgba(0,0,0,.35)}
+#bottomNav button{flex:1;background:none;border:none;color:#94a3b8;font-family:Tahoma;font-size:11px;padding:9px 0 7px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px}
+#bottomNav button span{font-size:19px}
+#bottomNav button.active{color:#4ade80}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:950;align-items:flex-end;justify-content:center}
+.modal.open{display:flex}
+.modal .sheet{background:#1e293b;width:100%;max-width:520px;border-radius:18px 18px 0 0;padding:18px;color:#e2e8f0;font-family:Tahoma;line-height:1.9;max-height:75vh;overflow:auto}
+.modal .sheet h3{color:#7dd3fc;margin-bottom:8px}
+.sheet .close{background:#334155;border:none;color:#e2e8f0;border-radius:8px;padding:6px 14px;margin-top:10px;cursor:pointer;font-family:Tahoma}
+#myketBadge{display:inline-block;margin-top:12px}
+#myketBadge img{height:52px;border-radius:12px;box-shadow:0 2px 10px rgba(0,0,0,.45)}
+</style>
+
+<div id="appSplash"><img src="icon.png" alt=""><div>کارشناسی قیمت خودرو</div></div>
+
+<nav id="bottomNav">
+  <button class="active" onclick="navHome(this)"><span>🏠</span>محاسبه</button>
+  <button onclick="openModal('guideModal',this)"><span>📖</span>راهنما</button>
+  <button onclick="openModal('aboutModal',this)"><span>ℹ️</span>درباره</button>
+</nav>
+
+<div class="modal" id="guideModal"><div class="sheet">
+  <h3>📖 راهنمای استفاده</h3>
+  ۱. مدل خودرو را از لیست انتخاب کنید.<br>
+  ۲. سال ساخت، کارکرد و وضعیت بدنه را وارد کنید.<br>
+  ۳. دکمهٔ محاسبه را بزنید تا قیمت منطقی بازار نمایش داده شود.<br>
+  <button class="close" onclick="closeModals()">بستن</button>
+</div></div>
+
+<div class="modal" id="aboutModal"><div class="sheet">
+  <h3>ℹ️ دربارهٔ برنامه</h3>
+  نسخهٔ ۱.۰ — توسعه‌دهنده: AutoScope<br>
+  این برنامه بر اساس میانگین قیمت بازار و کسر استهلاک سالانه، قیمت منطقی خودرو را تخمین می‌زند.<br>
+  <a id="myketBadge" href="https://myket.ir/app/ir.autoscope.app"><img src="myket-badge.png" onerror="this.remove()" alt="دریافت از مایکت"></a><br>
+  <button class="close" onclick="closeModals()">بستن</button>
+</div></div>
+
+<script>
+window.addEventListener('load',function(){setTimeout(function(){var s=document.getElementById('appSplash');s.style.opacity='0';setTimeout(function(){s.remove()},600)},1400)});
+function openModal(id,btn){closeModals();document.getElementById(id).classList.add('open');setActive(btn)}
+function closeModals(){document.querySelectorAll('.modal').forEach(function(m){m.classList.remove('open')});setActive(document.querySelector('#bottomNav button'))}
+function navHome(btn){closeModals();window.scrollTo({top:0,behavior:'smooth'});setActive(btn)}
+function setActive(btn){document.querySelectorAll('#bottomNav button').forEach(function(b){b.classList.remove('active')});if(btn)btn.classList.add('active')}
+</script>
+<!-- ===== پایان پوستهٔ بومی ===== -->
 </body>
 </html>
