@@ -2,373 +2,853 @@
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>کارشناسی و قیمت‌گذاری خودرو</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>AutoScope | کارشناسی هوشمند قیمت خودرو</title>
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#38bdf8">
+<meta name="theme-color" content="#0f172a">
+<link rel="icon" type="image/png" href="icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/fonts/vazirmatn@latest/fa-400-normal.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/fonts/vazirmatn@latest/fa-500-normal.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/fonts/vazirmatn@latest/fa-700-normal.min.css">
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    font-family: 'Vazirmatn', sans-serif;
-    min-height: 100vh;
-    background: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #0f172a 100%);
-    color: #e2e8f0;
-    padding: 24px 16px 60px;
-  }
-  .container { max-width: 860px; margin: 0 auto; }
-  header { text-align: center; margin-bottom: 32px; }
-  header h1 {
-    font-size: 1.9rem;
-    font-weight: 700;
-    background: linear-gradient(135deg, #38bdf8, #818cf8);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-bottom: 8px;
-  }
-  header p { color: #94a3b8; font-size: 0.95rem; }
-  .card {
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.09);
-    border-radius: 20px;
-    padding: 26px 24px;
-    margin-bottom: 20px;
-    backdrop-filter: blur(8px);
-  }
-  .card h2 {
-    font-size: 1.15rem;
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    color: #f1f5f9;
-  }
-  .card h2 .step {
-    width: 30px; height: 30px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #38bdf8, #818cf8);
-    color: #0f172a;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 0.95rem; font-weight: 700;
-    flex-shrink: 0;
-  }
-  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-  .field label {
-    display: block;
-    margin-bottom: 7px;
-    font-size: 0.9rem;
-    color: #94a3b8;
-    font-weight: 700;
-  }
-  .field input {
-    width: 100%;
-    padding: 12px 14px;
-    background: rgba(0,0,0,0.3);
-    border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 12px;
-    color: #fff;
-    font-family: inherit;
-    font-size: 1rem;
-    outline: none;
-    transition: border-color .2s, box-shadow .2s;
-  }
-  .field input:focus {
-    border-color: #38bdf8;
-    box-shadow: 0 0 0 3px rgba(56,189,248,0.15);
-  }
-  .selectbox {
-    width: 100%;
-    padding: 13px 14px;
-    background: rgba(0,0,0,0.3);
-    border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 12px;
-    color: #fff;
-    font-family: inherit;
-    font-size: 0.95rem;
-    outline: none;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-    cursor: pointer;
-    text-align: right;
-    transition: border-color .2s, box-shadow .2s;
-  }
-  .selectbox:active { border-color: #38bdf8; box-shadow: 0 0 0 3px rgba(56,189,248,0.15); }
-  .selectbox .chev { flex-shrink: 0; color: #94a3b8; }
-  .selectbox.placeholder #carSelectText { color: #64748b; font-size: 0.9rem; }
-  .hint { font-size: 0.78rem; color: #64748b; margin-top: 5px; }
-  .searchbox {
-    width: 100%;
-    padding: 12px 14px;
-    background: rgba(0,0,0,0.35);
-    border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 12px;
-    color: #fff;
-    font-family: inherit;
-    font-size: 0.95rem;
-    outline: none;
-    margin-bottom: 10px;
-  }
-  .searchbox:focus { border-color: #38bdf8; }
-  .carlist { max-height: 45vh; overflow: auto; padding-bottom: 6px; }
-  .cgroup {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: #7dd3fc;
-    font-size: 0.8rem;
-    font-weight: 700;
-    padding: 12px 4px 6px;
-    border-bottom: 1px solid rgba(255,255,255,0.07);
-    margin-bottom: 6px;
-  }
-  .cgroup::before {
-    content: '';
-    width: 3px;
-    height: 14px;
-    border-radius: 2px;
-    background: linear-gradient(180deg, #38bdf8, #818cf8);
-  }
-  .citem {
-    width: 100%;
-    text-align: right;
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.06);
-    color: #e2e8f0;
-    padding: 11px 14px;
-    border-radius: 10px;
-    margin-bottom: 6px;
-    font-family: inherit;
-    font-size: 0.92rem;
-    cursor: pointer;
-    transition: background .15s, border-color .15s;
-  }
-  .citem:active { background: rgba(56,189,248,0.15); border-color: rgba(56,189,248,0.4); }
-  .car-section { display: flex; gap: 24px; align-items: flex-start; flex-wrap: wrap; }
-  .car-svg-wrap { flex: 0 0 210px; }
-  .zone {
-    fill: #1e293b;
-    stroke: #475569;
-    stroke-width: 1.5;
-    cursor: pointer;
-    transition: fill .2s, stroke .2s;
-  }
-  .zone:hover { fill: #334155; stroke: #38bdf8; }
-  .zone.hit { fill: #dc2626; stroke: #f87171; }
-  .zone.painted { fill: #d97706; stroke: #fbbf24; }
-  .zone.disabled { fill: #0b1220; stroke: #334155; stroke-dasharray: 4 3; cursor: not-allowed; }
-  .zone.disabled:hover { fill: #0b1220; stroke: #334155; }
-  .hits-panel { flex: 1; min-width: 220px; }
-  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; min-height: 20px; }
-  .chip {
-    background: rgba(220,38,38,0.15);
-    border: 1px solid rgba(248,113,113,0.4);
-    color: #fca5a5;
-    padding: 5px 12px;
-    border-radius: 20px;
-    font-size: 0.82rem;
-    animation: pop .25s ease;
-  }
-  .chip.paint { background: rgba(245,158,11,0.15); border-color: rgba(251,191,36,0.4); color: #fcd34d; }
-  .chip.empty { background: none; border: 1px dashed #475569; color: #64748b; }
-  @keyframes pop { from { transform: scale(0.7); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-  .legend { display: flex; gap: 16px; margin-top: 14px; font-size: 0.78rem; color: #94a3b8; flex-wrap: wrap; }
-  .legend span { display: flex; align-items: center; gap: 6px; }
-  .dot { width: 12px; height: 12px; border-radius: 4px; display: inline-block; }
-  .dot.normal { background: #1e293b; border: 1px solid #475569; }
-  .dot.hitd { background: #dc2626; }
-  .dot.paintd { background: #d97706; }
-  .dot.dis { background: #0b1220; border: 1px dashed #334155; }
-  .pill-group { display: flex; flex-wrap: wrap; gap: 8px; }
-  .pill-group label { position: relative; cursor: pointer; }
-  .pill-group input { position: absolute; opacity: 0; pointer-events: none; }
-  .pill-group span {
-    display: inline-block;
-    padding: 9px 18px;
-    background: rgba(0,0,0,0.3);
-    border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 12px;
-    font-size: 0.9rem;
-    color: #94a3b8;
-    transition: all .2s;
-    user-select: none;
-  }
-  .pill-group label:hover span { border-color: #38bdf8; color: #e2e8f0; }
-  .pill-group input:checked + span {
-    background: linear-gradient(135deg, #38bdf8, #818cf8);
-    border-color: transparent;
-    color: #0f172a;
-    font-weight: 700;
-  }
-  .pill-group.danger input:checked + span {
-    background: linear-gradient(135deg, #ef4444, #dc2626);
-    color: #fff;
-  }
-  .question { margin-bottom: 18px; }
-  .question:last-child { margin-bottom: 0; }
-  .question .q-title { font-size: 0.95rem; margin-bottom: 9px; color: #cbd5e1; font-weight: 700; }
-  .conditional {
-    display: none;
-    margin-top: 16px;
-    padding: 18px;
-    background: rgba(239,68,68,0.06);
-    border: 1px solid rgba(239,68,68,0.25);
-    border-radius: 14px;
-    animation: slide .3s ease;
-  }
-  .conditional.open { display: block; }
-  @keyframes slide { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
-  .conditional .q-title { color: #fca5a5; }
-  .btn-calc {
-    width: 100%;
-    padding: 16px;
-    background: linear-gradient(135deg, #38bdf8, #818cf8);
-    border: none;
-    border-radius: 14px;
-    color: #0f172a;
-    font-family: inherit;
-    font-size: 1.15rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: transform .2s, box-shadow .2s, opacity .2s;
-  }
-  .btn-calc:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(56,189,248,0.35); }
-  .btn-calc:active:not(:disabled) { transform: translateY(0); }
-  .btn-calc:disabled { opacity: 0.6; cursor: wait; }
-  .toast {
-    position: fixed;
-    top: 24px;
-    left: 50%;
-    transform: translateX(-50%) translateY(-120px);
-    background: linear-gradient(135deg, #1e293b, #0f172a);
-    border: 1px solid rgba(56,189,248,0.5);
-    color: #e2e8f0;
-    padding: 16px 28px;
-    border-radius: 16px;
-    font-size: 1rem;
-    font-weight: 700;
-    z-index: 1000;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    box-shadow: 0 12px 40px rgba(0,0,0,0.5);
-    transition: transform .4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    max-width: 90vw;
-  }
-  .toast.show { transform: translateX(-50%) translateY(0); }
-  .spinner {
-    width: 22px; height: 22px;
-    border: 3px solid rgba(56,189,248,0.25);
-    border-top-color: #38bdf8;
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-    flex-shrink: 0;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .toast-progress {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    height: 3px;
-    background: #38bdf8;
-    border-radius: 0 0 16px 16px;
-    width: 100%;
-    transform-origin: right;
-  }
-  .toast.show .toast-progress { animation: shrink 3s linear forwards; }
-  @keyframes shrink { from { transform: scaleX(1); } to { transform: scaleX(0); } }
-  .results { display: none; }
-  .results.show { display: block; animation: fadeUp .5s ease; }
-  @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-  .price-hero { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
-  .price-box {
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.09);
-    border-radius: 18px;
-    padding: 22px;
-    text-align: center;
-  }
-  .price-box .p-label { color: #94a3b8; font-size: 0.88rem; margin-bottom: 8px; }
-  .price-box .p-value { font-size: 1.35rem; font-weight: 700; direction: ltr; }
-  .price-box.fair { border-color: rgba(56,189,248,0.4); background: rgba(56,189,248,0.07); }
-  .price-box.fair .p-value { color: #38bdf8; }
-  .breakdown { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
-  .breakdown th, .breakdown td { padding: 11px 10px; text-align: right; border-bottom: 1px solid rgba(255,255,255,0.06); }
-  .breakdown th { color: #64748b; font-weight: 700; font-size: 0.82rem; }
-  .breakdown td.num { direction: ltr; text-align: left; font-variant-numeric: tabular-nums; }
-  .breakdown tr:last-child td { border-bottom: none; }
-  .breakdown .pct { color: #f87171; font-weight: 700; width: 70px; text-align: center; }
-  .verdict { margin-top: 20px; padding: 22px; border-radius: 16px; text-align: center; }
-  .verdict h3 { font-size: 1.35rem; margin-bottom: 10px; }
-  .verdict p { font-size: 0.95rem; line-height: 1.9; }
-  .verdict.great { background: linear-gradient(135deg, rgba(16,185,129,0.18), rgba(5,150,105,0.1)); border: 1px solid rgba(16,185,129,0.45); }
-  .verdict.great h3 { color: #34d399; }
-  .verdict.ok { background: linear-gradient(135deg, rgba(56,189,248,0.15), rgba(99,102,241,0.08)); border: 1px solid rgba(56,189,248,0.4); }
-  .verdict.ok h3 { color: #38bdf8; }
-  .verdict.caution { background: linear-gradient(135deg, rgba(251,191,36,0.14), rgba(217,119,6,0.08)); border: 1px solid rgba(251,191,36,0.4); }
-  .verdict.caution h3 { color: #fbbf24; }
-  .verdict.bad { background: linear-gradient(135deg, rgba(239,68,68,0.15), rgba(220,38,38,0.08)); border: 1px solid rgba(239,68,68,0.45); }
-  .verdict.bad h3 { color: #f87171; }
-  .btn-reset {
-    margin-top: 16px;
-    width: 100%;
-    padding: 13px;
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.15);
-    border-radius: 12px;
-    color: #e2e8f0;
-    font-family: inherit;
-    font-size: 1rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: background .2s;
-  }
-  .btn-reset:hover { background: rgba(255,255,255,0.1); }
-  @media (max-width: 560px) {
-    .grid2 { grid-template-columns: 1fr; }
-    .price-hero { grid-template-columns: 1fr; }
-    .car-svg-wrap { flex: 0 0 100%; display: flex; justify-content: center; }
-    header h1 { font-size: 1.5rem; }
-  }
+/* ===== متغیرهای تم تیره (پیش‌فرض) ===== */
+:root {
+  --bg-primary: #0f172a;
+  --bg-secondary: #1e293b;
+  --bg-card: rgba(255,255,255,0.04);
+  --bg-input: rgba(0,0,0,0.3);
+  --border-color: rgba(255,255,255,0.09);
+  --text-primary: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --accent-blue: #38bdf8;
+  --accent-purple: #818cf8;
+  --accent-green: #34d399;
+  --accent-red: #f87171;
+  --accent-orange: #fbbf24;
+  --gradient-main: linear-gradient(135deg, #38bdf8, #818cf8);
+}
+/* ===== تم روشن ===== */
+[data-theme="light"] {
+  --bg-primary: #f8fafc;
+  --bg-secondary: #ffffff;
+  --bg-card: rgba(0,0,0,0.03);
+  --bg-input: rgba(255,255,255,0.9);
+  --border-color: rgba(0,0,0,0.1);
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
+  --gradient-main: linear-gradient(135deg, #0ea5e9, #6366f1);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Vazirmatn', Tahoma, sans-serif;
+  min-height: 100vh;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  padding: 24px 16px 100px;
+  transition: background .3s, color .3s;
+}
+.container { max-width: 860px; margin: 0 auto; position: relative; }
+header { text-align: center; margin-bottom: 32px; }
+header h1 {
+  font-size: 1.9rem;
+  font-weight: 700;
+  background: var(--gradient-main);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 8px;
+}
+header p { color: var(--text-secondary); font-size: 0.95rem; }
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  padding: 26px 24px;
+  margin-bottom: 20px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.card h2 {
+  font-size: 1.15rem;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-primary);
+}
+.step {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  background: var(--gradient-main);
+  color: #0f172a;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.95rem; font-weight: 700;
+  flex-shrink: 0;
+}
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.field label {
+  display: block;
+  margin-bottom: 7px;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  font-weight: 700;
+}
+.field input {
+  width: 100%;
+  padding: 12px 14px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color .2s, box-shadow .2s;
+}
+.field input:focus {
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 0 3px rgba(56,189,248,0.15);
+}
+.selectbox {
+  width: 100%;
+  padding: 13px 14px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 0.95rem;
+  outline: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  cursor: pointer;
+  text-align: right;
+  transition: border-color .2s, box-shadow .2s;
+}
+.selectbox:active { border-color: var(--accent-blue); box-shadow: 0 0 0 3px rgba(56,189,248,0.15); }
+.selectbox .chev { flex-shrink: 0; color: var(--text-secondary); }
+.selectbox.placeholder span:first-child { color: var(--text-muted); font-size: 0.9rem; }
+.hint { font-size: 0.78rem; color: var(--text-muted); margin-top: 5px; line-height: 1.7; }
+.searchbox {
+  width: 100%;
+  padding: 12px 14px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 0.95rem;
+  outline: none;
+  margin-bottom: 10px;
+}
+.searchbox:focus { border-color: var(--accent-blue); }
+.carlist { max-height: 45vh; overflow: auto; padding-bottom: 6px; }
+.cgroup {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--accent-blue);
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 12px 4px 6px;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 6px;
+}
+.cgroup::before {
+  content: '';
+  width: 3px;
+  height: 14px;
+  border-radius: 2px;
+  background: var(--gradient-main);
+}
+.citem {
+  width: 100%;
+  text-align: right;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  padding: 11px 14px;
+  border-radius: 10px;
+  margin-bottom: 6px;
+  font-family: inherit;
+  font-size: 0.92rem;
+  cursor: pointer;
+  transition: background .15s, border-color .15s;
+}
+.citem:active { background: rgba(56,189,248,0.15); border-color: rgba(56,189,248,0.4); }
+.yeargrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  max-height: 45vh;
+  overflow: auto;
+  padding-bottom: 6px;
+}
+.yitem {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 11px 0;
+  text-align: center;
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background .15s, border-color .15s;
+}
+.yitem:active { border-color: rgba(56,189,248,0.5); }
+.yitem.sel {
+  background: var(--gradient-main);
+  border-color: transparent;
+  color: #0f172a;
+  font-weight: 700;
+}
+.car-section { display: flex; gap: 24px; align-items: flex-start; flex-wrap: wrap; }
+.car-svg-wrap { flex: 0 0 210px; }
+.zone {
+  fill: var(--bg-secondary);
+  stroke: #475569;
+  stroke-width: 1.5;
+  cursor: pointer;
+  transition: fill .2s, stroke .2s;
+}
+.zone:hover { fill: #334155; stroke: var(--accent-blue); }
+.zone.hit { fill: #dc2626; stroke: #f87171; }
+.zone.painted { fill: #d97706; stroke: #fbbf24; }
+.zone.disabled { fill: var(--bg-primary); stroke: #334155; stroke-dasharray: 4 3; cursor: not-allowed; }
+.zone.disabled:hover { fill: var(--bg-primary); stroke: #334155; }
+.hits-panel { flex: 1; min-width: 220px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; min-height: 20px; }
+.chip {
+  background: rgba(220,38,38,0.15);
+  border: 1px solid rgba(248,113,113,0.4);
+  color: #fca5a5;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.82rem;
+  animation: pop .25s ease;
+}
+.chip.paint { background: rgba(245,158,11,0.15); border-color: rgba(251,191,36,0.4); color: #fcd34d; }
+.chip.empty { background: none; border: 1px dashed var(--border-color); color: var(--text-muted); }
+@keyframes pop { from { transform: scale(0.7); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.legend { display: flex; gap: 16px; margin-top: 14px; font-size: 0.78rem; color: var(--text-secondary); flex-wrap: wrap; }
+.legend span { display: flex; align-items: center; gap: 6px; }
+.dot { width: 12px; height: 12px; border-radius: 4px; display: inline-block; }
+.dot.normal { background: var(--bg-secondary); border: 1px solid #475569; }
+.dot.hitd { background: #dc2626; }
+.dot.paintd { background: #d97706; }
+.dot.dis { background: var(--bg-primary); border: 1px dashed #334155; }
+.pill-group { display: flex; flex-wrap: wrap; gap: 8px; }
+.pill-group label { position: relative; cursor: pointer; }
+.pill-group input { position: absolute; opacity: 0; pointer-events: none; }
+.pill-group span {
+  display: inline-block;
+  padding: 9px 18px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  transition: all .2s;
+  user-select: none;
+}
+.pill-group label:hover span { border-color: var(--accent-blue); color: var(--text-primary); }
+.pill-group input:checked + span {
+  background: var(--gradient-main);
+  border-color: transparent;
+  color: #0f172a;
+  font-weight: 700;
+}
+.pill-group.danger input:checked + span {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: #fff;
+}
+.question { margin-bottom: 18px; }
+.question:last-child { margin-bottom: 0; }
+.q-title { font-size: 0.95rem; margin-bottom: 9px; color: var(--text-primary); font-weight: 700; }
+.conditional {
+  display: none;
+  margin-top: 16px;
+  padding: 18px;
+  background: rgba(239,68,68,0.06);
+  border: 1px solid rgba(239,68,68,0.25);
+  border-radius: 14px;
+  animation: slide .3s ease;
+}
+.conditional.open { display: block; }
+@keyframes slide { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+.btn-calc {
+  width: 100%;
+  padding: 16px;
+  background: var(--gradient-main);
+  border: none;
+  border-radius: 14px;
+  color: #0f172a;
+  font-family: inherit;
+  font-size: 1.15rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform .2s, box-shadow .2s, opacity .2s;
+}
+.btn-calc:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(56,189,248,0.35); }
+.btn-calc:active:not(:disabled) { transform: translateY(0); }
+.btn-calc:disabled { opacity: 0.6; cursor: wait; }
+.toast {
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-120px);
+  background: var(--bg-secondary);
+  border: 1px solid rgba(56,189,248,0.5);
+  color: var(--text-primary);
+  padding: 16px 28px;
+  border-radius: 16px;
+  font-size: 1rem;
+  font-weight: 700;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+  transition: transform .4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  max-width: 90vw;
+}
+.toast.plain { padding: 14px 24px; font-size: 0.92rem; border-color: rgba(251,191,36,0.55); }
+.toast.success { border-color: rgba(52,211,153,0.55); }
+.toast.show { transform: translateX(-50%) translateY(0); }
+.spinner {
+  width: 22px; height: 22px;
+  border: 3px solid rgba(56,189,248,0.25);
+  border-top-color: var(--accent-blue);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  flex-shrink: 0;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.toast-progress {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  height: 3px;
+  background: var(--accent-blue);
+  border-radius: 0 0 16px 16px;
+  width: 100%;
+  transform-origin: right;
+}
+.toast.show .toast-progress { animation: shrink 3s linear forwards; }
+@keyframes shrink { from { transform: scaleX(1); } to { transform: scaleX(0); } }
+.results { display: none; }
+.results.show { display: block; animation: fadeUp .5s ease; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+.price-hero { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+.price-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 18px;
+  padding: 22px;
+  text-align: center;
+}
+.price-box .p-label { color: var(--text-secondary); font-size: 0.88rem; margin-bottom: 8px; }
+.price-box .p-value { font-size: 1.35rem; font-weight: 700; direction: ltr; }
+.price-box.fair { border-color: rgba(56,189,248,0.4); background: rgba(56,189,248,0.07); }
+.price-box.fair .p-value { color: var(--accent-blue); }
+.breakdown { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+.breakdown th, .breakdown td { padding: 11px 10px; text-align: right; border-bottom: 1px solid var(--border-color); }
+.breakdown th { color: var(--text-muted); font-weight: 700; font-size: 0.82rem; }
+.breakdown td.num { direction: ltr; text-align: left; font-variant-numeric: tabular-nums; }
+.breakdown tr:last-child td { border-bottom: none; }
+.breakdown .pct { color: var(--accent-red); font-weight: 700; width: 70px; text-align: center; }
+.verdict { margin-top: 20px; padding: 22px; border-radius: 16px; text-align: center; }
+.verdict h3 { font-size: 1.35rem; margin-bottom: 10px; }
+.verdict p { font-size: 0.95rem; line-height: 1.9; }
+.verdict.great { background: linear-gradient(135deg, rgba(16,185,129,0.18), rgba(5,150,105,0.1)); border: 1px solid rgba(16,185,129,0.45); }
+.verdict.great h3 { color: var(--accent-green); }
+.verdict.ok { background: linear-gradient(135deg, rgba(56,189,248,0.15), rgba(99,102,241,0.08)); border: 1px solid rgba(56,189,248,0.4); }
+.verdict.ok h3 { color: var(--accent-blue); }
+.verdict.caution { background: linear-gradient(135deg, rgba(251,191,36,0.14), rgba(217,119,6,0.08)); border: 1px solid rgba(251,191,36,0.4); }
+.verdict.caution h3 { color: var(--accent-orange); }
+.verdict.bad { background: linear-gradient(135deg, rgba(239,68,68,0.15), rgba(220,38,38,0.08)); border: 1px solid rgba(239,68,68,0.45); }
+.verdict.bad h3 { color: var(--accent-red); }
+.btn-reset {
+  margin-top: 16px;
+  width: 100%;
+  padding: 13px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .2s;
+}
+.btn-reset:hover { background: var(--bg-secondary); }
+.chart-wrap { margin-top: 20px; padding: 18px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 14px; }
+.chart-title { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 14px; font-weight: 700; }
+.bars { display: flex; align-items: flex-end; gap: 12px; height: 160px; padding: 0 8px; }
+.bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; height: 100%; justify-content: flex-end; }
+.bar {
+  width: 100%;
+  max-width: 60px;
+  border-radius: 8px 8px 0 0;
+  transition: height 1s cubic-bezier(.2,.9,.3,1);
+  position: relative;
+}
+.bar.new { background: linear-gradient(180deg, #94a3b8, #64748b); }
+.bar.fair { background: linear-gradient(180deg, #38bdf8, #818cf8); }
+.bar.ask { background: linear-gradient(180deg, #fbbf24, #f59e0b); }
+.bar-val { font-size: 0.72rem; color: var(--text-secondary); white-space: nowrap; direction: ltr; }
+.bar-lbl { font-size: 0.78rem; color: var(--text-primary); font-weight: 700; }
+.feedback { margin-top: 18px; padding: 16px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 14px; text-align: center; }
+.feedback-q { font-size: 0.92rem; color: var(--text-secondary); margin-bottom: 12px; }
+.fb-btns { display: flex; gap: 10px; justify-content: center; }
+.fb-btn {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  border: 1px solid var(--border-color);
+  background: var(--bg-input);
+  color: var(--text-primary);
+  font-size: 1.3rem;
+  cursor: pointer;
+  transition: all .2s;
+  display: flex; align-items: center; justify-content: center;
+}
+.fb-btn:hover { border-color: var(--accent-blue); transform: scale(1.08); }
+.fb-btn.thumbs-up.active { background: var(--accent-green); color: #0f172a; border-color: transparent; }
+.fb-btn.thumbs-down.active { background: var(--accent-red); color: #fff; border-color: transparent; }
+.fb-thanks { color: var(--accent-green); font-size: 0.88rem; margin-top: 10px; display: none; }
+.fb-thanks.show { display: block; }
+.action-row { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
+.act-btn {
+  flex: 1;
+  min-width: 120px;
+  padding: 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all .2s;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+}
+.act-btn:hover { border-color: var(--accent-blue); background: rgba(56,189,248,0.08); }
+.act-btn svg { width: 18px; height: 18px; }
+.hist-item {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: border-color .2s;
+}
+.hist-item:hover { border-color: var(--accent-blue); }
+.hist-info { flex: 1; min-width: 0; }
+.hist-model { font-size: 0.95rem; font-weight: 700; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hist-meta { font-size: 0.78rem; color: var(--text-muted); margin-top: 3px; }
+.hist-price { font-size: 0.92rem; font-weight: 700; color: var(--accent-blue); direction: ltr; white-space: nowrap; }
+.hist-del {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+  background: transparent;
+  color: var(--accent-red);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: all .2s;
+}
+.hist-del:hover { background: rgba(239,68,68,0.12); border-color: rgba(239,68,68,0.4); }
+.hist-empty { text-align: center; color: var(--text-muted); padding: 40px 20px; font-size: 0.95rem; line-height: 2; }
+.hist-actions { display: flex; gap: 10px; margin-bottom: 14px; }
+.hist-action-btn {
+  flex: 1;
+  padding: 10px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all .2s;
+}
+.hist-action-btn:hover { border-color: var(--accent-blue); }
+.hist-action-btn.danger:hover { border-color: var(--accent-red); color: var(--accent-red); }
+.home-hero {
+  text-align: center;
+  padding: 40px 20px 30px;
+  background: radial-gradient(ellipse at top, rgba(56,189,248,0.12), transparent 70%);
+  border-radius: 24px;
+  margin-bottom: 24px;
+}
+.home-logo {
+  width: 96px; height: 96px;
+  border-radius: 24px;
+  margin: 0 auto 16px;
+  box-shadow: 0 10px 40px rgba(56,189,248,0.25);
+  animation: logoFloat 3s ease-in-out infinite;
+  object-fit: cover;
+}
+@keyframes logoFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+.home-title { font-size: 1.7rem; font-weight: 700; background: var(--gradient-main); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 6px; }
+.home-subtitle { color: var(--text-secondary); font-size: 0.95rem; }
+.menu-grid { display: grid; gap: 12px; }
+.menu-primary {
+  padding: 22px;
+  background: var(--gradient-main);
+  border-radius: 18px;
+  color: #0f172a;
+  font-family: inherit;
+  font-size: 1.1rem;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  transition: transform .2s, box-shadow .2s;
+  box-shadow: 0 8px 24px rgba(56,189,248,0.25);
+}
+.menu-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(56,189,248,0.35); }
+.menu-primary:active { transform: translateY(0); }
+.menu-primary svg { width: 28px; height: 28px; flex-shrink: 0; }
+.menu-secondary {
+  padding: 16px 18px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 0.98rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: all .2s;
+  width: 100%;
+  text-align: right;
+}
+.menu-secondary:hover { border-color: var(--accent-blue); background: rgba(56,189,248,0.06); }
+.menu-secondary svg.mi { width: 22px; height: 22px; color: var(--accent-blue); flex-shrink: 0; }
+.menu-secondary .arrow { margin-right: auto; color: var(--text-muted); width: 18px; height: 18px; flex-shrink: 0; }
+.theme-toggle {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  width: 40px; height: 40px;
+  border-radius: 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .2s;
+  z-index: 800;
+  backdrop-filter: blur(8px);
+}
+.theme-toggle:hover { border-color: var(--accent-blue); }
+.theme-toggle svg { width: 20px; height: 20px; }
+.page { display: none; }
+.page.active { display: block; animation: fadeIn .3s ease; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+.back-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border-color);
+}
+.back-btn {
+  width: 40px; height: 40px;
+  border-radius: 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .2s;
+  flex-shrink: 0;
+}
+.back-btn:hover { border-color: var(--accent-blue); }
+.back-btn svg { width: 20px; height: 20px; }
+.back-title { font-size: 1.15rem; font-weight: 700; color: var(--text-primary); }
+.faq-item {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+.faq-q {
+  padding: 14px 16px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  color: var(--text-primary);
+}
+.faq-q:hover { background: rgba(56,189,248,0.06); }
+.faq-q .chev-sm { width: 18px; height: 18px; color: var(--text-muted); transition: transform .2s; flex-shrink: 0; }
+.faq-item.open .faq-q .chev-sm { transform: rotate(180deg); }
+.faq-a {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height .3s ease, padding .3s ease;
+  padding: 0 16px;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.9;
+}
+.faq-item.open .faq-a { max-height: 500px; padding: 0 16px 14px; }
+.about-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 22px;
+  text-align: center;
+  margin-bottom: 16px;
+}
+.about-version { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 6px; }
+.about-brand { font-size: 1.2rem; font-weight: 700; color: var(--accent-blue); margin-bottom: 14px; }
+.about-desc { color: var(--text-secondary); font-size: 0.92rem; line-height: 1.9; text-align: right; margin-bottom: 16px; }
+.myket-badge { display: inline-block; transition: transform .15s; }
+.myket-badge:active { transform: scale(.97); }
+.myket-badge img { height: 52px; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,.45); border: 1px solid var(--border-color); }
+#bottomNav {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 900;
+  display: flex;
+  background: rgba(15,23,42,.92);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-top: 1px solid var(--border-color);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+[data-theme="light"] #bottomNav { background: rgba(248,250,252,.92); }
+.nb {
+  flex: 1;
+  position: relative;
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 11px 0 9px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: color .2s;
+}
+.nb .lb { font-size: 10.5px; font-weight: 500; }
+.nb .pill {
+  position: absolute;
+  top: 0;
+  width: 22px; height: 3px;
+  border-radius: 0 0 4px 4px;
+  background: var(--gradient-main);
+  opacity: 0;
+  transform: scaleX(.4);
+  transition: all .25s;
+}
+.nb.active { color: var(--accent-blue); }
+.nb.active .pill { opacity: 1; transform: scaleX(1); }
+.nb:active { transform: scale(.95); }
+.nb svg { width: 22px; height: 22px; }
+.nb:disabled { opacity: .35; cursor: not-allowed; }
+.modal {
+  position: fixed; inset: 0;
+  z-index: 950;
+  background: rgba(2,6,12,.55);
+  backdrop-filter: blur(2px);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .25s;
+}
+.modal.open { opacity: 1; pointer-events: auto; }
+.sheet {
+  background: var(--bg-secondary);
+  width: 100%;
+  max-width: 520px;
+  border-radius: 24px 24px 0 0;
+  padding: 10px 20px 22px;
+  color: var(--text-primary);
+  font-family: inherit;
+  line-height: 2;
+  max-height: 78vh;
+  overflow: auto;
+  transform: translateY(100%);
+  transition: transform .32s cubic-bezier(.2,.9,.3,1);
+  box-shadow: 0 -10px 40px rgba(0,0,0,.5);
+}
+.modal.open .sheet { transform: translateY(0); }
+.sheet .handle { width: 42px; height: 4px; border-radius: 4px; background: var(--border-color); margin: 6px auto 12px; }
+.sheet h3 { color: var(--accent-blue); font-size: 16px; margin-bottom: 6px; }
+.sheet .close {
+  width: 100%;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  border-radius: 12px;
+  padding: 10px;
+  margin-top: 14px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 13px;
+}
+.sheet .close:active { background: var(--bg-input); }
+#appSplash {
+  position: fixed; inset: 0;
+  z-index: 9999;
+  background: radial-gradient(120% 120% at 50% 0%, #1e293b 0%, #0b1220 60%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  transition: opacity .45s ease;
+}
+#appSplash.hide { opacity: 0; pointer-events: none; }
+#appSplash img {
+  width: 104px; height: 104px;
+  border-radius: 26px;
+  box-shadow: 0 10px 40px rgba(56,189,248,.25), 0 4px 18px rgba(0,0,0,.6);
+  animation: logoIn .7s cubic-bezier(.2,.9,.3,1.2);
+  object-fit: cover;
+}
+#appSplash .t1 { color: #e2e8f0; font-family: 'Vazirmatn', Tahoma; font-size: 17px; font-weight: 700; }
+#appSplash .t2 { color: #64748b; font-family: 'Vazirmatn', Tahoma; font-size: 11px; letter-spacing: 3px; }
+@keyframes logoIn { from{transform:scale(.6);opacity:0} to{transform:scale(1);opacity:1} }
+@media (max-width: 560px) {
+  .grid2 { grid-template-columns: 1fr; }
+  .price-hero { grid-template-columns: 1fr; }
+  .car-svg-wrap { flex: 0 0 100%; display: flex; justify-content: center; }
+  header h1 { font-size: 1.5rem; }
+  .home-title { font-size: 1.4rem; }
+  .card { padding: 20px 18px; }
+}
+#printArea { display: none; }
+.print-mode #printArea { display: block; }
+@media print {
+  body * { visibility: hidden !important; }
+  #printArea, #printArea * { visibility: visible !important; }
+  #printArea { position: absolute; top: 0; right: 0; left: 0; padding: 20px; background: #fff !important; color: #000 !important; }
+  #printArea .card { background: #fff !important; border: 1px solid #ccc !important; color: #000 !important; }
+  #printArea table { color: #000 !important; }
+  #printArea th, #printArea td { color: #000 !important; border-color: #ddd !important; }
+  #printArea .btn-reset, #printArea .act-btn, #printArea .feedback, #bottomNav, .back-bar, .theme-toggle { display: none !important; }
+  #printArea .verdict { border: 1px solid #999 !important; background: #f9f9f9 !important; }
+  #printArea .verdict h3, #printArea .verdict p { color: #000 !important; }
+}
 </style>
 </head>
 <body>
-<div class="container">
-  <header>
-    <h1>🚗 کارشناسی و قیمت‌گذاری خودرو</h1>
-    <p>مشخصات خودرو را وارد کنید تا قیمت منطقی و ارزش خرید آن محاسبه شود</p>
-  </header>
 
+<div id="appSplash"><img src="icon.png" alt=""><div class="t1">کارشناسی قیمت خودرو</div><div class="t2">AUTOSCOPE</div></div>
+
+<button class="theme-toggle" onclick="toggleTheme()" aria-label="تغییر حالت روشن/تیره">
+  <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+</button>
+
+<div class="container">
+
+<!-- ==================== صفحهٔ خانه (منوی اصلی) ==================== -->
+<div class="page active" id="pageHome">
+  <div class="home-hero">
+    <img src="icon.png" alt="لوگوی AutoScope" class="home-logo">
+    <div class="home-title">AutoScope</div>
+    <div class="home-subtitle">کارشناسی هوشمند قیمت خودرو</div>
+  </div>
+  <div class="menu-grid">
+    <button class="menu-primary" onclick="goTo('pricing')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      قیمت‌گذاری خودرو
+    </button>
+    <button class="menu-secondary" onclick="goTo('history')">
+      <svg class="mi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      تاریخچهٔ محاسبات
+      <span id="histCount" style="background:var(--accent-blue);color:#0f172a;font-size:.72rem;padding:2px 8px;border-radius:10px;margin-right:auto;font-weight:700;display:none"></span>
+      <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <button class="menu-secondary" onclick="goTo('pdf')">
+      <svg class="mi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      خروجی PDF نتیجه
+      <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <button class="menu-secondary" onclick="goTo('guide')">
+      <svg class="mi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      راهنما و سوالات متداول
+      <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <button class="menu-secondary" onclick="goTo('about')">
+      <svg class="mi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+      دربارهٔ ما
+      <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- ==================== صفحهٔ قیمت‌گذاری ==================== -->
+<div class="page" id="pagePricing">
+  <div class="back-bar">
+    <button class="back-btn" onclick="goTo('home')" aria-label="بازگشت">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+    <div class="back-title">قیمت‌گذاری خودرو</div>
+  </div>
   <form id="carForm" novalidate>
     <div class="card">
       <h2><span class="step">۱</span> اطلاعات پایه خودرو</h2>
-
       <div class="field" style="margin-bottom: 16px;">
         <label>انتخاب سریع از لیست خودروهای بازار ایران:</label>
         <button type="button" class="selectbox placeholder" id="carSelectBtn" onclick="openCar()">
-          <span id="carSelectText">انتخاب از لیست (۷۶ خودرو) یا تایپ دستی</span>
+          <span id="carSelectText">انتخاب از لیست (۷۴ خودرو) یا تایپ دستی</span>
           <svg class="chev" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
         </button>
         <div class="hint">با کلیک روی کادر بالا، لیست همراه با جستجو باز می‌شود.</div>
       </div>
-
       <div class="grid2">
         <div class="field" style="grid-column: 1 / -1;">
           <label for="model">نام و مدل خودرو *</label>
           <input type="text" id="model" placeholder="مثلاً: پژو ۲۰ اتوماتیک">
         </div>
         <div class="field">
-          <label for="year">سال تولید (شمسی) *</label>
-          <input type="text" id="year" inputmode="numeric" placeholder="مثلاً: ۱۳۹۹">
+          <label>سال تولید (شمسی) *</label>
+          <button type="button" class="selectbox placeholder" id="yearBtn" onclick="openYear()">
+            <span id="yearText">انتخاب سال از تقویم</span>
+            <svg class="chev" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          </button>
         </div>
         <div class="field">
           <label for="km">کیلومتر کارکرد *</label>
-          <input type="text" id="km" inputmode="numeric" placeholder="مثلاً: ۸۵۰۰">
-          <div class="hint">میانگین کارکرد استاندارد: ۲۰٬۰۰ کیلومتر در سال</div>
+          <input type="text" id="km" inputmode="numeric" placeholder="مثلاً: ۸۵۰۰۰">
+          <div class="hint">میانگین کارکرد استاندارد: ۲۰٬۰۰۰ کیلومتر در سال</div>
         </div>
         <div class="field">
           <label for="newPrice">قیمت نو / قیمت بازار (تومان) *</label>
@@ -381,15 +861,12 @@
         </div>
       </div>
     </div>
-
     <div class="card">
       <h2><span class="step">۲</span> جاهایی که ضربه خورده</h2>
       <div class="car-section">
-        <div class="car-svg-wrap">
-          <svg id="svgHit" viewBox="0 0 220 400" width="210" height="380"></svg>
-        </div>
+        <div class="car-svg-wrap"><svg id="svgHit" viewBox="0 0 220 400" width="210" height="380"></svg></div>
         <div class="hits-panel">
-          <div class="q-title" style="font-size:0.95rem;margin-bottom:6px;color:#cbd5e1;font-weight:700;">نواحی ضربه‌خورده:</div>
+          <div class="q-title">نواحی ضربه‌خورده:</div>
           <div class="chips" id="hitChips"><span class="chip empty">هنوز ناحیه‌ای انتخاب نشده</span></div>
           <div class="legend">
             <span><i class="dot normal"></i> بدون ضربه</span>
@@ -399,15 +876,12 @@
         </div>
       </div>
     </div>
-
     <div class="card">
       <h2><span class="step">۳</span> جاهایی که رنگ شده</h2>
       <div class="car-section">
-        <div class="car-svg-wrap">
-          <svg id="svgPaint" viewBox="0 0 220 400" width="210" height="380"></svg>
-        </div>
+        <div class="car-svg-wrap"><svg id="svgPaint" viewBox="0 0 220 400" width="210" height="380"></svg></div>
         <div class="hits-panel">
-          <div class="q-title" style="font-size:0.95rem;margin-bottom:6px;color:#cbd5e1;font-weight:700;">نواحی رنگ‌شده:</div>
+          <div class="q-title">نواحی رنگ‌شده:</div>
           <div class="chips" id="paintChips"><span class="chip empty">بدنه بدون رنگ‌شدگی</span></div>
           <div class="legend">
             <span><i class="dot normal"></i> بدون رنگ</span>
@@ -416,7 +890,6 @@
           </div>
         </div>
       </div>
-
       <div class="question" style="margin-top:18px;">
         <div class="q-title">یا انتخاب سریع وضعیت کلی رنگ:</div>
         <div class="pill-group" data-name="paint">
@@ -428,7 +901,6 @@
         <div class="hint" style="margin-top:8px;">«دور رنگ» = نمای بیرونی رنگ شده (بدون سقف). «تمام رنگ» = همهٔ بدنه رنگ شده.</div>
       </div>
     </div>
-
     <div class="card">
       <h2><span class="step">۴</span> وضعیت فنی و تصادفات</h2>
       <div class="question">
@@ -460,7 +932,6 @@
         </div>
       </div>
     </div>
-
     <div class="card">
       <h2><span class="step">۵</span> وضعیت شاسی</h2>
       <div class="question">
@@ -491,411 +962,164 @@
         </div>
       </div>
     </div>
-
-    <button type="submit" class="btn-calc" id="btnCalc">🔍 محاسبه قیمت منطقی و ارزش خرید</button>
+    <div class="card">
+      <h2><span class="step">۶</span> برچسب وضعیت کلی (اختیاری)</h2>
+      <div class="pill-group" data-name="tag">
+        <label><input type="radio" name="tag" value="" checked><span>هیچ‌کدام</span></label>
+        <label><input type="radio" name="tag" value="sunburn"><span>آفتاب‌سوخته</span></label>
+        <label><input type="radio" name="tag" value="city"><span>کارکرده شهری</span></label>
+        <label><input type="radio" name="tag" value="imported"><span>وارداتی دست دوم</span></label>
+        <label><input type="radio" name="tag" value="taxi"><span>استفادهٔ تاکسی/اسنپ</span></label>
+      </div>
+      <div class="hint" style="margin-top:8px;">این برچسب‌ها تأثیر کوچکی روی قیمت نهایی دارند.</div>
+    </div>
+    <button type="submit" class="btn-calc" id="btnCalc">محاسبهٔ قیمت منطقی و ارزش خرید</button>
   </form>
-
-  <div class="toast" id="toast">
-    <div class="spinner"></div>
-    <span>برای ارائه نتیجه مطلوب صبر کنید</span>
-    <div class="toast-progress"></div>
-  </div>
-
   <div class="results" id="results">
     <div class="card">
-      <h2><span class="step">📊</span> نتیجه کارشناسی — <span id="resModel" style="color:#38bdf8;"></span></h2>
+      <h2><span class="step">📊</span> نتیجهٔ کارشناسی — <span id="resModel" style="color:var(--accent-blue);"></span></h2>
       <div class="price-hero">
-        <div class="price-box">
-          <div class="p-label">قیمت نو / بازار</div>
-          <div class="p-value" id="resNew">—</div>
-        </div>
-        <div class="price-box fair">
-          <div class="p-label">قیمت منطقی محاسبه‌شده</div>
-          <div class="p-value" id="resFair">—</div>
-        </div>
+        <div class="price-box"><div class="p-label">قیمت نو / بازار</div><div class="p-value" id="resNew">—</div></div>
+        <div class="price-box fair"><div class="p-label">قیمت منطقی محاسبه‌شده</div><div class="p-value" id="resFair">—</div></div>
+      </div>
+      <div class="chart-wrap">
+        <div class="chart-title">مقایسهٔ سه‌جانبهٔ قیمت</div>
+        <div class="bars" id="chartBars"></div>
       </div>
       <table class="breakdown">
-        <thead>
-          <tr><th>عامل</th><th style="text-align:center;">درصد افت</th><th style="text-align:left;">مبلغ کسر شده (تومان)</th></tr>
-        </thead>
+        <thead><tr><th>عامل</th><th style="text-align:center;">درصد افت</th><th style="text-align:left;">مبلغ کسر شده (تومان)</th></tr></thead>
         <tbody id="resBreakdown"></tbody>
       </table>
-      <div class="verdict" id="resVerdict">
-        <h3 id="verdictTitle"></h3>
-        <p id="verdictText"></p>
+      <div class="verdict" id="resVerdict"><h3 id="verdictTitle"></h3><p id="verdictText"></p></div>
+      <div class="action-row">
+        <button type="button" class="act-btn" onclick="shareResult()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+          اشتراک‌گذاری
+        </button>
+        <button type="button" class="act-btn" onclick="savePdf()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          ذخیرهٔ PDF
+        </button>
+      </div>
+      <div class="feedback" id="feedbackBox">
+        <div class="feedback-q">آیا این قیمت با نظر شما منطقی بود؟</div>
+        <div class="fb-btns">
+          <button type="button" class="fb-btn thumbs-up" onclick="giveFeedback(true,this)" aria-label="بله">👍</button>
+          <button type="button" class="fb-btn thumbs-down" onclick="giveFeedback(false,this)" aria-label="خیر">👎</button>
+        </div>
+        <div class="fb-thanks" id="fbThanks">ممنون! بازخورد شما برای بهبود الگوریتم ثبت شد ✅</div>
       </div>
       <button type="button" class="btn-reset" id="btnReset">↺ ارزیابی خودروی جدید</button>
     </div>
   </div>
 </div>
 
-<script>
-(function(){
-  var CURRENT_YEAR = 1405;
-  var form = document.getElementById('carForm');
-  var btnCalc = document.getElementById('btnCalc');
-  var toast = document.getElementById('toast');
-  var results = document.getElementById('results');
-  var computing = false;
-  var faDigits = '۰۱۲۳۴۵۶۷۸۹';
-  var arDigits = '٠١٢٣٤٥٦٧٨٩';
-  function toEnglishDigits(value){
-    return String(value)
-      .replace(/[۰-۹]/g, function(d){ return faDigits.indexOf(d); })
-      .replace(/[٠-٩]/g, function(d){ return arDigits.indexOf(d); });
-  }
-  function toPersianDigits(value){
-    return String(value).replace(/[0-9]/g, function(d){ return '۰۱۲۳۴۵۶۷۸۹'[d]; });
-  }
-  function formatNumber(num){
-    return toPersianDigits(Math.round(num).toLocaleString('en-US'));
-  }
+<!-- ==================== صفحهٔ تاریخچه ==================== -->
+<div class="page" id="pageHistory">
+  <div class="back-bar">
+    <button class="back-btn" onclick="goTo('home')" aria-label="بازگشت">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+    <div class="back-title">تاریخچهٔ محاسبات</div>
+  </div>
+  <input type="text" class="searchbox" id="histSearch" placeholder="جستجو در تاریخچه... مثلاً: پژو ۲۰۷" oninput="renderHistory()">
+  <div class="hist-actions">
+    <button type="button" class="hist-action-btn" onclick="exportCSV()">📥 خروجی CSV</button>
+    <button type="button" class="hist-action-btn danger" onclick="clearAllHistory()">🗑 پاک کردن همه</button>
+  </div>
+  <div id="histList"></div>
+</div>
 
-  var ZONES = [
-    {name:'سپر جلو',        type:'normal',     x:70,  y:10,  w:80, h:30, rx:6},
-    {name:'کاپوت',          type:'normal',     x:70,  y:44,  w:80, h:66, rx:4},
-    {name:'شیشه جلو',       type:'structural', x:70,  y:114, w:80, h:28, rx:4},
-    {name:'سقف',            type:'structural', x:70,  y:146, w:80, h:72, rx:4},
-    {name:'شیشه عقب',       type:'structural', x:70,  y:222, w:80, h:28, rx:4},
-    {name:'صندوق عقب',      type:'normal',     x:70,  y:254, w:80, h:82, rx:4},
-    {name:'سپر عقب',        type:'normal',     x:70,  y:340, w:80, h:30, rx:6},
-    {name:'گلگیر جلو چپ',   type:'normal',     x:30,  y:44,  w:36, h:66, rx:6},
-    {name:'درب جلو چپ',     type:'normal',     x:30,  y:114, w:36, h:76, rx:4},
-    {name:'درب عقب چپ',     type:'normal',     x:30,  y:194, w:36, h:86, rx:4},
-    {name:'گلگیر عقب چپ',   type:'normal',     x:30,  y:284, w:36, h:86, rx:6},
-    {name:'گلگیر جلو راست', type:'normal',     x:154, y:44,  w:36, h:66, rx:6},
-    {name:'درب جلو راست',   type:'normal',     x:154, y:114, w:36, h:76, rx:4},
-    {name:'درب عقب راست',   type:'normal',     x:154, y:194, w:36, h:86, rx:4},
-    {name:'گلگیر عقب راست', type:'normal',     x:154, y:284, w:36, h:86, rx:6}
-  ];
-  var NS = 'http://www.w3.org/2000/svg';
-  function addText(svg, x, y, str, size){
-    var t = document.createElementNS(NS, 'text');
-    t.setAttribute('x', x); t.setAttribute('y', y);
-    t.setAttribute('text-anchor', 'middle');
-    t.setAttribute('fill', '#475569');
-    t.setAttribute('font-size', size || 10);
-    t.setAttribute('style', 'pointer-events:none');
-    t.textContent = str;
-    svg.appendChild(t);
-  }
-  function buildSVG(svg, mode){
-    ZONES.forEach(function(z){
-      var r = document.createElementNS(NS, 'rect');
-      r.setAttribute('x', z.x); r.setAttribute('y', z.y);
-      r.setAttribute('width', z.w); r.setAttribute('height', z.h);
-      r.setAttribute('rx', z.rx);
-      r.setAttribute('data-name', z.name); r.setAttribute('data-type', z.type);
-      var cls = 'zone';
-      if(mode === 'paint' && z.name.indexOf('شیشه') > -1) cls += ' disabled';
-      r.setAttribute('class', cls);
-      svg.appendChild(r);
-    });
-    addText(svg, 110, 7, 'جلو', 9);
-    addText(svg, 110, 398, 'عقب', 9);
-    addText(svg, 12, 205, 'چپ', 10);
-    addText(svg, 208, 205, 'راست', 10);
-    addText(svg, 110, 187, 'روی بدنه کلیک کنید', 11);
-  }
-  var svgHit = document.getElementById('svgHit');
-  var svgPaint = document.getElementById('svgPaint');
-  buildSVG(svgHit, 'hit');
-  buildSVG(svgPaint, 'paint');
+<!-- ==================== صفحهٔ PDF ==================== -->
+<div class="page" id="pagePdf">
+  <div class="back-bar">
+    <button class="back-btn" onclick="goTo('home')" aria-label="بازگشت">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+    <div class="back-title">خروجی PDF نتیجه</div>
+  </div>
+  <div class="card">
+    <h2><span class="step">📄</span> انتخاب رکورد برای چاپ</h2>
+    <p style="color:var(--text-secondary);font-size:.92rem;line-height:1.9;margin-bottom:14px;">ابتدا یک خودرو را قیمت‌گذاری کنید یا از تاریخچه انتخاب نمایید. سپس دکمهٔ «چاپ / ذخیرهٔ PDF» را بزنید.</p>
+    <div class="hist-actions">
+      <button type="button" class="hist-action-btn" onclick="goTo('pricing')">➕ محاسبهٔ جدید</button>
+      <button type="button" class="hist-action-btn" onclick="goTo('history')">🕐 رفتن به تاریخچه</button>
+    </div>
+    <div id="pdfPreview" style="margin-top:14px;"></div>
+    <button type="button" class="btn-calc" id="btnPrint" style="margin-top:14px;" onclick="doPrint()" disabled>🖨 چاپ / ذخیرهٔ PDF</button>
+  </div>
+</div>
 
-  var selectedHits = [];
-  var selectedPaints = [];
-  var hitChips = document.getElementById('hitChips');
-  var paintChips = document.getElementById('paintChips');
+<!-- ==================== صفحهٔ راهنما ==================== -->
+<div class="page" id="pageGuide">
+  <div class="back-bar">
+    <button class="back-btn" onclick="goTo('home')" aria-label="بازگشت">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+    <div class="back-title">راهنما و سوالات متداول</div>
+  </div>
+  <div class="card">
+    <h2><span class="step">📖</span> راهنمای استفاده</h2>
+    <ol style="padding-right:20px;color:var(--text-secondary);line-height:2.2;font-size:.92rem;">
+      <li>خودرو را از دکمهٔ «انتخاب از لیست» (همراه با جستجو) انتخاب کنید یا دستی تایپ نمایید.</li>
+      <li>سال تولید را از تقویم سال انتخاب کنید.</li>
+      <li>کارکرد و قیمت‌ها را وارد کنید.</li>
+      <li>روی بدنهٔ خودرو کلیک کنید: نواحی ضربه‌خورده (قرمز) و رنگ‌شده (نارنجی) را مشخص کنید.</li>
+      <li>برای رنگ‌شدگی می‌توانید از گزینه‌های سریع «دور رنگ» یا «تمام رنگ» استفاده کنید.</li>
+      <li>وضعیت فنی و شاسی را تکمیل و دکمهٔ محاسبه را بزنید.</li>
+      <li>نتیجه را مشاهده، اشتراک‌گذاری یا به PDF تبدیل کنید.</li>
+    </ol>
+  </div>
+  <div class="card">
+    <h2><span class="step">❓</span> سوالات متداول</h2>
+    <div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">گلگیر چیست و چرا روی قیمت اثر دارد؟<svg class="chev-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a">گلگیر قطعهٔ فلزی بالاجنبین چرخ‌هاست که هم نقش زیبایی دارد و هم محافظتی. چون تعویض آن ساده است ولی رنگ‌شدگی‌اش نشانهٔ تصادف تلقی می‌شود، حدود ۳٪ از قیمت را کاهش می‌دهد.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">شاسی کجاست و آسیب آن چه قدر مهم است؟<svg class="chev-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a">شاسی اسکلت فلزی زیرین خودروست که تمام اجزا روی آن سوار می‌شوند. آسیب شاسی خطرناک‌ترین نوع خسارت است چون تعمیر آن پیچیده و گران است و ایمنی خودرو را تهدید می‌کند. بسته به شدت، بین ۸ تا ۲۲ درصد افت قیمت ایجاد می‌کند.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">رنگ‌شدگی یعنی چه؟ دور رنگ و تمام رنگ چه فرقی دارند؟<svg class="chev-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a">رنگ‌شدگی یعنی بخشی از بدنه رنگ مجدد شده است. «دور رنگ» یعنی فقط نمای بیرونی (کاپوت، درب‌ها، گلگیرها، سپرها، صندوق) رنگ شده و سقف سالم است. «تمام رنگ» یعنی حتی سقف هم رنگ شده که افت بیشتری دارد.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">چرا سقف و شیشه‌ها افت بیشتری دارند؟<svg class="chev-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a">چون آسیب به سقف معمولاً نشانهٔ تصادف شدید (واژگونی یا برخورد از بالا) است و تعمیر آن پرهزینه و تخصصی می‌باشد. بنابراین خریداران از چنین خودروهایی فاصله می‌گیرند.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">آیا قیمت محاسبه‌شده دقیق است؟<svg class="chev-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a">این قیمت یک تخمین منطقی بر اساس عوامل استاندارد بازار است، نه قیمت قطعی. قیمت نهایی به عرضه و تقاضا، منطقه، فصل و مذاکره بستگی دارد. همیشه این عدد را با آگهی‌های مشابه در دیوار و باما مقایسه کنید.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">چپ‌کردگی چه تاثیری دارد؟<svg class="chev-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a">خودروی چپ‌کرده حتی اگر کامل تعمیر شده باشد، حدود ۲۵٪ افت قیمت دارد. چون ساختار ایمنی آن تحت فشار شدید قرار گرفته و خریداران آگاه از آن اجتناب می‌کنند.</div></div>
+  </div>
+</div>
 
-  function renderChips(el, names, emptyText, extra){
-    if(names.length === 0){
-      el.innerHTML = '<span class="chip empty">' + emptyText + '</span>';
-    } else {
-      el.innerHTML = names.map(function(n){
-        return '<span class="chip' + (extra ? ' ' + extra : '') + '">' + n + '</span>';
-      }).join('');
-    }
-  }
-  function bindZones(svg, mode){
-    svg.querySelectorAll('.zone').forEach(function(z){
-      z.addEventListener('click', function(){
-        if(z.classList.contains('disabled')) return;
-        var name = z.getAttribute('data-name');
-        var type = z.getAttribute('data-type');
-        if(mode === 'hit'){
-          z.classList.toggle('hit');
-          if(z.classList.contains('hit')) selectedHits.push({name:name, type:type});
-          else selectedHits = selectedHits.filter(function(h){ return h.name !== name; });
-          renderChips(hitChips, selectedHits.map(function(h){return h.name;}), 'هنوز ناحیه‌ای انتخاب نشده', '');
-        } else {
-          z.classList.toggle('painted');
-          if(z.classList.contains('painted')) selectedPaints.push({name:name});
-          else selectedPaints = selectedPaints.filter(function(p){ return p.name !== name; });
-          renderChips(paintChips, selectedPaints.map(function(p){return p.name;}), 'بدنه بدون رنگ‌شدگی', 'paint');
-          var manualRadio = document.querySelector('input[name="paint"][value="manual"]');
-          if(manualRadio) manualRadio.checked = true;
-        }
-      });
-    });
-  }
-  bindZones(svgHit, 'hit');
-  bindZones(svgPaint, 'paint');
+<!-- ==================== صفحهٔ درباره ==================== -->
+<div class="page" id="pageAbout">
+  <div class="back-bar">
+    <button class="back-btn" onclick="goTo('home')" aria-label="بازگشت">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+    <div class="back-title">دربارهٔ ما</div>
+  </div>
+  <div class="about-card">
+    <img src="icon.png" alt="لوگوی AutoScope" style="width:80px;height:80px;border-radius:20px;margin-bottom:12px;object-fit:cover;">
+    <div class="about-version">نسخهٔ ۱٫۱</div>
+    <div class="about-brand">AutoScope</div>
+    <div class="about-desc">
+      AutoScope یک ابزار کارشناسی و قیمت‌گذاری خودرو است که با تحلیل عوامل متعددی مانند سن، کارکرد، وضعیت بدنه، رنگ‌شدگی، آسیب شاسی و تجهیزات ایمنی، قیمت منطقی هر خودرو را تخمین می‌زند.<br><br>
+      توسعه‌دهنده: تیم AutoScope<br>
+      هدف ما: کمک به خریداران و فروشندگان برای تصمیم‌گیری آگاهانه در بازار خودروی ایران.
+    </div>
+    <a class="myket-badge" href="https://myket.ir/app/ir.autoscope.app"><img src="myket-badge.png" onerror="this.remove()" alt="دریافت از مایکت"></a>
+  </div>
+  <div class="card">
+    <h2><span class="step">⚖️</span> سلب مسئولیت</h2>
+    <p style="color:var(--text-secondary);font-size:.9rem;line-height:1.9;">قیمت‌های ارائه‌شده توسط این برنامه صرفاً تخمینی هستند و مبنای معامله قرار نمی‌گیرند. برای اطمینان، حتماً خودرو را به‌صورت حضوری کارشناسی کنید و با منابع معتبر بازار مقایسه نمایید.</p>
+  </div>
+</div>
 
-  function paintPct(name){
-    if(name.indexOf('سقف') > -1) return 3;
-    if(name.indexOf('کاپوت') > -1 || name.indexOf('صندوق') > -1) return 2;
-    if(name.indexOf('درب') > -1) return 1.2;
-    if(name.indexOf('گلگیر') > -1) return 1;
-    if(name.indexOf('سپر') > -1) return 0.5;
-    return 1;
-  }
+</div><!-- پایان container -->
 
-  function clearAllPaint(){
-    svgPaint.querySelectorAll('.zone.painted').forEach(function(z){ z.classList.remove('painted'); });
-    selectedPaints = [];
-  }
-  function paintOuterOnly(){
-    clearAllPaint();
-    svgPaint.querySelectorAll('.zone').forEach(function(z){
-      var n = z.getAttribute('data-name');
-      if(n.indexOf('شیشه') === -1 && n !== 'سقف'){
-        z.classList.add('painted');
-        selectedPaints.push({name:n});
-      }
-    });
-    renderChips(paintChips, selectedPaints.map(function(p){return p.name;}), 'بدنه بدون رنگ‌شدگی', 'paint');
-  }
-  function paintAllBody(){
-    clearAllPaint();
-    svgPaint.querySelectorAll('.zone').forEach(function(z){
-      var n = z.getAttribute('data-name');
-      if(n.indexOf('شیشه') === -1){
-        z.classList.add('painted');
-        selectedPaints.push({name:n});
-      }
-    });
-    renderChips(paintChips, selectedPaints.map(function(p){return p.name;}), 'بدنه بدون رنگ‌شدگی', 'paint');
-  }
-
-  document.querySelectorAll('input[name="paint"]').forEach(function(input){
-    input.addEventListener('change', function(){
-      if(this.value === '0'){ clearAllPaint(); renderChips(paintChips, [], 'بدنه بدون رنگ‌شدگی', 'paint'); }
-      else if(this.value === 'auto-around'){ paintOuterOnly(); }
-      else if(this.value === 'auto-full'){ paintAllBody(); }
-    });
-  });
-
-  document.querySelectorAll('input[name="hasAirbag"]').forEach(function(input){
-    input.addEventListener('change', function(){
-      document.getElementById('airbagBox').classList.toggle('open', this.value === 'yes');
-    });
-  });
-  document.querySelectorAll('input[name="chassis"]').forEach(function(input){
-    input.addEventListener('change', function(){
-      document.getElementById('chassisBox').classList.toggle('open', this.value === 'no');
-    });
-  });
-
-  function calculatePrice(data){
-    var basePrice = data.newPrice;
-    var deductions = [];
-    var totalDeduction = 0;
-    var age = CURRENT_YEAR - data.year;
-    if(age > 0){
-      var ageDeduction = Math.min(basePrice * 0.05 * age, basePrice * 0.5);
-      deductions.push({ factor: 'سن خودرو (' + toPersianDigits(age) + ' سال)', percentage: Math.round((ageDeduction / basePrice) * 100), amount: ageDeduction });
-      totalDeduction += ageDeduction;
-    }
-    var standardKm = Math.max(0, age) * 20000;
-    var extraKm = Math.max(0, data.km - standardKm);
-    if(extraKm > 0){
-      var kmDeduction = basePrice * (extraKm / 100000) * 0.03;
-      deductions.push({ factor: 'کارکرد اضافی (' + formatNumber(extraKm) + ' کیلومتر)', percentage: Math.round((kmDeduction / basePrice) * 100), amount: kmDeduction });
-      totalDeduction += kmDeduction;
-    }
-    if(data.hits.length > 0){
-      var hitDeduction = 0;
-      data.hits.forEach(function(hit){
-        var p = 0.02;
-        if(hit.type === 'structural') p = 0.08;
-        else if(hit.name.indexOf('گلگیر') > -1) p = 0.03;
-        else if(hit.name.indexOf('درب') > -1) p = 0.025;
-        else if(hit.name.indexOf('سپر') > -1) p = 0.015;
-        else if(hit.name.indexOf('صندوق') > -1) p = 0.04;
-        hitDeduction += basePrice * p;
-      });
-      deductions.push({ factor: 'ضربه‌خوردگی (' + toPersianDigits(data.hits.length) + ' ناحیه)', percentage: Math.round((hitDeduction / basePrice) * 100), amount: hitDeduction });
-      totalDeduction += hitDeduction;
-    }
-    if(data.paintZones.length > 0){
-      var pp = 0;
-      data.paintZones.forEach(function(p){ pp += paintPct(p.name); });
-      var paintDeduction = basePrice * pp / 100;
-      deductions.push({ factor: 'رنگ‌شدگی بدنه (' + toPersianDigits(data.paintZones.length) + ' ناحیه)', percentage: Math.round(pp), amount: paintDeduction });
-      totalDeduction += paintDeduction;
-    }
-    if(data.engine === 'yes'){
-      deductions.push({ factor: 'تعویض موتور', percentage: 12, amount: basePrice * 0.12 });
-      totalDeduction += basePrice * 0.12;
-    }
-    if(data.flip === 'yes'){
-      deductions.push({ factor: 'چپ‌کردگی خودرو', percentage: 25, amount: basePrice * 0.25 });
-      totalDeduction += basePrice * 0.25;
-    }
-    if(data.hasAirbag === 'no'){
-      deductions.push({ factor: 'نداشتن ایربگ', percentage: 5, amount: basePrice * 0.05 });
-      totalDeduction += basePrice * 0.05;
-    } else if(data.airbagOpen === 'yes'){
-      deductions.push({ factor: 'باز شدن ایربگ', percentage: 8, amount: basePrice * 0.08 });
-      totalDeduction += basePrice * 0.08;
-    }
-    if(data.chassis === 'no'){
-      var chassisText = data.chassisSev === 0.08 ? 'آسیب جزئی' : (data.chassisSev === 0.14 ? 'آسیب متوسط' : 'شکستگی/تعویض');
-      deductions.push({ factor: 'آسیب شاسی (' + chassisText + ')', percentage: Math.round(data.chassisSev * 100), amount: basePrice * data.chassisSev });
-      totalDeduction += basePrice * data.chassisSev;
-    }
-    var fairPrice = Math.max(0, basePrice - totalDeduction);
-    return { fairPrice: fairPrice, deductions: deductions, totalDeduction: totalDeduction };
-  }
-
-  function getVerdict(fairPrice, askPrice){
-    if(!askPrice || askPrice === 0 || fairPrice === 0){
-      return { cls: 'ok', title: '✅ قیمت منطقی محاسبه شد', text: 'قیمت منطقی این خودرو با توجه به وضعیت فعلی محاسبه شده است. هنگام خرید این قیمت را با قیمت فروشنده مقایسه کنید.' };
-    }
-    var diffPercent = ((askPrice - fairPrice) / fairPrice) * 100;
-    if(diffPercent <= -5){
-      return { cls: 'great', title: '🎉 معامله عالی!', text: 'قیمت فروشنده (' + formatNumber(askPrice) + ' تومان) حدود ' + toPersianDigits(Math.abs(Math.round(diffPercent))) + '٪ کمتر از قیمت منطقی است. این یک فرصت خرید بسیار خوب است!' };
-    } else if(diffPercent <= 5){
-      return { cls: 'ok', title: '✅ قیمت منصفانه', text: 'قیمت فروشنده (' + formatNumber(askPrice) + ' تومان) در محدوده منطقی است و با قیمت کارشناسی‌شده (' + formatNumber(fairPrice) + ' تومان) تفاوت قابل توجهی ندارد.' };
-    } else if(diffPercent <= 15){
-      return { cls: 'caution', title: '⚠️ قیمت بالا', text: 'قیمت فروشنده (' + formatNumber(askPrice) + ' تومان) حدود ' + toPersianDigits(Math.round(diffPercent)) + '٪ بالاتر از قیمت منطقی (' + formatNumber(fairPrice) + ' تومان) است. سعی کنید تخفیف بگیرید.' };
-    } else {
-      return { cls: 'bad', title: '❌ قیمت خیلی بالا', text: 'قیمت فروشنده (' + formatNumber(askPrice) + ' تومان) حدود ' + toPersianDigits(Math.round(diffPercent)) + '٪ بالاتر از قیمت منطقی (' + formatNumber(fairPrice) + ' تومان) است. این معامله توصیه نمی‌شود مگر اینکه فروشنده تخفیف قابل توجهی بدهد.' };
-    }
-  }
-
-  function collectFormData(){
-    return {
-      model: document.getElementById('model').value.trim(),
-      year: parseInt(toEnglishDigits(document.getElementById('year').value), 10),
-      km: parseInt(toEnglishDigits(document.getElementById('km').value), 10),
-      newPrice: parseInt(toEnglishDigits(document.getElementById('newPrice').value), 10),
-      askPrice: parseInt(toEnglishDigits(document.getElementById('askPrice').value), 10) || 0,
-      hits: selectedHits,
-      paintZones: selectedPaints,
-      engine: document.querySelector('input[name="engine"]:checked').value,
-      flip: document.querySelector('input[name="flip"]:checked').value,
-      hasAirbag: document.querySelector('input[name="hasAirbag"]:checked').value,
-      airbagOpen: document.querySelector('input[name="airbagOpen"]:checked').value,
-      chassis: document.querySelector('input[name="chassis"]:checked').value,
-      chassisSev: parseFloat(document.querySelector('input[name="chassisSev"]:checked').value)
-    };
-  }
-  function validateForm(data){
-    if(!data.model){ alert('لطفاً نام و مدل خودرو را وارد کنید'); return false; }
-    if(isNaN(data.year) || data.year < 1350 || data.year > CURRENT_YEAR){ alert('لطفاً سال تولید معتبر وارد کنید'); return false; }
-    if(isNaN(data.km) || data.km < 0){ alert('لطفاً کیلومتر کارکرد معتبر وارد کنید'); return false; }
-    if(isNaN(data.newPrice) || data.newPrice <= 0){ alert('لطفاً قیمت نو معتبر وارد کنید'); return false; }
-    return true;
-  }
-  function showResults(data, result){
-    document.getElementById('resModel').textContent = data.model;
-    document.getElementById('resNew').textContent = formatNumber(data.newPrice) + ' تومان';
-    document.getElementById('resFair').textContent = formatNumber(result.fairPrice) + ' تومان';
-    var tbody = document.getElementById('resBreakdown');
-    if(result.deductions.length === 0){
-      tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:#64748b;">این خودرو هیچ افت قیمتی ندارد!</td></tr>';
-    } else {
-      tbody.innerHTML = result.deductions.map(function(d){
-        return '<tr><td>' + d.factor + '</td><td class="pct">-' + toPersianDigits(d.percentage) + '٪</td><td class="num">' + formatNumber(d.amount) + '</td></tr>';
-      }).join('');
-    }
-    var verdict = getVerdict(result.fairPrice, data.askPrice);
-    document.getElementById('resVerdict').className = 'verdict ' + verdict.cls;
-    document.getElementById('verdictTitle').textContent = verdict.title;
-    document.getElementById('verdictText').textContent = verdict.text;
-    results.classList.add('show');
-    results.scrollIntoView({behavior: 'smooth', block: 'start'});
-  }
-  form.addEventListener('submit', function(e){
-    e.preventDefault();
-    if(computing) return;
-    var data = collectFormData();
-    if(!validateForm(data)) return;
-    computing = true;
-    btnCalc.disabled = true;
-    toast.classList.add('show');
-    setTimeout(function(){
-      var result = calculatePrice(data);
-      toast.classList.remove('show');
-      btnCalc.disabled = false;
-      computing = false;
-      showResults(data, result);
-    }, 1500);
-  });
-  document.getElementById('btnReset').addEventListener('click', function(){
-    form.reset();
-    document.getElementById('carSelectText').textContent = 'انتخاب از لیست (۷۶ خودرو) یا تایپ دستی';
-    document.getElementById('carSelectBtn').classList.add('placeholder');
-    selectedHits = [];
-    selectedPaints = [];
-    svgHit.querySelectorAll('.zone').forEach(function(z){ z.classList.remove('hit'); });
-    svgPaint.querySelectorAll('.zone').forEach(function(z){ z.classList.remove('painted'); });
-    renderChips(hitChips, [], 'هنوز ناحیه‌ای انتخاب نشده', '');
-    renderChips(paintChips, [], 'بدنه بدون رنگ‌شدگی', 'paint');
-    document.getElementById('airbagBox').classList.remove('open');
-    document.getElementById('chassisBox').classList.remove('open');
-    results.classList.remove('show');
-    window.scrollTo({top: 0, behavior: 'smooth'});
-  });
-})();
-</script>
-
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function() {
-      navigator.serviceWorker.register('./sw.js');
-    });
-  }
-</script>
-
-<!-- ===== پوستهٔ بومی اپ (نسخهٔ حرفه‌ای) ===== -->
-<style>
-body{padding-bottom:86px !important}
-#appSplash{position:fixed;inset:0;z-index:9999;background:radial-gradient(120% 120% at 50% 0%,#1e293b 0%,#0b1220 60%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;transition:opacity .45s ease}
-#appSplash.hide{opacity:0;pointer-events:none}
-#appSplash img{width:104px;height:104px;border-radius:26px;box-shadow:0 10px 40px rgba(56,189,248,.25),0 4px 18px rgba(0,0,0,.6);animation:logoIn .7s cubic-bezier(.2,.9,.3,1.2)}
-#appSplash .t1{color:#e2e8f0;font-family:'Vazirmatn',Tahoma;font-size:17px;font-weight:700}
-#appSplash .t2{color:#64748b;font-family:'Vazirmatn',Tahoma;font-size:11px;letter-spacing:3px}
-@keyframes logoIn{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
-#bottomNav{position:fixed;bottom:0;left:0;right:0;z-index:900;display:flex;background:rgba(15,23,42,.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid rgba(255,255,255,.07);padding-bottom:env(safe-area-inset-bottom)}
-.nb{flex:1;position:relative;background:none;border:none;color:#8fa3b8;display:flex;flex-direction:column;align-items:center;gap:4px;padding:11px 0 9px;cursor:pointer;font-family:'Vazirmatn',Tahoma;transition:color .2s}
-.nb .lb{font-size:10.5px;font-weight:500}
-.nb .pill{position:absolute;top:0;width:22px;height:3px;border-radius:0 0 4px 4px;background:linear-gradient(90deg,#38bdf8,#34d399);opacity:0;transform:scaleX(.4);transition:all .25s}
-.nb.active{color:#38bdf8}
-.nb.active .pill{opacity:1;transform:scaleX(1)}
-.nb:active{transform:scale(.95)}
-.modal{position:fixed;inset:0;z-index:950;background:rgba(2,6,12,.55);backdrop-filter:blur(2px);display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s}
-.modal.open{opacity:1;pointer-events:auto}
-.sheet{background:#141e2c;width:100%;max-width:520px;border-radius:24px 24px 0 0;padding:10px 20px 22px;color:#e2e8f0;font-family:'Vazirmatn',Tahoma;line-height:2;max-height:78vh;overflow:auto;transform:translateY(100%);transition:transform .32s cubic-bezier(.2,.9,.3,1);box-shadow:0 -10px 40px rgba(0,0,0,.5)}
-.modal.open .sheet{transform:translateY(0)}
-.sheet .handle{width:42px;height:4px;border-radius:4px;background:#334155;margin:6px auto 12px}
-.sheet h3{color:#7dd3fc;font-size:16px;margin-bottom:6px}
-.sheet .close{width:100%;background:#1f2b3d;border:1px solid rgba(255,255,255,.08);color:#cbd5e1;border-radius:12px;padding:10px;margin-top:14px;cursor:pointer;font-family:'Vazirmatn',Tahoma;font-size:13px}
-.sheet .close:active{background:#27364a}
-#myketBadge{display:inline-block;margin-top:12px;transition:transform .15s}
-#myketBadge:active{transform:scale(.97)}
-#myketBadge img{height:52px;border-radius:12px;box-shadow:0 4px 16px rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.12)}
-</style>
-
-<div id="appSplash"><img src="icon.png" alt=""><div class="t1">کارشناسی قیمت خودرو</div><div class="t2">AUTOSCOPE</div></div>
-
+<!-- نوار پایین -->
 <nav id="bottomNav">
-  <button class="nb active" onclick="navHome(this)"><span class="pill"></span><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9 21v-6h6v6"/></svg><span class="lb">محاسبه</span></button>
-  <button class="nb" onclick="openModal('guideModal',this)"><span class="pill"></span><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6c-2-1.8-4.5-2.5-8-2.5v14c3.5 0 6 .7 8 2.5 2-1.8 4.5-2.5 8-2.5v-14c-3.5 0-6 .7-8 2.5z"/><path d="M12 6v14"/></svg><span class="lb">راهنما</span></button>
-  <button class="nb" onclick="openModal('aboutModal',this)"><span class="pill"></span><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 8h.01"/></svg><span class="lb">درباره</span></button>
+  <button class="nb active" id="navHome" onclick="goTo('home')"><span class="pill"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9 21v-6h6v6"/></svg><span class="lb">خانه</span></button>
+  <button class="nb" id="navBack" onclick="goBack()" disabled><span class="pill"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg><span class="lb">بازگشت</span></button>
 </nav>
 
+<!-- Toasts -->
+<div class="toast" id="toast"><div class="spinner"></div><span>برای ارائهٔ نتیجه مطلوب صبر کنید</span><div class="toast-progress"></div></div>
+<div class="toast plain" id="alertBox"><span id="alertMsg"></span></div>
+<div class="toast success" id="successBox"><span id="successMsg"></span></div>
+
+<!-- مودال انتخاب خودرو -->
 <div class="modal" id="carModal"><div class="sheet">
   <div class="handle"></div>
   <h3>انتخاب خودرو</h3>
@@ -903,68 +1127,406 @@ body{padding-bottom:86px !important}
   <div class="carlist" id="carList"></div>
 </div></div>
 
-<div class="modal" id="guideModal"><div class="sheet">
+<!-- مودال انتخاب سال -->
+<div class="modal" id="yearModal"><div class="sheet">
   <div class="handle"></div>
-  <h3>راهنمای استفاده</h3>
-  ۱. خودرو را از دکمهٔ «انتخاب از لیست» (همراه با جستجو) انتخاب کنید یا دستی تایپ کنید.<br>
-  ۲. اطلاعات پایه (سال، کارکرد، قیمت) را وارد کنید.<br>
-  ۳. روی بدنهٔ خودرو کلیک کنید: نواحی ضربه‌خورده (قرمز) و رنگ‌شده (نارنجی) را مشخص کنید.<br>
-  ۴. برای رنگ‌شدگی می‌توانید از گزینه‌های سریع «دور رنگ» یا «تمام رنگ» استفاده کنید.<br>
-  ۵. وضعیت فنی و شاسی را تکمیل و دکمهٔ محاسبه را بزنید.<br>
-  <button class="close" onclick="closeModals()">بستن</button>
+  <h3>انتخاب سال تولید</h3>
+  <div class="yeargrid" id="yearGrid"></div>
 </div></div>
 
-<div class="modal" id="aboutModal"><div class="sheet">
-  <div class="handle"></div>
-  <h3>دربارهٔ برنامه</h3>
-  نسخهٔ ۱.۰ — توسعه‌دهنده: AutoScope<br>
-  این برنامه بر اساس میانگین قیمت بازار و کسر استهلاک سالانه، قیمت منطقی خودرو را تخمین می‌زند.<br>
-  <a id="myketBadge" href="https://myket.ir/app/ir.autoscope.app"><img src="myket-badge.png" onerror="this.remove()" alt="دریافت از مایکت"></a><br>
-  <button class="close" onclick="closeModals()">بستن</button>
-</div></div>
+<!-- ناحیهٔ چاپ -->
+<div id="printArea"></div>
 
 <script>
-var CARS = [
-  {g:'ایران خودرو', items:['پژو ۲۰۶ تیپ ۲','پژو ۲۰۶ تیپ ۵','پژو ۲۰۶ صندوق‌دار V8','پژو ۲۰۷ دنده‌ای','پژو ۲۰۷ اتوماتیک','پژو ۲۰۷ سقف شیشه‌ای','پژو پارس TU5','پژو پارس XU7','پژو پارس ELX','پژو پارس LX','پژو ۴۰۵ SLX','پژو ۴۰ GLX','سمند LX','سمند EF7','سمند سریر','سمند سورن','سمند سورن پلاس','دنا معمولی','دنا پلاس','دنا پلاس توربو','دنا پلاس اتوماتیک','رانا معمولی','رانا پلاس','تارا دنده‌ای','تارا اتوماتیک','هایما S5','هایما S7','هایما 8S']},
-  {g:'سایپا', items:['پراید ۱۱۱','پراید ۱۳۱','پراید ۱۳۲','پراید ۱۵۱ (وانت)','تیبا صندوق‌دار','تیبا ۲ هاچ‌بک','ساینا معمولی','ساینا S','ساینا EX','کوییک معمولی','کوییک R','کوییک S','کوییک GX','کوییک پلاس اتوماتیک','شاهین G','شاهین اتوماتیک','اطلس','سهند']},
-  {g:'مونتاژی و وارداتی پرفروش', items:['تندر ۹۰ E2','تندر ۹۰ پلاس','ساندرو معمولی','ساندرو استپ‌وی','جک J4','جک J5','جک S3','جک S5','ام‌وی‌ام X22','ام‌وی‌ام X33','ام‌وی‌ام X55','چری تیگو ۵','چری تیگو ۷','چری تیگو ۸ پرو','برلیانس H320','برلیانس H330','دانگ‌فنگ H30 کراس','ریگان کوپا','فیدلیتی پرایم','دیگنیتی پرایم','دیگنیتی پرستیژ','لاماری ایما','ریسپکت','آریزو ۵','آریزو ۶','بسترن B30','بسترن B70','فونیکس FX']}
+(function(){
+'use strict';
+var CURRENT_YEAR = 1405;
+var form = document.getElementById('carForm');
+var btnCalc = document.getElementById('btnCalc');
+var toast = document.getElementById('toast');
+var results = document.getElementById('results');
+var computing = false;
+var faDigits = '۰۱۳۴۵۷۸۹';
+var arDigits = '٠١٢٣٤٥٦٧٨٩';
+function toEnglishDigits(v){return String(v).replace(/[۰-۹]/g,function(d){return faDigits.indexOf(d);}).replace(/[٠-٩]/g,function(d){return arDigits.indexOf(d);});}
+function toPersianDigits(v){return String(v).replace(/[0-9]/g,function(d){return faDigits[d];});}
+function formatNumber(n){return toPersianDigits(Math.round(n).toLocaleString('en-US').replace(/,/g,'٬'));}
+function faNum(s){return String(s).replace(/[0-9]/g,function(d){return faDigits[d];}).replace(/[٠-٩]/g,function(d){return faDigits[arDigits.indexOf(d)];});}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+
+var alertBox=document.getElementById('alertBox'),alertTimer=null;
+function notify(msg){document.getElementById('alertMsg').textContent=msg;alertBox.classList.add('show');clearTimeout(alertTimer);alertTimer=setTimeout(function(){alertBox.classList.remove('show');},2600);}
+var successBox=document.getElementById('successBox'),successTimer=null;
+function succeed(msg){document.getElementById('successMsg').textContent=msg;successBox.classList.add('show');clearTimeout(successTimer);successTimer=setTimeout(function(){successBox.classList.remove('show');},2600);}
+
+/* ===== ناوبری صفحات ===== */
+var pageStack=['home'];
+window.goTo=function(name){
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
+  var map={home:'pageHome',pricing:'pagePricing',history:'pageHistory',pdf:'pagePdf',guide:'pageGuide',about:'pageAbout'};
+  var el=document.getElementById(map[name]);
+  if(el){el.classList.add('active');}
+  if(pageStack[pageStack.length-1]!==name){pageStack.push(name);}
+  document.getElementById('navHome').classList.toggle('active',name==='home');
+  document.getElementById('navBack').disabled=(pageStack.length<=1);
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(name==='history'){renderHistory();}
+  if(name==='pdf'){preparePdf();}
+};
+window.goBack=function(){
+  if(pageStack.length>1){pageStack.pop();var prev=pageStack[pageStack.length-1];goTo(prev);pageStack.pop();pageStack.push(prev);}
+};
+
+/* ===== تم روشن/تیره ===== */
+window.toggleTheme=function(){
+  var cur=document.documentElement.getAttribute('data-theme')||'dark';
+  var next=cur==='dark'?'light':'dark';
+  document.documentElement.setAttribute('data-theme',next);
+  try{localStorage.setItem('autoscope_theme',next);}catch(e){}
+  updateThemeIcon(next);
+};
+function updateThemeIcon(theme){
+  var icon=document.getElementById('themeIcon');
+  if(theme==='light'){icon.innerHTML='<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';}
+  else{icon.innerHTML='<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>';}
+}
+try{var savedTheme=localStorage.getItem('autoscope_theme')||'dark';document.documentElement.setAttribute('data-theme',savedTheme);updateThemeIcon(savedTheme);}catch(e){}
+
+/* ===== تقویم سال ===== */
+window.yearVal='';
+var yearGrid=null;
+window.buildYearGrid=function(){
+  var box=document.getElementById('yearGrid'),html='';
+  for(var y=CURRENT_YEAR;y>=1350;y--){html+='<button type="button" class="yitem" data-y="'+y+'" onclick="pickYear(this)">'+toPersianDigits(y)+'</button>';}
+  box.innerHTML=html;yearGrid=box;
+};
+window.pickYear=function(el){
+  var y=el.getAttribute('data-y');window.yearVal=y;
+  document.getElementById('yearText').textContent=toPersianDigits(y);
+  document.getElementById('yearBtn').classList.remove('placeholder');
+  closeModals();
+};
+window.openYear=function(){
+  closeModals();document.getElementById('yearModal').classList.add('open');buildYearGrid();
+  if(window.yearVal&&yearGrid){var sel=yearGrid.querySelector('.yitem[data-y="'+window.yearVal+'"]');if(sel){sel.classList.add('sel');setTimeout(function(){sel.scrollIntoView({block:'center'});},350);}}
+};
+
+/* ===== دیاگرام بدنه ===== */
+var ZONES=[
+{name:'سپر جلو',type:'normal',x:70,y:10,w:80,h:30,rx:6},
+{name:'کاپوت',type:'normal',x:70,y:44,w:80,h:66,rx:4},
+{name:'شیشه جلو',type:'structural',x:70,y:114,w:80,h:28,rx:4},
+{name:'سقف',type:'structural',x:70,y:146,w:80,h:72,rx:4},
+{name:'شیشه عقب',type:'structural',x:70,y:222,w:80,h:28,rx:4},
+{name:'صندوق عقب',type:'normal',x:70,y:254,w:80,h:82,rx:4},
+{name:'سپر عقب',type:'normal',x:70,y:340,w:80,h:30,rx:6},
+{name:'گلگیر جلو چپ',type:'normal',x:30,y:44,w:36,h:66,rx:6},
+{name:'درب جلو چپ',type:'normal',x:30,y:114,w:36,h:76,rx:4},
+{name:'درب عقب چپ',type:'normal',x:30,y:194,w:36,h:86,rx:4},
+{name:'گلگیر عقب چپ',type:'normal',x:30,y:284,w:36,h:86,rx:6},
+{name:'گلگیر جلو راست',type:'normal',x:154,y:44,w:36,h:66,rx:6},
+{name:'درب جلو راست',type:'normal',x:154,y:114,w:36,h:76,rx:4},
+{name:'درب عقب راست',type:'normal',x:154,y:194,w:36,h:86,rx:4},
+{name:'گلگیر عقب راست',type:'normal',x:154,y:284,w:36,h:86,rx:6}
 ];
-function renderCarList(q){
-  var box = document.getElementById('carList');
-  var html = '';
-  CARS.forEach(function(gr){
-    var items = gr.items.filter(function(n){ return !q || n.indexOf(q) > -1; });
-    if(items.length === 0) return;
-    html += '<div class="cgroup">' + gr.g + '</div>';
-    items.forEach(function(n){ html += '<button type="button" class="citem" onclick="pickCar(this)">' + n + '</button>'; });
-  });
-  if(!html) html = '<div style="text-align:center;color:#64748b;padding:20px 0;font-size:.9rem;">خودرویی پیدا نشد — می‌توانید دستی تایپ کنید</div>';
-  box.innerHTML = html;
+var NS='http://www.w3.org/2000/svg';
+function addText(svg,x,y,str,size){var t=document.createElementNS(NS,'text');t.setAttribute('x',x);t.setAttribute('y',y);t.setAttribute('text-anchor','middle');t.setAttribute('fill','#475569');t.setAttribute('font-size',size||10);t.setAttribute('style','pointer-events:none');t.textContent=str;svg.appendChild(t);}
+function buildSVG(svg,mode){
+ZONES.forEach(function(z){var r=document.createElementNS(NS,'rect');r.setAttribute('x',z.x);r.setAttribute('y',z.y);r.setAttribute('width',z.w);r.setAttribute('height',z.h);r.setAttribute('rx',z.rx);r.setAttribute('data-name',z.name);r.setAttribute('data-type',z.type);var cls='zone';if(mode==='paint'&&z.name.indexOf('شیشه')>-1)cls+=' disabled';r.setAttribute('class',cls);svg.appendChild(r);});
+addText(svg,110,7,'جلو',9);addText(svg,110,398,'عقب',9);addText(svg,12,205,'چپ',10);addText(svg,208,205,'راست',10);addText(svg,110,187,'روی بدنه کلیک کنید',11);
 }
-function pickCar(el){
-  var n = el.textContent;
-  document.getElementById('model').value = n;
-  document.getElementById('carSelectText').textContent = n;
-  document.getElementById('carSelectBtn').classList.remove('placeholder');
-  closeModals();
+var svgHit=document.getElementById('svgHit'),svgPaint=document.getElementById('svgPaint');
+buildSVG(svgHit,'hit');buildSVG(svgPaint,'paint');
+var selectedHits=[],selectedPaints=[];
+var hitChips=document.getElementById('hitChips'),paintChips=document.getElementById('paintChips');
+function renderChips(el,names,emptyText,extra){if(names.length===0){el.innerHTML='<span class="chip empty">'+emptyText+'</span>';}else{el.innerHTML=names.map(function(n){return '<span class="chip'+(extra?' '+extra:'')+'">'+n+'</span>';}).join('');}}
+function bindZones(svg,mode){
+svg.querySelectorAll('.zone').forEach(function(z){z.addEventListener('click',function(){if(z.classList.contains('disabled'))return;var name=z.getAttribute('data-name'),type=z.getAttribute('data-type');if(mode==='hit'){z.classList.toggle('hit');if(z.classList.contains('hit'))selectedHits.push({name:name,type:type});else selectedHits=selectedHits.filter(function(h){return h.name!==name;});renderChips(hitChips,selectedHits.map(function(h){return h.name;}),'هنوز ناحیه‌ای انتخاب نشده','');}else{z.classList.toggle('painted');if(z.classList.contains('painted'))selectedPaints.push({name:name});else selectedPaints=selectedPaints.filter(function(p){return p.name!==name;});renderChips(paintChips,selectedPaints.map(function(p){return p.name;}),'بدنه بدون رنگ‌شدگی','paint');var mr=document.querySelector('input[name="paint"][value="manual"]');if(mr)mr.checked=true;}});});
 }
-function openCar(){
-  closeModals();
-  document.getElementById('carModal').classList.add('open');
-  document.getElementById('carSearch').value = '';
-  renderCarList('');
-  setTimeout(function(){ document.getElementById('carSearch').focus(); }, 350);
+bindZones(svgHit,'hit');bindZones(svgPaint,'paint');
+function paintPct(name){if(name.indexOf('سقف')>-1)return 3;if(name.indexOf('کاپوت')>-1||name.indexOf('صندوق')>-1)return 2;if(name.indexOf('درب')>-1)return 1.2;if(name.indexOf('گلگیر')>-1)return 1;if(name.indexOf('سپر')>-1)return 0.5;return 1;}
+function clearAllPaint(){svgPaint.querySelectorAll('.zone.painted').forEach(function(z){z.classList.remove('painted');});selectedPaints=[];}
+function paintOuterOnly(){clearAllPaint();svgPaint.querySelectorAll('.zone').forEach(function(z){var n=z.getAttribute('data-name');if(n.indexOf('شیشه')===-1&&n!=='سقف'){z.classList.add('painted');selectedPaints.push({name:n});}});renderChips(paintChips,selectedPaints.map(function(p){return p.name;}),'بدنه بدون رنگ‌شدگی','paint');}
+function paintAllBody(){clearAllPaint();svgPaint.querySelectorAll('.zone').forEach(function(z){var n=z.getAttribute('data-name');if(n.indexOf('شیشه')===-1){z.classList.add('painted');selectedPaints.push({name:n});}});renderChips(paintChips,selectedPaints.map(function(p){return p.name;}),'بدنه بدون رنگ‌شدگی','paint');}
+document.querySelectorAll('input[name="paint"]').forEach(function(input){input.addEventListener('change',function(){if(this.value==='0'){clearAllPaint();renderChips(paintChips,[],'بدنه بدون رنگ‌شدگی','paint');}else if(this.value==='auto-around'){paintOuterOnly();}else if(this.value==='auto-full'){paintAllBody();}});});
+document.querySelectorAll('input[name="hasAirbag"]').forEach(function(input){input.addEventListener('change',function(){document.getElementById('airbagBox').classList.toggle('open',this.value==='yes');});});
+document.querySelectorAll('input[name="chassis"]').forEach(function(input){input.addEventListener('change',function(){document.getElementById('chassisBox').classList.toggle('open',this.value==='no');});});
+
+/* ===== ضرایب برند ===== */
+function getBrandFactor(model){
+var m=model.toLowerCase();
+if(/پژو|سمند|دنا|رانا|تارا|هایما/.test(m))return 1.0;
+if(/پراید|تیبا|ساینا|کوییک|شاهین|اطلس|سهند/.test(m))return 1.15;
+if(/تندر|ساندرو|جک|ام‌وی‌ام|چری|برلیانس|دانگ|فیدلیتی|دیگنیتی|لاماری|ریسپکت|آریزو|بسترن|فونیکس/.test(m))return 0.9;
+return 1.0;
 }
-document.getElementById('carSearch').addEventListener('input', function(){ renderCarList(this.value.trim()); });
-document.querySelectorAll('.modal').forEach(function(m){
-  m.addEventListener('click', function(e){ if(e.target === m) closeModals(); });
+var TAG_PCT={'sunburn':2,'city':3,'imported':1.5,'taxi':5,'':0};
+var TAG_NAMES={'sunburn':'آفتاب‌سوخته','city':'کارکرده شهری','imported':'وارداتی دست دوم','taxi':'استفادهٔ تاکسی/اسنپ','':''};
+
+/* ===== محاسبه ===== */
+function calculatePrice(data){
+var basePrice=data.newPrice,deductions=[],totalDeduction=0;
+var brandF=getBrandFactor(data.model);
+var age=CURRENT_YEAR-data.year;
+if(age>0){var rate=Math.min(0.05*brandF,0.07);var ageDeduction=Math.min(basePrice*rate*age,basePrice*0.55);deductions.push({factor:'سن خودرو ('+toPersianDigits(age)+' سال)',percentage:Math.round((ageDeduction/basePrice)*100),amount:ageDeduction});totalDeduction+=ageDeduction;}
+var standardKm=Math.max(0,age)*20000;
+var extraKm=Math.max(0,data.km-standardKm);
+if(extraKm>0){var kmDeduction=basePrice*(extraKm/100000)*0.03*Math.max(0.7,brandF);deductions.push({factor:'کارکرد اضافی ('+formatNumber(extraKm)+' کیلومتر)',percentage:Math.round((kmDeduction/basePrice)*100),amount:kmDeduction});totalDeduction+=kmDeduction;}
+if(data.hits.length>0){var hd=0;data.hits.forEach(function(hit){var p=0.02;if(hit.type==='structural')p=0.08;else if(hit.name.indexOf('گلگیر')>-1)p=0.03;else if(hit.name.indexOf('درب')>-1)p=0.025;else if(hit.name.indexOf('سپر')>-1)p=0.015;else if(hit.name.indexOf('صندوق')>-1)p=0.04;hd+=basePrice*p;});deductions.push({factor:'ضربه‌خوردگی ('+toPersianDigits(data.hits.length)+' ناحیه)',percentage:Math.round((hd/basePrice)*100),amount:hd});totalDeduction+=hd;}
+if(data.paintZones.length>0){var pp=0;data.paintZones.forEach(function(p){pp+=paintPct(p.name);});var pd=basePrice*pp/100;deductions.push({factor:'رنگ‌شدگی بدنه ('+toPersianDigits(data.paintZones.length)+' ناحیه)',percentage:Math.round(pp),amount:pd});totalDeduction+=pd;}
+if(data.engine==='yes'){deductions.push({factor:'تعویض موتور',percentage:12,amount:basePrice*0.12});totalDeduction+=basePrice*0.12;}
+if(data.flip==='yes'){deductions.push({factor:'چپ‌کردگی خودرو',percentage:25,amount:basePrice*0.25});totalDeduction+=basePrice*0.25;}
+if(data.hasAirbag==='no'){deductions.push({factor:'نداشتن ایربگ',percentage:5,amount:basePrice*0.05});totalDeduction+=basePrice*0.05;}else if(data.airbagOpen==='yes'){deductions.push({factor:'باز شدن ایربگ',percentage:8,amount:basePrice*0.08});totalDeduction+=basePrice*0.08;}
+if(data.chassis==='no'){var ct=data.chassisSev===0.08?'آسیب جزئی':(data.chassisSev===0.14?'آسیب متوسط':'شکستگی/تعویض');deductions.push({factor:'آسیب شاسی ('+ct+')',percentage:Math.round(data.chassisSev*100),amount:basePrice*data.chassisSev});totalDeduction+=basePrice*data.chassisSev;}
+if(data.tag&&TAG_PCT[data.tag]>0){var tp=TAG_PCT[data.tag];deductions.push({factor:'برچسب: '+TAG_NAMES[data.tag],percentage:tp,amount:basePrice*tp/100});totalDeduction+=basePrice*tp/100;}
+var fairPrice=Math.max(0,basePrice-totalDeduction);
+return{fairPrice:fairPrice,deductions:deductions,totalDeduction:totalDeduction};
+}
+function getVerdict(fairPrice,askPrice){
+if(!askPrice||askPrice===0||fairPrice===0){return{cls:'ok',title:'✅ قیمت منطقی محاسبه شد',text:'قیمت منطقی این خودرو با توجه به وضعیت فعلی محاسبه شده است. هنگام خرید این قیمت را با قیمت فروشنده مقایسه کنید.'};}
+var dp=((askPrice-fairPrice)/fairPrice)*100;
+if(dp<=-5){return{cls:'great',title:'🎉 معامله عالی!',text:'قیمت فروشنده ('+formatNumber(askPrice)+' تومان) حدود '+toPersianDigits(Math.abs(Math.round(dp)))+'٪ کمتر از قیمت منطقی است. این یک فرصت خرید بسیار خوب است!'};}
+else if(dp<=5){return{cls:'ok',title:'✅ قیمت منصفانه',text:'قیمت فروشنده ('+formatNumber(askPrice)+' تومان) در محدودهٔ منطقی است و با قیمت کارشناسی‌شده ('+formatNumber(fairPrice)+' تومان) تفاوت قابل‌توجهی ندارد.'};}
+else if(dp<=15){return{cls:'caution',title:'⚠️ قیمت بالا',text:'قیمت فروشنده ('+formatNumber(askPrice)+' تومان) حدود '+toPersianDigits(Math.round(dp))+'٪ بالاتر از قیمت منطقی ('+formatNumber(fairPrice)+' تومان) است. سعی کنید تخفیف بگیرید.'};}
+else{return{cls:'bad',title:'❌ قیمت خیلی بالا',text:'قیمت فروشنده ('+formatNumber(askPrice)+' تومان) حدود '+toPersianDigits(Math.round(dp))+'٪ بالاتر از قیمت منطقی ('+formatNumber(fairPrice)+' تومان) است. این معامله توصیه نمی‌شود مگر اینکه فروشنده تخفیف قابل‌توجهی بدهد.'};}
+}
+function collectFormData(){
+return{
+model:document.getElementById('model').value.trim(),
+year:parseInt(toEnglishDigits(window.yearVal||''),10),
+km:parseInt(toEnglishDigits(document.getElementById('km').value),10),
+newPrice:parseInt(toEnglishDigits(document.getElementById('newPrice').value),10),
+askPrice:parseInt(toEnglishDigits(document.getElementById('askPrice').value),10)||0,
+hits:selectedHits.slice(),
+paintZones:selectedPaints.slice(),
+engine:document.querySelector('input[name="engine"]:checked').value,
+flip:document.querySelector('input[name="flip"]:checked').value,
+hasAirbag:document.querySelector('input[name="hasAirbag"]:checked').value,
+airbagOpen:document.querySelector('input[name="airbagOpen"]:checked').value,
+chassis:document.querySelector('input[name="chassis"]:checked').value,
+chassisSev:parseFloat(document.querySelector('input[name="chassisSev"]:checked').value),
+tag:(document.querySelector('input[name="tag"]:checked')||{}).value||''
+};
+}
+function validateForm(d){
+if(!d.model){notify('لطفاً نام و مدل خودرو را وارد کنید');return false;}
+if(isNaN(d.year)||d.year<1350||d.year>CURRENT_YEAR){notify('لطفاً سال تولید را از تقویم انتخاب کنید');return false;}
+if(isNaN(d.km)||d.km<0){notify('لطفاً کیلومتر کارکرد معتبر وارد کنید');return false;}
+if(isNaN(d.newPrice)||d.newPrice<=0){notify('لطفاً قیمت نو معتبر وارد کنید');return false;}
+return true;
+}
+var lastResult=null,lastData=null;
+function showResults(data,result){
+lastData=data;lastResult=result;
+document.getElementById('resModel').textContent=data.model;
+animateValue('resNew',data.newPrice);
+animateValue('resFair',result.fairPrice);
+var tbody=document.getElementById('resBreakdown');
+if(result.deductions.length===0){tbody.innerHTML='<tr><td colspan="3" style="text-align:center;color:var(--text-muted);">این خودرو هیچ افت قیمتی ندارد!</td></tr>';}
+else{tbody.innerHTML=result.deductions.map(function(d){return '<tr><td>'+d.factor+'</td><td class="pct">-'+toPersianDigits(d.percentage)+'٪</td><td class="num">'+formatNumber(d.amount)+'</td></tr>';}).join('');}
+var v=getVerdict(result.fairPrice,data.askPrice);
+document.getElementById('resVerdict').className='verdict '+v.cls;
+document.getElementById('verdictTitle').textContent=v.title;
+document.getElementById('verdictText').textContent=v.text;
+drawChart(data.newPrice,result.fairPrice,data.askPrice);
+document.getElementById('fbThanks').classList.remove('show');
+document.querySelectorAll('.fb-btn').forEach(function(b){b.classList.remove('active');});
+results.classList.add('show');
+saveToHistory(data,result);
+setTimeout(function(){results.scrollIntoView({behavior:'smooth',block:'start'});},100);
+}
+function animateValue(id,target){
+var el=document.getElementById(id),duration=1200,t0=null;
+function step(ts){if(!t0)t0=ts;var prog=Math.min((ts-t0)/duration,1);var val=Math.floor(prog*target);el.textContent=formatNumber(val)+' تومان';if(prog<1)requestAnimationFrame(step);}
+requestAnimationFrame(step);
+}
+function drawChart(newPrice,fair,ask){
+var bars=document.getElementById('chartBars');
+var vals=[{lbl:'نو',val:newPrice,cls:'new'},{lbl:'منطقی',val:fair,cls:'fair'}];
+if(ask>0)vals.push({lbl:'اعلامی',val:ask,cls:'ask'});
+var mx=Math.max.apply(null,vals.map(function(v){return v.val;}))||1;
+bars.innerHTML=vals.map(function(v){var h=Math.max(8,(v.val/mx)*100);return '<div class="bar-col"><div class="bar-val">'+formatNumber(v.val)+'</div><div class="bar '+v.cls+'" style="height:'+h+'%"></div><div class="bar-lbl">'+v.lbl+'</div></div>';}).join('');
+}
+form.addEventListener('submit',function(e){
+e.preventDefault();
+if(computing)return;
+var data=collectFormData();
+if(!validateForm(data))return;
+computing=true;btnCalc.disabled=true;toast.classList.add('show');
+setTimeout(function(){var result=calculatePrice(data);toast.classList.remove('show');btnCalc.disabled=false;computing=false;showResults(data,result);},1500);
 });
-window.addEventListener('load',function(){setTimeout(function(){var s=document.getElementById('appSplash');s.classList.add('hide');setTimeout(function(){s.remove()},500)},1500)});
-function openModal(id,btn){closeModals();document.getElementById(id).classList.add('open');setActive(btn)}
-function closeModals(){document.querySelectorAll('.modal').forEach(function(m){m.classList.remove('open')});setActive(document.querySelector('#bottomNav .nb'))}
-function navHome(btn){closeModals();window.scrollTo({top:0,behavior:'smooth'});setActive(btn)}
-function setActive(btn){document.querySelectorAll('#bottomNav .nb').forEach(function(b){b.classList.remove('active')});if(btn)btn.classList.add('active')}
+document.getElementById('btnReset').addEventListener('click',function(){
+form.reset();window.yearVal='';
+document.getElementById('yearText').textContent='انتخاب سال از تقویم';
+document.getElementById('yearBtn').classList.add('placeholder');
+document.getElementById('carSelectText').textContent='انتخاب از لیست (۷۴ خودرو) یا تایپ دستی';
+document.getElementById('carSelectBtn').classList.add('placeholder');
+selectedHits=[];selectedPaints=[];
+svgHit.querySelectorAll('.zone').forEach(function(z){z.classList.remove('hit');});
+svgPaint.querySelectorAll('.zone').forEach(function(z){z.classList.remove('painted');});
+renderChips(hitChips,[],'هنوز ناحیه‌ای انتخاب نشده','');
+renderChips(paintChips,[],'بدنه بدون رنگ‌شدگی','paint');
+document.getElementById('airbagBox').classList.remove('open');
+document.getElementById('chassisBox').classList.remove('open');
+results.classList.remove('show');
+lastResult=null;lastData=null;
+window.scrollTo({top:0,behavior:'smooth'});
+});
+
+/* ===== تاریخچه ===== */
+function loadHistory(){try{return JSON.parse(localStorage.getItem('autoscope_history')||'[]');}catch(e){return[];}}
+function saveHistory(arr){try{localStorage.setItem('autoscope_history',JSON.stringify(arr.slice(0,50)));}catch(e){}}
+function saveToHistory(data,result){
+var arr=loadHistory();
+arr.unshift({id:Date.now(),date:new Date().toISOString(),model:data.model,year:data.year,km:data.km,newPrice:data.newPrice,askPrice:data.askPrice,hits:data.hits,paintZones:data.paintZones,engine:data.engine,flip:data.flip,hasAirbag:data.hasAirbag,airbagOpen:data.airbagOpen,chassis:data.chassis,chassisSev:data.chassisSev,tag:data.tag,fairPrice:result.fairPrice,deductions:result.deductions});
+saveHistory(arr);updateHistCount();
+}
+function updateHistCount(){
+var c=loadHistory().length,el=document.getElementById('histCount');
+if(c>0){el.textContent=toPersianDigits(c);el.style.display='inline-block';}else{el.style.display='none';}
+}
+window.renderHistory=function(){
+var q=(document.getElementById('histSearch').value||'').trim();
+var fq=q?faNum(q).toLowerCase():'';
+var arr=loadHistory().filter(function(it){return !fq||it.model.toLowerCase().indexOf(fq)>-1;});
+var list=document.getElementById('histList');
+if(arr.length===0){list.innerHTML='<div class="hist-empty">'+(loadHistory().length===0?'هنوز محاسبه‌ای ثبت نشده است.<br>اولین خودروی خود را قیمت‌گذاری کنید!':'خودرویی با این نام یافت نشد.')+'</div>';return;}
+list.innerHTML=arr.map(function(it){
+var dt=new Date(it.date);
+var mm=String(dt.getMonth()+1).padStart(2,'0');
+var dd=String(dt.getDate()).padStart(2,'0');
+var ds=toPersianDigits(dt.getFullYear())+'/'+toPersianDigits(mm)+'/'+toPersianDigits(dd);
+return '<div class="hist-item" onclick="viewHist('+it.id+')"><div class="hist-info"><div class="hist-model">'+escapeHtml(it.model)+'</div><div class="hist-meta">'+ds+' • سال '+toPersianDigits(it.year)+' • '+formatNumber(it.km)+' کیلومتر</div></div><div class="hist-price">'+formatNumber(it.fairPrice)+'</div><button class="hist-del" onclick="event.stopPropagation();delHist('+it.id+')" aria-label="حذف">✕</button></div>';
+}).join('');
+};
+window.viewHist=function(id){
+var it=loadHistory().find(function(x){return x.id===id;});
+if(!it)return;
+document.getElementById('model').value=it.model;
+window.yearVal=String(it.year);
+document.getElementById('yearText').textContent=toPersianDigits(it.year);
+document.getElementById('yearBtn').classList.remove('placeholder');
+document.getElementById('carSelectText').textContent=it.model;
+document.getElementById('carSelectBtn').classList.remove('placeholder');
+document.getElementById('km').value=toPersianDigits(it.km);
+document.getElementById('newPrice').value=toPersianDigits(it.newPrice);
+if(it.askPrice)document.getElementById('askPrice').value=toPersianDigits(it.askPrice);
+selectedHits=(it.hits||[]).slice();selectedPaints=(it.paintZones||[]).slice();
+svgHit.querySelectorAll('.zone').forEach(function(z){var n=z.getAttribute('data-name');z.classList.toggle('hit',selectedHits.some(function(h){return h.name===n;}));});
+svgPaint.querySelectorAll('.zone').forEach(function(z){var n=z.getAttribute('data-name');z.classList.toggle('painted',selectedPaints.some(function(p){return p.name===n;}));});
+renderChips(hitChips,selectedHits.map(function(h){return h.name;}),'هنوز ناحیه‌ای انتخاب نشده','');
+renderChips(paintChips,selectedPaints.map(function(p){return p.name;}),'بدنه بدون رنگ‌شدگی','paint');
+setRadio('engine',it.engine);setRadio('flip',it.flip);setRadio('hasAirbag',it.hasAirbag);setRadio('airbagOpen',it.airbagOpen);setRadio('chassis',it.chassis);setRadio('chassisSev',String(it.chassisSev));setRadio('tag',it.tag||'');
+document.getElementById('airbagBox').classList.toggle('open',it.hasAirbag==='yes');
+document.getElementById('chassisBox').classList.toggle('open',it.chassis==='no');
+goTo('pricing');
+succeed('رکورد بارگذاری شد — می‌توانید ویرایش کنید');
+};
+function setRadio(name,val){var r=document.querySelector('input[name="'+name+'"][value="'+val+'"]');if(r)r.checked=true;}
+window.delHist=function(id){
+if(!confirm('این رکورد حذف شود؟'))return;
+saveHistory(loadHistory().filter(function(x){return x.id!==id;}));
+renderHistory();updateHistCount();succeed('رکورد حذف شد');
+};
+window.clearAllHistory=function(){
+if(!confirm('همهٔ تاریخچه پاک شود؟ این عمل قابل بازگشت نیست.'))return;
+saveHistory([]);renderHistory();updateHistCount();succeed('تاریخچه پاک شد');
+};
+window.exportCSV=function(){
+var arr=loadHistory();
+if(arr.length===0){notify('تاریخچه‌ای وجود ندارد');return;}
+var rows=[['مدل','سال','کارکرد','قیمت نو','قیمت اعلامی','قیمت منطقی','تاریخ']];
+arr.forEach(function(it){rows.push([it.model,it.year,it.km,it.newPrice,it.askPrice||'',it.fairPrice,new Date(it.date).toLocaleDateString('fa-IR')]);});
+var csv='\uFEFF'+rows.map(function(r){return r.map(function(c){return '"'+String(c).replace(/"/g,'""')+'"';}).join(',');}).join('\n');
+var blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='autoscope-history.csv';a.click();
+succeed('فایل CSV دانلود شد');
+};
+
+/* ===== PDF / چاپ ===== */
+window.savePdf=function(){goTo('pdf');};
+function preparePdf(){
+var pv=document.getElementById('pdfPreview'),btn=document.getElementById('btnPrint');
+if(lastData&&lastResult){
+pv.innerHTML='<div style="background:var(--bg-card);border:1px solid var(--border-color);border-radius:12px;padding:14px;"><strong>'+escapeHtml(lastData.model)+'</strong><br><span style="color:var(--text-secondary);font-size:.88rem;">سال '+toPersianDigits(lastData.year)+' • قیمت منطقی: '+formatNumber(lastResult.fairPrice)+' تومان</span></div>';
+btn.disabled=false;
+}else{
+pv.innerHTML='<div style="color:var(--text-muted);font-size:.9rem;text-align:center;padding:20px;">هنوز نتیجه‌ای برای چاپ موجود نیست. ابتدا یک خودرو را قیمت‌گذاری کنید.</div>';
+btn.disabled=true;
+}
+}
+window.doPrint=function(){
+if(!lastData||!lastResult){notify('ابتدا یک خودرو را قیمت‌گذاری کنید');return;}
+var pa=document.getElementById('printArea');
+pa.innerHTML='<div class="card"><h2>گزارش کارشناسی AutoScope</h2><p><strong>خودرو:</strong> '+escapeHtml(lastData.model)+'</p><p><strong>سال تولید:</strong> '+toPersianDigits(lastData.year)+'</p><p><strong>کارکرد:</strong> '+formatNumber(lastData.km)+' کیلومتر</p><p><strong>قیمت نو/بازار:</strong> '+formatNumber(lastData.newPrice)+' تومان</p>'+(lastData.askPrice?'<p><strong>قیمت اعلامی فروشنده:</strong> '+formatNumber(lastData.askPrice)+' تومان</p>':'')+'<hr style="margin:14px 0;border:none;border-top:1px solid #ddd;"><p><strong style="font-size:1.2rem;">قیمت منطقی محاسبه‌شده: '+formatNumber(lastResult.fairPrice)+' تومان</strong></p><table class="breakdown" style="width:100%;border-collapse:collapse;margin-top:12px;"><thead><tr><th style="text-align:right;padding:8px;border-bottom:1px solid #ddd;">عامل</th><th style="text-align:center;padding:8px;border-bottom:1px solid #ddd;">درصد افت</th><th style="text-align:left;padding:8px;border-bottom:1px solid #ddd;">مبلغ کسر شده</th></tr></thead><tbody>'+lastResult.deductions.map(function(d){return '<tr><td style="padding:8px;border-bottom:1px solid #eee;">'+d.factor+'</td><td style="text-align:center;padding:8px;border-bottom:1px solid #eee;">-'+toPersianDigits(d.percentage)+'٪</td><td style="text-align:left;padding:8px;border-bottom:1px solid #eee;direction:ltr;">'+formatNumber(d.amount)+'</td></tr>';}).join('')+'</tbody></table><p style="margin-top:16px;font-size:.85rem;color:#666;">تاریخ گزارش: '+new Date().toLocaleDateString('fa-IR')+' | این قیمت تخمینی است و مبنای معامله قرار نمی‌گیرد.</p></div>';
+document.body.classList.add('print-mode');
+setTimeout(function(){window.print();setTimeout(function(){document.body.classList.remove('print-mode');},500);},200);
+};
+
+/* ===== اشتراک‌گذاری ===== */
+window.shareResult=function(){
+if(!lastData||!lastResult){notify('ابتدا یک خودرو را قیمت‌گذاری کنید');return;}
+var txt='🚗 کارشناسی خودرو با AutoScope\n\nمدل: '+lastData.model+'\nسال: '+toPersianDigits(lastData.year)+'\nکارکرد: '+formatNumber(lastData.km)+' کیلومتر\nقیمت نو: '+formatNumber(lastData.newPrice)+' تومان\nقیمت منطقی: '+formatNumber(lastResult.fairPrice)+' تومان'+(lastData.askPrice?'\nقیمت فروشنده: '+formatNumber(lastData.askPrice)+' تومان':'');
+if(navigator.share){navigator.share({title:'کارشناسی '+lastData.model,text:txt}).catch(function(){});}
+else if(navigator.clipboard){navigator.clipboard.writeText(txt).then(function(){succeed('متن نتیجه کپی شد — حالا در هر جایی Paste کنید');}).catch(function(){prompt('متن را کپی کنید:',txt);});}
+else{prompt('متن را کپی کنید:',txt);}
+};
+
+/* ===== بازخورد کاربر ===== */
+window.giveFeedback=function(pos,btn){
+if(!lastData||!lastResult)return;
+document.querySelectorAll('.fb-btn').forEach(function(b){b.classList.remove('active');});
+if(btn)btn.classList.add('active');
+var fb=[];try{fb=JSON.parse(localStorage.getItem('autoscope_feedback')||'[]');}catch(e){}
+fb.push({date:new Date().toISOString(),model:lastData.model,year:lastData.year,fairPrice:lastResult.fairPrice,positive:pos});
+try{localStorage.setItem('autoscope_feedback',JSON.stringify(fb.slice(0,200)));}catch(e){}
+document.getElementById('fbThanks').classList.add('show');
+};
+
+/* ===== مودال خودرو ===== */
+var CARS=[
+{g:'ایران خودرو',items:['پژو ۲۰۶ تیپ ۲','پژو ۲۰۶ تیپ ۵','پژو ۲۰۶ صندوق‌دار V8','پژو ۲۰۷ دنده‌ای','پژو ۲۰۷ اتوماتیک','پژو ۲۰۷ سقف شیشه‌ای','پژو پارس TU5','پژو پارس XU7','پژو پارس ELX','پژو پارس LX','پژو ۴۰۵ SLX','پژو ۴۰۵ GLX','سمند LX','سمند EF7','سمند سریر','سمند سورن','سمند سورن پلاس','دنا معمولی','دنا پلاس','دنا پلاس توربو','دنا پلاس اتوماتیک','رانا معمولی','رانا پلاس','تارا دنده‌ای','تارا اتوماتیک','هایما S5','هایما S7','هایما 8S']},
+{g:'سایپا',items:['پراید ۱۱۱','پراید ۱۳۱','پراید ۱۳۲','پراید ۱۵۱ (وانت)','تیبا صندوق‌دار','تیبا ۲ هاچ‌بک','ساینا معمولی','ساینا S','ساینا EX','کوییک معمولی','کوییک R','کوییک S','کوییک GX','کوییک پلاس اتوماتیک','شاهین G','شاهین اتوماتیک','اطلس','سهند']},
+{g:'مونتاژی و وارداتی پرفروش',items:['تندر ۹۰ E2','تندر ۹۰ پلاس','ساندرو معمولی','ساندرو استپ‌وی','جک J4','جک J5','جک S3','جک S4','جک S5','ام‌وی‌ام X22','ام‌وی‌ام X33','ام‌وی‌ام X55','چری تیگو ۵','چری تیگو ۷','چری تیگو ۸ پرو','برلیانس H320','برلیانس H330','دانگ‌فنگ H30 کراس','فیدلیتی پرایم','دیگنیتی پرایم','دیگنیتی پرستیژ','لاماری ایما','ریسپکت','آریزو ۵','آریزو ۶','بسترن B30','بسترن B70','فونیکس FX']}
+];
+window.renderCarList=function(q){
+q=faNum(q||'');
+var box=document.getElementById('carList'),html='';
+CARS.forEach(function(gr){
+var items=gr.items.filter(function(n){return !q||n.indexOf(q)>-1;});
+if(items.length===0)return;
+html+='<div class="cgroup">'+gr.g+'</div>';
+items.forEach(function(n){html+='<button type="button" class="citem" onclick="pickCar(this)">'+n+'</button>';});
+});
+if(!html)html='<div style="text-align:center;color:var(--text-muted);padding:20px 0;font-size:.9rem;">خودرویی پیدا نشد — می‌توانید دستی تایپ کنید</div>';
+box.innerHTML=html;
+};
+window.pickCar=function(el){
+var n=el.textContent;
+document.getElementById('model').value=n;
+document.getElementById('carSelectText').textContent=n;
+document.getElementById('carSelectBtn').classList.remove('placeholder');
+closeModals();
+};
+window.openCar=function(){
+closeModals();document.getElementById('carModal').classList.add('open');
+document.getElementById('carSearch').value='';renderCarList('');
+setTimeout(function(){document.getElementById('carSearch').focus();},350);
+};
+document.getElementById('carSearch').addEventListener('input',function(){renderCarList(this.value.trim());});
+document.querySelectorAll('.modal').forEach(function(m){m.addEventListener('click',function(e){if(e.target===m)closeModals();});});
+window.closeModals=function(){document.querySelectorAll('.modal').forEach(function(m){m.classList.remove('open');});};
+
+/* ===== اسپلش ===== */
+window.addEventListener('load',function(){
+updateHistCount();
+setTimeout(function(){var s=document.getElementById('appSplash');s.classList.add('hide');setTimeout(function(){s.remove();},500);},1500);
+});
+})();
 </script>
-<!-- ===== پایان پوستهٔ بومی ===== -->
+
+<script>
+if('serviceWorker'in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('./sw.js');});}
+</script>
 </body>
 </html>
