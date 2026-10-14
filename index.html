@@ -54,6 +54,123 @@ body {
   transition: background .3s, color .3s;
 }
 .container { max-width: 860px; margin: 0 auto; position: relative; }
+
+/* ===== هدر ثابت بالا ===== */
+.top-header {
+  position: sticky;
+  top: 0;
+  z-index: 700;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  margin: -24px -16px 20px;
+  background: var(--bg-primary);
+  border-bottom: 1px solid var(--border-color);
+}
+.header-brand {
+  font-size: 1.05rem;
+  font-weight: 700;
+  background: var(--gradient-main);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.header-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.icon-btn {
+  width: 40px; height: 40px;
+  border-radius: 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .2s;
+}
+.icon-btn:hover { border-color: var(--accent-blue); }
+.icon-btn svg { width: 20px; height: 20px; }
+
+/* ===== منوی کشویی (Drawer) ===== */
+.drawer-overlay {
+  position: fixed; inset: 0;
+  z-index: 1100;
+  background: rgba(0,0,0,.55);
+  backdrop-filter: blur(2px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .3s;
+}
+.drawer-overlay.open { opacity: 1; pointer-events: auto; }
+.drawer-panel {
+  position: fixed;
+  top: 0; right: 0; bottom: 0;
+  width: 290px;
+  max-width: 82vw;
+  z-index: 1101;
+  background: var(--bg-secondary);
+  transform: translateX(100%);
+  transition: transform .32s cubic-bezier(.2,.9,.3,1);
+  display: flex;
+  flex-direction: column;
+  box-shadow: -8px 0 32px rgba(0,0,0,.4);
+}
+[dir="rtl"] .drawer-panel { right: auto; left: 0; transform: translateX(-100%); box-shadow: 8px 0 32px rgba(0,0,0,.4); }
+.drawer-overlay.open + .drawer-panel,
+.drawer-panel.open { transform: translateX(0); }
+.drawer-head {
+  padding: 24px 20px 18px;
+  background: var(--gradient-main);
+  color: #0f172a;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.drawer-head img {
+  width: 64px; height: 64px;
+  border-radius: 18px;
+  object-fit: cover;
+  box-shadow: 0 4px 16px rgba(0,0,0,.2);
+}
+.drawer-head .dh-title { font-size: 1.15rem; font-weight: 700; }
+.drawer-head .dh-sub { font-size: 0.82rem; opacity: 0.8; }
+.drawer-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px 10px;
+}
+.dr-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  background: transparent;
+  border: none;
+  border-radius: 12px;
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 0.98rem;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: right;
+  transition: all .15s;
+}
+.dr-item:hover, .dr-item.active { background: rgba(56,189,248,0.1); color: var(--accent-blue); }
+.dr-item svg { width: 22px; height: 22px; flex-shrink: 0; color: var(--accent-blue); }
+.dr-sep { height: 1px; background: var(--border-color); margin: 8px 16px; }
+.dr-foot {
+  padding: 14px 20px;
+  border-top: 1px solid var(--border-color);
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  text-align: center;
+}
+
 header { text-align: center; margin-bottom: 32px; }
 header h1 {
   font-size: 1.9rem;
@@ -184,33 +301,67 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
   transition: background .15s, border-color .15s;
 }
 .citem:active { background: rgba(56,189,248,0.15); border-color: rgba(56,189,248,0.4); }
-.yeargrid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
-  max-height: 45vh;
-  overflow: auto;
-  padding-bottom: 6px;
+
+/* ===== Year Picker جدید (لیست ساده) ===== */
+.year-list {
+  max-height: 55vh;
+  overflow-y: auto;
+  padding: 6px 0;
 }
-.yitem {
-  background: var(--bg-card);
+.yr-item {
+  width: 100%;
+  padding: 13px 20px;
+  text-align: center;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  background: transparent;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all .15s;
+  margin-bottom: 2px;
+}
+.yr-item:hover { background: var(--bg-card); color: var(--text-primary); }
+.yr-item.selected {
+  background: var(--gradient-main);
+  color: #0f172a;
+  transform: scale(1.01);
+}
+.cal-manual-row {
+  display: flex;
+  gap: 8px;
+  padding: 12px 0 4px;
+  border-top: 1px solid var(--border-color);
+  margin-top: 8px;
+}
+.cal-manual-input {
+  flex: 1;
+  padding: 11px 12px;
+  background: var(--bg-input);
   border: 1px solid var(--border-color);
   border-radius: 10px;
-  padding: 11px 0;
-  text-align: center;
   color: var(--text-primary);
   font-family: inherit;
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: background .15s, border-color .15s;
+  font-size: 0.95rem;
+  outline: none;
+  text-align: center;
 }
-.yitem:active { border-color: rgba(56,189,248,0.5); }
-.yitem.sel {
+.cal-manual-input:focus { border-color: var(--accent-blue); }
+.cal-set-btn {
+  padding: 11px 18px;
   background: var(--gradient-main);
-  border-color: transparent;
+  border: none;
+  border-radius: 10px;
   color: #0f172a;
+  font-family: inherit;
+  font-size: 0.9rem;
   font-weight: 700;
+  cursor: pointer;
 }
+/* ===== پایان Year Picker ===== */
+
 .car-section { display: flex; gap: 24px; align-items: flex-start; flex-wrap: wrap; }
 .car-svg-wrap { flex: 0 0 210px; }
 .zone {
@@ -313,7 +464,7 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
   border-radius: 16px;
   font-size: 1rem;
   font-weight: 700;
-  z-index: 1000;
+  z-index: 1200;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -549,23 +700,6 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
 .menu-secondary:hover { border-color: var(--accent-blue); background: rgba(56,189,248,0.06); }
 .menu-secondary svg.mi { width: 22px; height: 22px; color: var(--accent-blue); flex-shrink: 0; }
 .menu-secondary .arrow { margin-right: auto; color: var(--text-muted); width: 18px; height: 18px; flex-shrink: 0; }
-.theme-toggle {
-  position: fixed;
-  top: 16px;
-  left: 16px;
-  width: 40px; height: 40px;
-  border-radius: 12px;
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  color: var(--text-primary);
-  cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  transition: all .2s;
-  z-index: 800;
-  backdrop-filter: blur(8px);
-}
-.theme-toggle:hover { border-color: var(--accent-blue); }
-.theme-toggle svg { width: 20px; height: 20px; }
 .page { display: none; }
 .page.active { display: block; animation: fadeIn .3s ease; }
 @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
@@ -678,7 +812,6 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
 .nb.active .pill { opacity: 1; transform: scaleX(1); }
 .nb:active { transform: scale(.95); }
 .nb svg { width: 22px; height: 22px; }
-.nb:disabled { opacity: .35; cursor: not-allowed; }
 .modal {
   position: fixed; inset: 0;
   z-index: 950;
@@ -710,19 +843,6 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
 .modal.open .sheet { transform: translateY(0); }
 .sheet .handle { width: 42px; height: 4px; border-radius: 4px; background: var(--border-color); margin: 6px auto 12px; }
 .sheet h3 { color: var(--accent-blue); font-size: 16px; margin-bottom: 6px; }
-.sheet .close {
-  width: 100%;
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  color: var(--text-primary);
-  border-radius: 12px;
-  padding: 10px;
-  margin-top: 14px;
-  cursor: pointer;
-  font-family: inherit;
-  font-size: 13px;
-}
-.sheet .close:active { background: var(--bg-input); }
 #appSplash {
   position: fixed; inset: 0;
   z-index: 9999;
@@ -762,7 +882,7 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
   #printArea .card { background: #fff !important; border: 1px solid #ccc !important; color: #000 !important; }
   #printArea table { color: #000 !important; }
   #printArea th, #printArea td { color: #000 !important; border-color: #ddd !important; }
-  #printArea .btn-reset, #printArea .act-btn, #printArea .feedback, #bottomNav, .back-bar, .theme-toggle { display: none !important; }
+  #printArea .btn-reset, #printArea .act-btn, #printArea .feedback, #bottomNav, .back-bar, .top-header { display: none !important; }
   #printArea .verdict { border: 1px solid #999 !important; background: #f9f9f9 !important; }
   #printArea .verdict h3, #printArea .verdict p { color: #000 !important; }
 }
@@ -772,11 +892,60 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
 
 <div id="appSplash"><img src="icon.png" alt=""><div class="t1">کارشناسی قیمت خودرو</div><div class="t2">AUTOSCOPE</div></div>
 
-<button class="theme-toggle" onclick="toggleTheme()" aria-label="تغییر حالت روشن/تیره">
-  <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
-</button>
+<!-- ===== Drawer Overlay & Panel ===== -->
+<div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+<aside class="drawer-panel" id="drawerPanel">
+  <div class="drawer-head">
+    <img src="icon.png" alt="">
+    <div class="dh-title">AutoScope</div>
+    <div class="dh-sub">کارشناسی هوشمند قیمت خودرو</div>
+  </div>
+  <div class="drawer-body">
+    <button class="dr-item" data-page="home" onclick="drawerGo('home')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9 21v-6h6v6"/></svg>
+      خانه
+    </button>
+    <button class="dr-item" data-page="pricing" onclick="drawerGo('pricing')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      قیمت‌گذاری
+    </button>
+    <button class="dr-item" data-page="history" onclick="drawerGo('history')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      تاریخچه
+    </button>
+    <button class="dr-item" data-page="pdf" onclick="drawerGo('pdf')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      خروجی PDF
+    </button>
+    <div class="dr-sep"></div>
+    <button class="dr-item" data-page="guide" onclick="drawerGo('guide')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      راهنما
+    </button>
+    <button class="dr-item" data-page="about" onclick="drawerGo('about')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+      درباره ما
+    </button>
+    <div class="dr-sep"></div>
+    <button class="dr-item" onclick="toggleTheme();closeDrawer()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+      <span id="themeLabel">حالت روشن/تیره</span>
+    </button>
+  </div>
+  <div class="dr-foot">نسخهٔ ۱٫۲ — AutoScope © ۱۴۰۵</div>
+</aside>
 
 <div class="container">
+
+<!-- ===== هدر ثابت بالا ===== -->
+<div class="top-header">
+  <div class="header-brand">AutoScope</div>
+  <div class="header-actions">
+    <button class="icon-btn" onclick="openDrawer()" aria-label="منو">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+  </div>
+</div>
 
 <!-- ==================== صفحهٔ خانه (منوی اصلی) ==================== -->
 <div class="page active" id="pageHome">
@@ -816,12 +985,6 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
 
 <!-- ==================== صفحهٔ قیمت‌گذاری ==================== -->
 <div class="page" id="pagePricing">
-  <div class="back-bar">
-    <button class="back-btn" onclick="goTo('home')" aria-label="بازگشت">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-    </button>
-    <div class="back-title">قیمت‌گذاری خودرو</div>
-  </div>
   <form id="carForm" novalidate>
     <div class="card">
       <h2><span class="step">۱</span> اطلاعات پایه خودرو</h2>
@@ -836,23 +999,23 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
       <div class="grid2">
         <div class="field" style="grid-column: 1 / -1;">
           <label for="model">نام و مدل خودرو *</label>
-          <input type="text" id="model" placeholder="مثلاً: پژو ۲۰ اتوماتیک">
+          <input type="text" id="model" placeholder="مثلاً: پژو ۲۰۷ اتوماتیک">
         </div>
         <div class="field">
           <label>سال تولید (شمسی) *</label>
-          <button type="button" class="selectbox placeholder" id="yearBtn" onclick="openYear()">
-            <span id="yearText">انتخاب سال از تقویم</span>
+          <button type="button" class="selectbox placeholder" id="yearBtn" onclick="openYearPicker()">
+            <span id="yearText">انتخاب سال تولید</span>
             <svg class="chev" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
           </button>
         </div>
         <div class="field">
           <label for="km">کیلومتر کارکرد *</label>
-          <input type="text" id="km" inputmode="numeric" placeholder="مثلاً: ۸۵۰۰۰">
-          <div class="hint">میانگین کارکرد استاندارد: ۲۰٬۰۰۰ کیلومتر در سال</div>
+          <input type="text" id="km" inputmode="numeric" placeholder="مثلاً: ۸۵۰۰">
+          <div class="hint">میانگین کارکرد استاندارد: ۲۰٬۰۰ کیلومتر در سال</div>
         </div>
         <div class="field">
           <label for="newPrice">قیمت نو / قیمت بازار (تومان) *</label>
-          <input type="text" id="newPrice" inputmode="numeric" placeholder="مثلاً: ۹۰۰۰۰۰۰">
+          <input type="text" id="newPrice" inputmode="numeric" placeholder="مثلاً: ۹۰۰۰۰۰">
           <div class="hint">قیمت روز همان مدل به‌صورت صفر یا کم‌کارکرد در بازار</div>
         </div>
         <div class="field" style="grid-column: 1 / -1;">
@@ -1016,12 +1179,6 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
 
 <!-- ==================== صفحهٔ تاریخچه ==================== -->
 <div class="page" id="pageHistory">
-  <div class="back-bar">
-    <button class="back-btn" onclick="goTo('home')" aria-label="بازگشت">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-    </button>
-    <div class="back-title">تاریخچهٔ محاسبات</div>
-  </div>
   <input type="text" class="searchbox" id="histSearch" placeholder="جستجو در تاریخچه... مثلاً: پژو ۲۰۷" oninput="renderHistory()">
   <div class="hist-actions">
     <button type="button" class="hist-action-btn" onclick="exportCSV()">📥 خروجی CSV</button>
@@ -1032,12 +1189,6 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
 
 <!-- ==================== صفحهٔ PDF ==================== -->
 <div class="page" id="pagePdf">
-  <div class="back-bar">
-    <button class="back-btn" onclick="goTo('home')" aria-label="بازگشت">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-    </button>
-    <div class="back-title">خروجی PDF نتیجه</div>
-  </div>
   <div class="card">
     <h2><span class="step">📄</span> انتخاب رکورد برای چاپ</h2>
     <p style="color:var(--text-secondary);font-size:.92rem;line-height:1.9;margin-bottom:14px;">ابتدا یک خودرو را قیمت‌گذاری کنید یا از تاریخچه انتخاب نمایید. سپس دکمهٔ «چاپ / ذخیرهٔ PDF» را بزنید.</p>
@@ -1052,17 +1203,11 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
 
 <!-- ==================== صفحهٔ راهنما ==================== -->
 <div class="page" id="pageGuide">
-  <div class="back-bar">
-    <button class="back-btn" onclick="goTo('home')" aria-label="بازگشت">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-    </button>
-    <div class="back-title">راهنما و سوالات متداول</div>
-  </div>
   <div class="card">
     <h2><span class="step">📖</span> راهنمای استفاده</h2>
     <ol style="padding-right:20px;color:var(--text-secondary);line-height:2.2;font-size:.92rem;">
       <li>خودرو را از دکمهٔ «انتخاب از لیست» (همراه با جستجو) انتخاب کنید یا دستی تایپ نمایید.</li>
-      <li>سال تولید را از تقویم سال انتخاب کنید.</li>
+      <li>سال تولید را از پیکر سال انتخاب کنید (۱۳۵۰ تا ۱۴۱۰).</li>
       <li>کارکرد و قیمت‌ها را وارد کنید.</li>
       <li>روی بدنهٔ خودرو کلیک کنید: نواحی ضربه‌خورده (قرمز) و رنگ‌شده (نارنجی) را مشخص کنید.</li>
       <li>برای رنگ‌شدگی می‌توانید از گزینه‌های سریع «دور رنگ» یا «تمام رنگ» استفاده کنید.</li>
@@ -1083,15 +1228,9 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
 
 <!-- ==================== صفحهٔ درباره ==================== -->
 <div class="page" id="pageAbout">
-  <div class="back-bar">
-    <button class="back-btn" onclick="goTo('home')" aria-label="بازگشت">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-    </button>
-    <div class="back-title">دربارهٔ ما</div>
-  </div>
   <div class="about-card">
     <img src="icon.png" alt="لوگوی AutoScope" style="width:80px;height:80px;border-radius:20px;margin-bottom:12px;object-fit:cover;">
-    <div class="about-version">نسخهٔ ۱٫۱</div>
+    <div class="about-version">نسخهٔ ۱٫۲</div>
     <div class="about-brand">AutoScope</div>
     <div class="about-desc">
       AutoScope یک ابزار کارشناسی و قیمت‌گذاری خودرو است که با تحلیل عوامل متعددی مانند سن، کارکرد، وضعیت بدنه، رنگ‌شدگی، آسیب شاسی و تجهیزات ایمنی، قیمت منطقی هر خودرو را تخمین می‌زند.<br><br>
@@ -1111,7 +1250,7 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
 <!-- نوار پایین -->
 <nav id="bottomNav">
   <button class="nb active" id="navHome" onclick="goTo('home')"><span class="pill"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9 21v-6h6v6"/></svg><span class="lb">خانه</span></button>
-  <button class="nb" id="navBack" onclick="goBack()" disabled><span class="pill"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg><span class="lb">بازگشت</span></button>
+  <button class="nb" id="navBack" onclick="goBack()"><span class="pill"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg><span class="lb">بازگشت</span></button>
 </nav>
 
 <!-- Toasts -->
@@ -1127,11 +1266,15 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
   <div class="carlist" id="carList"></div>
 </div></div>
 
-<!-- مودال انتخاب سال -->
+<!-- مودال پیکر سال (جدید و ساده) -->
 <div class="modal" id="yearModal"><div class="sheet">
   <div class="handle"></div>
   <h3>انتخاب سال تولید</h3>
-  <div class="yeargrid" id="yearGrid"></div>
+  <div class="cal-manual-row" style="border:none;margin:0;padding:0 0 8px;">
+    <input type="number" class="cal-manual-input" id="yrManual" placeholder="تایپ سال (مثلاً ۱۳۹۸)" min="1350" max="1410">
+    <button class="cal-set-btn" onclick="applyManualYear()">ثبت</button>
+  </div>
+  <div class="year-list" id="yearList"></div>
 </div></div>
 
 <!-- ناحیهٔ چاپ -->
@@ -1141,12 +1284,14 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
 (function(){
 'use strict';
 var CURRENT_YEAR = 1405;
+var MIN_YEAR = 1350;
+var MAX_YEAR = 1410;
 var form = document.getElementById('carForm');
 var btnCalc = document.getElementById('btnCalc');
 var toast = document.getElementById('toast');
 var results = document.getElementById('results');
 var computing = false;
-var faDigits = '۰۱۳۴۵۷۸۹';
+var faDigits = '۰۱۲۳۴۵۶۷۸۹';
 var arDigits = '٠١٢٣٤٥٦٧٨٩';
 function toEnglishDigits(v){return String(v).replace(/[۰-۹]/g,function(d){return faDigits.indexOf(d);}).replace(/[٠-٩]/g,function(d){return arDigits.indexOf(d);});}
 function toPersianDigits(v){return String(v).replace(/[0-9]/g,function(d){return faDigits[d];});}
@@ -1159,22 +1304,50 @@ function notify(msg){document.getElementById('alertMsg').textContent=msg;alertBo
 var successBox=document.getElementById('successBox'),successTimer=null;
 function succeed(msg){document.getElementById('successMsg').textContent=msg;successBox.classList.add('show');clearTimeout(successTimer);successTimer=setTimeout(function(){successBox.classList.remove('show');},2600);}
 
+/* ===== Drawer ===== */
+window.openDrawer=function(){
+  document.getElementById('drawerOverlay').classList.add('open');
+  document.getElementById('drawerPanel').classList.add('open');
+  // highlight current page
+  var cur=pageStack[pageStack.length-1];
+  document.querySelectorAll('.dr-item[data-page]').forEach(function(it){it.classList.toggle('active',it.getAttribute('data-page')===cur);});
+};
+window.closeDrawer=function(){
+  document.getElementById('drawerOverlay').classList.remove('open');
+  document.getElementById('drawerPanel').classList.remove('open');
+};
+window.drawerGo=function(name){
+  closeDrawer();
+  goTo(name,true);
+};
+
 /* ===== ناوبری صفحات ===== */
 var pageStack=['home'];
-window.goTo=function(name){
+window.goTo=function(name,isFromDrawer){
   document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
   var map={home:'pageHome',pricing:'pagePricing',history:'pageHistory',pdf:'pagePdf',guide:'pageGuide',about:'pageAbout'};
   var el=document.getElementById(map[name]);
   if(el){el.classList.add('active');}
-  if(pageStack[pageStack.length-1]!==name){pageStack.push(name);}
+  if(isFromDrawer){pageStack=[name];}
+  else if(pageStack[pageStack.length-1]!==name){pageStack.push(name);}
   document.getElementById('navHome').classList.toggle('active',name==='home');
-  document.getElementById('navBack').disabled=(pageStack.length<=1);
   window.scrollTo({top:0,behavior:'smooth'});
   if(name==='history'){renderHistory();}
   if(name==='pdf'){preparePdf();}
 };
 window.goBack=function(){
-  if(pageStack.length>1){pageStack.pop();var prev=pageStack[pageStack.length-1];goTo(prev);pageStack.pop();pageStack.push(prev);}
+  if(pageStack.length>1){
+    pageStack.pop();
+    var prev=pageStack[pageStack.length-1];
+    document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
+    var map={home:'pageHome',pricing:'pagePricing',history:'pageHistory',pdf:'pagePdf',guide:'pageGuide',about:'pageAbout'};
+    var el=document.getElementById(map[prev]);
+    if(el){el.classList.add('active');}
+    document.getElementById('navHome').classList.toggle('active',prev==='home');
+    window.scrollTo({top:0,behavior:'smooth'});
+    if(prev==='history'){renderHistory();}
+    if(prev==='pdf'){preparePdf();}
+  }
 };
 
 /* ===== تم روشن/تیره ===== */
@@ -1184,31 +1357,53 @@ window.toggleTheme=function(){
   document.documentElement.setAttribute('data-theme',next);
   try{localStorage.setItem('autoscope_theme',next);}catch(e){}
   updateThemeIcon(next);
+  var lbl=document.getElementById('themeLabel');
+  if(lbl)lbl.textContent=(next==='light'?'حالت تیره':'حالت روشن');
 };
 function updateThemeIcon(theme){
-  var icon=document.getElementById('themeIcon');
-  if(theme==='light'){icon.innerHTML='<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';}
-  else{icon.innerHTML='<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>';}
+  // icon stays the same in drawer; optional
 }
-try{var savedTheme=localStorage.getItem('autoscope_theme')||'dark';document.documentElement.setAttribute('data-theme',savedTheme);updateThemeIcon(savedTheme);}catch(e){}
+try{var savedTheme=localStorage.getItem('autoscope_theme')||'dark';document.documentElement.setAttribute('data-theme',savedTheme);var tl=document.getElementById('themeLabel');if(tl)tl.textContent=(savedTheme==='light'?'حالت تیره':'حالت روشن');}catch(e){}
 
-/* ===== تقویم سال ===== */
+/* ===== Year Picker (ساده: لیست سال‌ها ۱۳۵۰–۱۴۱۰) ===== */
 window.yearVal='';
-var yearGrid=null;
-window.buildYearGrid=function(){
-  var box=document.getElementById('yearGrid'),html='';
-  for(var y=CURRENT_YEAR;y>=1350;y--){html+='<button type="button" class="yitem" data-y="'+y+'" onclick="pickYear(this)">'+toPersianDigits(y)+'</button>';}
-  box.innerHTML=html;yearGrid=box;
+window.buildYearList=function(){
+  var box=document.getElementById('yearList');
+  var html='';
+  for(var y=MAX_YEAR;y>=MIN_YEAR;y--){
+    var cls='yr-item'+(String(y)===window.yearVal?' selected':'');
+    html+='<button type="button" class="'+cls+'" data-y="'+y+'">'+toPersianDigits(y)+'</button>';
+  }
+  box.innerHTML=html;
+  // bind clicks
+  box.querySelectorAll('.yr-item').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var y=this.getAttribute('data-y');
+      selectYear(y);
+    });
+  });
+  // scroll to selected
+  if(window.yearVal){
+    var sel=box.querySelector('.yr-item.selected');
+    if(sel)setTimeout(function(){sel.scrollIntoView({block:'center'});},300);
+  }
 };
-window.pickYear=function(el){
-  var y=el.getAttribute('data-y');window.yearVal=y;
-  document.getElementById('yearText').textContent=toPersianDigits(y);
+function selectYear(y){
+  window.yearVal=String(y);
+  document.getElementById('yearText').textContent=toPersianDigits(y)+' (سال تولید)';
   document.getElementById('yearBtn').classList.remove('placeholder');
   closeModals();
+}
+window.applyManualYear=function(){
+  var v=parseInt(toEnglishDigits(document.getElementById('yrManual').value),10);
+  if(isNaN(v)||v<MIN_YEAR||v>MAX_YEAR){notify('سال باید بین '+toPersianDigits(MIN_YEAR)+' و '+toPersianDigits(MAX_YEAR)+' باشد');return;}
+  selectYear(String(v));
 };
-window.openYear=function(){
-  closeModals();document.getElementById('yearModal').classList.add('open');buildYearGrid();
-  if(window.yearVal&&yearGrid){var sel=yearGrid.querySelector('.yitem[data-y="'+window.yearVal+'"]');if(sel){sel.classList.add('sel');setTimeout(function(){sel.scrollIntoView({block:'center'});},350);}}
+window.openYearPicker=function(){
+  closeModals();
+  document.getElementById('yearModal').classList.add('open');
+  document.getElementById('yrManual').value='';
+  buildYearList();
 };
 
 /* ===== دیاگرام بدنه ===== */
@@ -1310,7 +1505,7 @@ tag:(document.querySelector('input[name="tag"]:checked')||{}).value||''
 }
 function validateForm(d){
 if(!d.model){notify('لطفاً نام و مدل خودرو را وارد کنید');return false;}
-if(isNaN(d.year)||d.year<1350||d.year>CURRENT_YEAR){notify('لطفاً سال تولید را از تقویم انتخاب کنید');return false;}
+if(isNaN(d.year)||d.year<MIN_YEAR||d.year>MAX_YEAR){notify('لطفاً سال تولید را از پیکر سال انتخاب کنید');return false;}
 if(isNaN(d.km)||d.km<0){notify('لطفاً کیلومتر کارکرد معتبر وارد کنید');return false;}
 if(isNaN(d.newPrice)||d.newPrice<=0){notify('لطفاً قیمت نو معتبر وارد کنید');return false;}
 return true;
@@ -1357,7 +1552,7 @@ setTimeout(function(){var result=calculatePrice(data);toast.classList.remove('sh
 });
 document.getElementById('btnReset').addEventListener('click',function(){
 form.reset();window.yearVal='';
-document.getElementById('yearText').textContent='انتخاب سال از تقویم';
+document.getElementById('yearText').textContent='انتخاب سال تولید';
 document.getElementById('yearBtn').classList.add('placeholder');
 document.getElementById('carSelectText').textContent='انتخاب از لیست (۷۴ خودرو) یا تایپ دستی';
 document.getElementById('carSelectBtn').classList.add('placeholder');
@@ -1404,7 +1599,7 @@ var it=loadHistory().find(function(x){return x.id===id;});
 if(!it)return;
 document.getElementById('model').value=it.model;
 window.yearVal=String(it.year);
-document.getElementById('yearText').textContent=toPersianDigits(it.year);
+document.getElementById('yearText').textContent=toPersianDigits(it.year)+' (سال تولید)';
 document.getElementById('yearBtn').classList.remove('placeholder');
 document.getElementById('carSelectText').textContent=it.model;
 document.getElementById('carSelectBtn').classList.remove('placeholder');
@@ -1419,7 +1614,7 @@ renderChips(paintChips,selectedPaints.map(function(p){return p.name;}),'بدنه
 setRadio('engine',it.engine);setRadio('flip',it.flip);setRadio('hasAirbag',it.hasAirbag);setRadio('airbagOpen',it.airbagOpen);setRadio('chassis',it.chassis);setRadio('chassisSev',String(it.chassisSev));setRadio('tag',it.tag||'');
 document.getElementById('airbagBox').classList.toggle('open',it.hasAirbag==='yes');
 document.getElementById('chassisBox').classList.toggle('open',it.chassis==='no');
-goTo('pricing');
+goTo('pricing',true);
 succeed('رکورد بارگذاری شد — می‌توانید ویرایش کنید');
 };
 function setRadio(name,val){var r=document.querySelector('input[name="'+name+'"][value="'+val+'"]');if(r)r.checked=true;}
@@ -1444,7 +1639,7 @@ succeed('فایل CSV دانلود شد');
 };
 
 /* ===== PDF / چاپ ===== */
-window.savePdf=function(){goTo('pdf');};
+window.savePdf=function(){goTo('pdf',true);};
 function preparePdf(){
 var pv=document.getElementById('pdfPreview'),btn=document.getElementById('btnPrint');
 if(lastData&&lastResult){
