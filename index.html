@@ -18,9 +18,9 @@
 :root {
   --bg-primary: #0f172a;
   --bg-secondary: #1e293b;
-  --bg-card: rgba(255,255,255,0.04);
-  --bg-input: rgba(0,0,0,0.3);
-  --border-color: rgba(255,255,255,0.09);
+  --bg-card: rgba(255,255,255,0.06);
+  --bg-input: rgba(0,0,0,0.25);
+  --border-color: rgba(255,255,255,0.12);
   --text-primary: #e2e8f0;
   --text-secondary: #94a3b8;
   --text-muted: #64748b;
@@ -30,18 +30,24 @@
   --accent-red: #f87171;
   --accent-orange: #fbbf24;
   --gradient-main: linear-gradient(135deg, #38bdf8, #818cf8);
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.15);
+  --shadow-md: 0 8px 24px rgba(0,0,0,0.25);
+  --shadow-lg: 0 16px 48px rgba(0,0,0,0.35);
+  --glass-blur: blur(16px);
 }
-/* ===== تم روشن ===== */
 [data-theme="light"] {
-  --bg-primary: #f8fafc;
+  --bg-primary: #f1f5f9;
   --bg-secondary: #ffffff;
-  --bg-card: rgba(0,0,0,0.03);
+  --bg-card: rgba(255,255,255,0.7);
   --bg-input: rgba(255,255,255,0.9);
-  --border-color: rgba(0,0,0,0.1);
+  --border-color: rgba(0,0,0,0.08);
   --text-primary: #0f172a;
   --text-secondary: #475569;
   --text-muted: #94a3b8;
   --gradient-main: linear-gradient(135deg, #0ea5e9, #6366f1);
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.05);
+  --shadow-md: 0 8px 24px rgba(0,0,0,0.08);
+  --shadow-lg: 0 16px 48px rgba(0,0,0,0.12);
 }
 * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 html { scroll-behavior: smooth; }
@@ -52,10 +58,91 @@ body {
   color: var(--text-primary);
   padding: 24px 16px 100px;
   transition: background .3s, color .3s;
+  position: relative;
+  overflow-x: hidden;
 }
-.container { max-width: 860px; margin: 0 auto; position: relative; }
+body::before {
+  content: '';
+  position: fixed;
+  top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: radial-gradient(circle at 20% 30%, rgba(56,189,248,0.15) 0%, transparent 40%),
+              radial-gradient(circle at 80% 70%, rgba(129,140,248,0.15) 0%, transparent 40%),
+              radial-gradient(circle at 50% 50%, rgba(52,211,153,0.05) 0%, transparent 60%);
+  animation: meshMove 20s ease-in-out infinite alternate;
+  z-index: -1;
+  pointer-events: none;
+}
+@keyframes meshMove {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  100% { transform: translate(2%, 2%) rotate(2deg); }
+}
+.container { max-width: 860px; margin: 0 auto; position: relative; z-index: 1; }
 
-/* ===== هدر ثابت بالا ===== */
+/* ===== Onboarding Overlay ===== */
+#onboardingOverlay {
+  position: fixed; inset: 0;
+  z-index: 9998;
+  background: rgba(15,23,42,0.98);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .5s;
+}
+#onboardingOverlay.show { opacity: 1; pointer-events: auto; }
+.ob-slide {
+  text-align: center;
+  padding: 40px 24px;
+  max-width: 400px;
+  display: none;
+  animation: fadeUp .5s cubic-bezier(.2,.9,.3,1);
+}
+.ob-slide.active { display: block; }
+.ob-icon {
+  width: 120px; height: 120px;
+  margin: 0 auto 24px;
+  background: var(--gradient-main);
+  border-radius: 32px;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 10px 40px rgba(56,189,248,0.3);
+}
+.ob-icon svg { width: 60px; height: 60px; color: #fff; }
+.ob-title { font-size: 1.4rem; font-weight: 700; color: #fff; margin-bottom: 12px; }
+.ob-desc { font-size: 0.95rem; color: #cbd5e1; line-height: 1.8; margin-bottom: 32px; }
+.ob-dots { display: flex; gap: 8px; justify-content: center; margin-bottom: 24px; }
+.ob-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.3);
+  transition: all .3s;
+}
+.ob-dot.active { background: var(--accent-blue); width: 24px; border-radius: 4px; }
+.ob-btn {
+  padding: 14px 32px;
+  background: var(--gradient-main);
+  border: none;
+  border-radius: 14px;
+  color: #0f172a;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform .2s;
+}
+.ob-btn:active { transform: scale(0.95); }
+.ob-skip {
+  margin-top: 16px;
+  background: none;
+  border: none;
+  color: #94a3b8;
+  font-family: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+/* ===== Top Header & Drawer (Same as before but refined) ===== */
 .top-header {
   position: sticky;
   top: 0;
@@ -65,9 +152,12 @@ body {
   justify-content: space-between;
   padding: 12px 16px;
   margin: -24px -16px 20px;
-  background: var(--bg-primary);
+  background: rgba(15,23,42,0.85);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
   border-bottom: 1px solid var(--border-color);
 }
+[data-theme="light"] .top-header { background: rgba(241,245,249,0.85); }
 .header-brand {
   font-size: 1.05rem;
   font-weight: 700;
@@ -76,11 +166,7 @@ body {
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
-.header-actions {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
+.header-actions { display: flex; gap: 8px; align-items: center; }
 .icon-btn {
   width: 40px; height: 40px;
   border-radius: 12px;
@@ -89,59 +175,80 @@ body {
   color: var(--text-primary);
   cursor: pointer;
   display: flex; align-items: center; justify-content: center;
-  transition: all .2s;
+  transition: all .2s cubic-bezier(.2,.9,.3,1.2);
+  box-shadow: var(--shadow-sm);
 }
-.icon-btn:hover { border-color: var(--accent-blue); }
+.icon-btn:hover { 
+  transform: translateY(-2px) scale(1.05); 
+  border-color: var(--accent-blue); 
+  box-shadow: var(--shadow-md);
+}
+.icon-btn:active { transform: scale(0.95); }
 .icon-btn svg { width: 20px; height: 20px; }
 
-/* ===== منوی کشویی (Drawer) ===== */
 .drawer-overlay {
   position: fixed; inset: 0;
   z-index: 1100;
-  background: rgba(0,0,0,.55);
-  backdrop-filter: blur(2px);
+  background: rgba(0,0,0,.6);
+  backdrop-filter: blur(4px);
   opacity: 0;
   pointer-events: none;
-  transition: opacity .3s;
+  transition: opacity .3s ease;
 }
 .drawer-overlay.open { opacity: 1; pointer-events: auto; }
 .drawer-panel {
   position: fixed;
   top: 0; right: 0; bottom: 0;
-  width: 290px;
-  max-width: 82vw;
+  width: 300px;
+  max-width: 85vw;
   z-index: 1101;
-  background: var(--bg-secondary);
-  transform: translateX(100%);
-  transition: transform .32s cubic-bezier(.2,.9,.3,1);
+  background: rgba(30,41,59,0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-left: 1px solid rgba(255,255,255,0.1);
+  transform: translateX(100%) scale(0.95);
+  opacity: 0;
+  transition: transform .4s cubic-bezier(.2,.9,.3,1), opacity .3s ease;
   display: flex;
   flex-direction: column;
-  box-shadow: -8px 0 32px rgba(0,0,0,.4);
+  box-shadow: -10px 0 40px rgba(0,0,0,0.5), -2px 0 10px rgba(0,0,0,0.3);
+  border-radius: 24px 0 0 24px;
 }
-[dir="rtl"] .drawer-panel { right: auto; left: 0; transform: translateX(-100%); box-shadow: 8px 0 32px rgba(0,0,0,.4); }
+[dir="rtl"] .drawer-panel { 
+  right: auto; left: 0; 
+  transform: translateX(-100%) scale(0.95); 
+  border-left: none;
+  border-right: 1px solid rgba(255,255,255,0.1);
+  box-shadow: 10px 0 40px rgba(0,0,0,0.5), 2px 0 10px rgba(0,0,0,0.3);
+  border-radius: 0 24px 24px 0;
+}
 .drawer-overlay.open + .drawer-panel,
-.drawer-panel.open { transform: translateX(0); }
+.drawer-panel.open { 
+  transform: translateX(0) scale(1); 
+  opacity: 1;
+}
 .drawer-head {
-  padding: 24px 20px 18px;
-  background: var(--gradient-main);
-  color: #0f172a;
+  padding: 30px 20px 20px;
+  background: linear-gradient(135deg, rgba(56,189,248,0.2), rgba(129,140,248,0.2));
+  border-bottom: 1px solid rgba(255,255,255,0.1);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 .drawer-head img {
-  width: 64px; height: 64px;
-  border-radius: 18px;
+  width: 72px; height: 72px;
+  border-radius: 20px;
   object-fit: cover;
-  box-shadow: 0 4px 16px rgba(0,0,0,.2);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  border: 2px solid rgba(255,255,255,0.2);
 }
-.drawer-head .dh-title { font-size: 1.15rem; font-weight: 700; }
-.drawer-head .dh-sub { font-size: 0.82rem; opacity: 0.8; }
+.drawer-head .dh-title { font-size: 1.25rem; font-weight: 700; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+.drawer-head .dh-sub { font-size: 0.85rem; opacity: 0.9; color: #e2e8f0; }
 .drawer-body {
   flex: 1;
   overflow-y: auto;
-  padding: 12px 10px;
+  padding: 16px 12px;
 }
 .dr-item {
   width: 100%;
@@ -151,24 +258,32 @@ body {
   padding: 14px 16px;
   background: transparent;
   border: none;
-  border-radius: 12px;
+  border-radius: 14px;
   color: var(--text-primary);
   font-family: inherit;
   font-size: 0.98rem;
   font-weight: 500;
   cursor: pointer;
   text-align: right;
-  transition: all .15s;
+  transition: all .2s cubic-bezier(.2,.9,.3,1);
+  margin-bottom: 4px;
 }
-.dr-item:hover, .dr-item.active { background: rgba(56,189,248,0.1); color: var(--accent-blue); }
+.dr-item:hover, .dr-item.active { 
+  background: rgba(56,189,248,0.15); 
+  color: var(--accent-blue); 
+  transform: translateX(4px);
+  box-shadow: 0 2px 8px rgba(56,189,248,0.2);
+}
+[dir="rtl"] .dr-item:hover, [dir="rtl"] .dr-item.active { transform: translateX(-4px); }
 .dr-item svg { width: 22px; height: 22px; flex-shrink: 0; color: var(--accent-blue); }
-.dr-sep { height: 1px; background: var(--border-color); margin: 8px 16px; }
+.dr-sep { height: 1px; background: rgba(255,255,255,0.1); margin: 12px 16px; }
 .dr-foot {
-  padding: 14px 20px;
-  border-top: 1px solid var(--border-color);
+  padding: 16px 20px;
+  border-top: 1px solid rgba(255,255,255,0.1);
   font-size: 0.78rem;
   color: var(--text-muted);
   text-align: center;
+  background: rgba(0,0,0,0.1);
 }
 
 header { text-align: center; margin-bottom: 32px; }
@@ -188,8 +303,14 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
   border-radius: 20px;
   padding: 26px 24px;
   margin-bottom: 20px;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: var(--shadow-md);
+  transition: transform .3s, box-shadow .3s;
+}
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
 }
 .card h2 {
   font-size: 1.15rem;
@@ -207,6 +328,7 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
   display: flex; align-items: center; justify-content: center;
   font-size: 0.95rem; font-weight: 700;
   flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(56,189,248,0.3);
 }
 .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .field label {
@@ -226,11 +348,12 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
   font-family: inherit;
   font-size: 1rem;
   outline: none;
-  transition: border-color .2s, box-shadow .2s;
+  transition: border-color .2s, box-shadow .2s, transform .2s;
 }
 .field input:focus {
   border-color: var(--accent-blue);
   box-shadow: 0 0 0 3px rgba(56,189,248,0.15);
+  transform: scale(1.01);
 }
 .selectbox {
   width: 100%;
@@ -248,9 +371,15 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
   gap: 10px;
   cursor: pointer;
   text-align: right;
-  transition: border-color .2s, box-shadow .2s;
+  transition: all .2s cubic-bezier(.2,.9,.3,1);
+  box-shadow: var(--shadow-sm);
 }
-.selectbox:active { border-color: var(--accent-blue); box-shadow: 0 0 0 3px rgba(56,189,248,0.15); }
+.selectbox:hover {
+  border-color: var(--accent-blue);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+.selectbox:active { transform: scale(0.98); }
 .selectbox .chev { flex-shrink: 0; color: var(--text-secondary); }
 .selectbox.placeholder span:first-child { color: var(--text-muted); font-size: 0.9rem; }
 .hint { font-size: 0.78rem; color: var(--text-muted); margin-top: 5px; line-height: 1.7; }
@@ -265,8 +394,12 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
   font-size: 0.95rem;
   outline: none;
   margin-bottom: 10px;
+  transition: all .2s;
 }
-.searchbox:focus { border-color: var(--accent-blue); }
+.searchbox:focus { 
+  border-color: var(--accent-blue); 
+  box-shadow: 0 0 0 3px rgba(56,189,248,0.15);
+}
 .carlist { max-height: 45vh; overflow: auto; padding-bottom: 6px; }
 .cgroup {
   display: flex;
@@ -298,11 +431,48 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
   font-family: inherit;
   font-size: 0.92rem;
   cursor: pointer;
-  transition: background .15s, border-color .15s;
+  transition: all .15s cubic-bezier(.2,.9,.3,1);
 }
-.citem:active { background: rgba(56,189,248,0.15); border-color: rgba(56,189,248,0.4); }
+.citem:hover { 
+  background: rgba(56,189,248,0.1); 
+  border-color: rgba(56,189,248,0.3);
+  transform: translateX(2px);
+}
+[dir="rtl"] .citem:hover { transform: translateX(-2px); }
+.citem:active { transform: scale(0.98); }
 
-/* ===== Year Picker جدید (لیست ساده) ===== */
+/* Voice Search Button */
+.voice-search-wrap {
+  position: relative;
+  margin-bottom: 10px;
+}
+.voice-search-btn {
+  position: absolute;
+  left: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: var(--gradient-main);
+  border: none;
+  color: #0f172a;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  z-index: 2;
+  transition: all .2s;
+}
+.voice-search-btn.listening {
+  animation: pulseVoice 1.5s infinite;
+  background: var(--accent-red);
+  color: #fff;
+}
+@keyframes pulseVoice {
+  0% { box-shadow: 0 0 0 0 rgba(248,113,113,0.7); }
+  70% { box-shadow: 0 0 0 10px rgba(248,113,113,0); }
+  100% { box-shadow: 0 0 0 0 rgba(248,113,113,0); }
+}
+.voice-search-btn svg { width: 16px; height: 16px; }
+
 .year-list {
   max-height: 55vh;
   overflow-y: auto;
@@ -320,14 +490,19 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
   border-radius: 10px;
   cursor: pointer;
   font-family: inherit;
-  transition: all .15s;
+  transition: all .15s cubic-bezier(.2,.9,.3,1);
   margin-bottom: 2px;
 }
-.yr-item:hover { background: var(--bg-card); color: var(--text-primary); }
+.yr-item:hover { 
+  background: var(--bg-card); 
+  color: var(--text-primary); 
+  transform: scale(1.02);
+}
 .yr-item.selected {
   background: var(--gradient-main);
   color: #0f172a;
-  transform: scale(1.01);
+  transform: scale(1.03);
+  box-shadow: 0 4px 12px rgba(56,189,248,0.3);
 }
 .cal-manual-row {
   display: flex;
@@ -347,8 +522,12 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
   font-size: 0.95rem;
   outline: none;
   text-align: center;
+  transition: all .2s;
 }
-.cal-manual-input:focus { border-color: var(--accent-blue); }
+.cal-manual-input:focus { 
+  border-color: var(--accent-blue); 
+  box-shadow: 0 0 0 3px rgba(56,189,248,0.15);
+}
 .cal-set-btn {
   padding: 11px 18px;
   background: var(--gradient-main);
@@ -359,8 +538,11 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
   font-size: 0.9rem;
   font-weight: 700;
   cursor: pointer;
+  transition: all .2s cubic-bezier(.2,.9,.3,1);
+  box-shadow: var(--shadow-sm);
 }
-/* ===== پایان Year Picker ===== */
+.cal-set-btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.cal-set-btn:active { transform: scale(0.95); }
 
 .car-section { display: flex; gap: 24px; align-items: flex-start; flex-wrap: wrap; }
 .car-svg-wrap { flex: 0 0 210px; }
@@ -369,13 +551,31 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
   stroke: #475569;
   stroke-width: 1.5;
   cursor: pointer;
-  transition: fill .2s, stroke .2s;
+  transition: all .2s cubic-bezier(.2,.9,.3,1);
 }
-.zone:hover { fill: #334155; stroke: var(--accent-blue); }
-.zone.hit { fill: #dc2626; stroke: #f87171; }
-.zone.painted { fill: #d97706; stroke: #fbbf24; }
-.zone.disabled { fill: var(--bg-primary); stroke: #334155; stroke-dasharray: 4 3; cursor: not-allowed; }
-.zone.disabled:hover { fill: var(--bg-primary); stroke: #334155; }
+.zone:hover { 
+  fill: #334155; 
+  stroke: var(--accent-blue); 
+  transform: scale(1.02);
+  filter: drop-shadow(0 0 4px rgba(56,189,248,0.5));
+}
+.zone.hit { 
+  fill: #dc2626; 
+  stroke: #f87171; 
+  filter: drop-shadow(0 0 6px rgba(220,38,38,0.6));
+}
+.zone.painted { 
+  fill: #d97706; 
+  stroke: #fbbf24; 
+  filter: drop-shadow(0 0 6px rgba(217,119,6,0.6));
+}
+.zone.disabled { 
+  fill: var(--bg-primary); 
+  stroke: #334155; 
+  stroke-dasharray: 4 3; 
+  cursor: not-allowed; 
+  opacity: 0.5;
+}
 .hits-panel { flex: 1; min-width: 220px; }
 .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; min-height: 20px; }
 .chip {
@@ -385,14 +585,27 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
   padding: 5px 12px;
   border-radius: 20px;
   font-size: 0.82rem;
-  animation: pop .25s ease;
+  animation: pop .3s cubic-bezier(.2,.9,.3,1.2);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
 }
-.chip.paint { background: rgba(245,158,11,0.15); border-color: rgba(251,191,36,0.4); color: #fcd34d; }
-.chip.empty { background: none; border: 1px dashed var(--border-color); color: var(--text-muted); }
-@keyframes pop { from { transform: scale(0.7); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.chip.paint { 
+  background: rgba(245,158,11,0.15); 
+  border-color: rgba(251,191,36,0.4); 
+  color: #fcd34d; 
+}
+.chip.empty { 
+  background: none; 
+  border: 1px dashed var(--border-color); 
+  color: var(--text-muted); 
+  box-shadow: none;
+}
+@keyframes pop { 
+  from { transform: scale(0.7); opacity: 0; } 
+  to { transform: scale(1); opacity: 1; } 
+}
 .legend { display: flex; gap: 16px; margin-top: 14px; font-size: 0.78rem; color: var(--text-secondary); flex-wrap: wrap; }
 .legend span { display: flex; align-items: center; gap: 6px; }
-.dot { width: 12px; height: 12px; border-radius: 4px; display: inline-block; }
+.dot { width: 12px; height: 12px; border-radius: 4px; display: inline-block; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
 .dot.normal { background: var(--bg-secondary); border: 1px solid #475569; }
 .dot.hitd { background: #dc2626; }
 .dot.paintd { background: #d97706; }
@@ -408,19 +621,28 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
   border-radius: 12px;
   font-size: 0.9rem;
   color: var(--text-secondary);
-  transition: all .2s;
+  transition: all .2s cubic-bezier(.2,.9,.3,1);
   user-select: none;
+  box-shadow: var(--shadow-sm);
 }
-.pill-group label:hover span { border-color: var(--accent-blue); color: var(--text-primary); }
+.pill-group label:hover span { 
+  border-color: var(--accent-blue); 
+  color: var(--text-primary); 
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
 .pill-group input:checked + span {
   background: var(--gradient-main);
   border-color: transparent;
   color: #0f172a;
   font-weight: 700;
+  transform: scale(1.02);
+  box-shadow: 0 4px 12px rgba(56,189,248,0.3);
 }
 .pill-group.danger input:checked + span {
   background: linear-gradient(135deg, #ef4444, #dc2626);
   color: #fff;
+  box-shadow: 0 4px 12px rgba(239,68,68,0.3);
 }
 .question { margin-bottom: 18px; }
 .question:last-child { margin-bottom: 0; }
@@ -432,10 +654,13 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
   background: rgba(239,68,68,0.06);
   border: 1px solid rgba(239,68,68,0.25);
   border-radius: 14px;
-  animation: slide .3s ease;
+  animation: slide .3s cubic-bezier(.2,.9,.3,1);
 }
 .conditional.open { display: block; }
-@keyframes slide { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slide { 
+  from { opacity: 0; transform: translateY(-8px) scale(0.98); } 
+  to { opacity: 1; transform: translateY(0) scale(1); } 
+}
 .btn-calc {
   width: 100%;
   padding: 16px;
@@ -447,17 +672,33 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
   font-size: 1.15rem;
   font-weight: 700;
   cursor: pointer;
-  transition: transform .2s, box-shadow .2s, opacity .2s;
+  transition: all .2s cubic-bezier(.2,.9,.3,1);
+  box-shadow: 0 8px 24px rgba(56,189,248,0.3);
+  position: relative;
+  overflow: hidden;
 }
-.btn-calc:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(56,189,248,0.35); }
-.btn-calc:active:not(:disabled) { transform: translateY(0); }
+.btn-calc::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  transition: left .5s;
+}
+.btn-calc:hover::after { left: 100%; }
+.btn-calc:hover:not(:disabled) { 
+  transform: translateY(-3px); 
+  box-shadow: 0 12px 32px rgba(56,189,248,0.4); 
+}
+.btn-calc:active:not(:disabled) { transform: translateY(0) scale(0.98); }
 .btn-calc:disabled { opacity: 0.6; cursor: wait; }
 .toast {
   position: fixed;
   top: 24px;
   left: 50%;
   transform: translateX(-50%) translateY(-120px);
-  background: var(--bg-secondary);
+  background: rgba(30,41,59,0.95);
+  backdrop-filter: blur(12px);
   border: 1px solid rgba(56,189,248,0.5);
   color: var(--text-primary);
   padding: 16px 28px;
@@ -472,6 +713,7 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
   transition: transform .4s cubic-bezier(0.34, 1.56, 0.64, 1);
   max-width: 90vw;
 }
+[data-theme="light"] .toast { background: rgba(255,255,255,0.95); }
 .toast.plain { padding: 14px 24px; font-size: 0.92rem; border-color: rgba(251,191,36,0.55); }
 .toast.success { border-color: rgba(52,211,153,0.55); }
 .toast.show { transform: translateX(-50%) translateY(0); }
@@ -497,8 +739,11 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
 .toast.show .toast-progress { animation: shrink 3s linear forwards; }
 @keyframes shrink { from { transform: scaleX(1); } to { transform: scaleX(0); } }
 .results { display: none; }
-.results.show { display: block; animation: fadeUp .5s ease; }
-@keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+.results.show { display: block; animation: fadeUp .5s cubic-bezier(.2,.9,.3,1); }
+@keyframes fadeUp { 
+  from { opacity: 0; transform: translateY(20px) scale(0.98); } 
+  to { opacity: 1; transform: translateY(0) scale(1); } 
+}
 .price-hero { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
 .price-box {
   background: var(--bg-card);
@@ -506,10 +751,18 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
   border-radius: 18px;
   padding: 22px;
   text-align: center;
+  backdrop-filter: var(--glass-blur);
+  box-shadow: var(--shadow-md);
+  transition: all .3s;
 }
+.price-box:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
 .price-box .p-label { color: var(--text-secondary); font-size: 0.88rem; margin-bottom: 8px; }
 .price-box .p-value { font-size: 1.35rem; font-weight: 700; direction: ltr; }
-.price-box.fair { border-color: rgba(56,189,248,0.4); background: rgba(56,189,248,0.07); }
+.price-box.fair { 
+  border-color: rgba(56,189,248,0.4); 
+  background: rgba(56,189,248,0.07); 
+  box-shadow: 0 0 20px rgba(56,189,248,0.15);
+}
 .price-box.fair .p-value { color: var(--accent-blue); }
 .breakdown { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
 .breakdown th, .breakdown td { padding: 11px 10px; text-align: right; border-bottom: 1px solid var(--border-color); }
@@ -517,16 +770,16 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
 .breakdown td.num { direction: ltr; text-align: left; font-variant-numeric: tabular-nums; }
 .breakdown tr:last-child td { border-bottom: none; }
 .breakdown .pct { color: var(--accent-red); font-weight: 700; width: 70px; text-align: center; }
-.verdict { margin-top: 20px; padding: 22px; border-radius: 16px; text-align: center; }
+.verdict { margin-top: 20px; padding: 22px; border-radius: 16px; text-align: center; backdrop-filter: var(--glass-blur); }
 .verdict h3 { font-size: 1.35rem; margin-bottom: 10px; }
 .verdict p { font-size: 0.95rem; line-height: 1.9; }
-.verdict.great { background: linear-gradient(135deg, rgba(16,185,129,0.18), rgba(5,150,105,0.1)); border: 1px solid rgba(16,185,129,0.45); }
+.verdict.great { background: linear-gradient(135deg, rgba(16,185,129,0.18), rgba(5,150,105,0.1)); border: 1px solid rgba(16,185,129,0.45); box-shadow: 0 0 20px rgba(16,185,129,0.1); }
 .verdict.great h3 { color: var(--accent-green); }
-.verdict.ok { background: linear-gradient(135deg, rgba(56,189,248,0.15), rgba(99,102,241,0.08)); border: 1px solid rgba(56,189,248,0.4); }
+.verdict.ok { background: linear-gradient(135deg, rgba(56,189,248,0.15), rgba(99,102,241,0.08)); border: 1px solid rgba(56,189,248,0.4); box-shadow: 0 0 20px rgba(56,189,248,0.1); }
 .verdict.ok h3 { color: var(--accent-blue); }
-.verdict.caution { background: linear-gradient(135deg, rgba(251,191,36,0.14), rgba(217,119,6,0.08)); border: 1px solid rgba(251,191,36,0.4); }
+.verdict.caution { background: linear-gradient(135deg, rgba(251,191,36,0.14), rgba(217,119,6,0.08)); border: 1px solid rgba(251,191,36,0.4); box-shadow: 0 0 20px rgba(251,191,36,0.1); }
 .verdict.caution h3 { color: var(--accent-orange); }
-.verdict.bad { background: linear-gradient(135deg, rgba(239,68,68,0.15), rgba(220,38,38,0.08)); border: 1px solid rgba(239,68,68,0.45); }
+.verdict.bad { background: linear-gradient(135deg, rgba(239,68,68,0.15), rgba(220,38,38,0.08)); border: 1px solid rgba(239,68,68,0.45); box-shadow: 0 0 20px rgba(239,68,68,0.1); }
 .verdict.bad h3 { color: var(--accent-red); }
 .btn-reset {
   margin-top: 16px;
@@ -540,10 +793,16 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
   font-size: 1rem;
   font-weight: 700;
   cursor: pointer;
-  transition: background .2s;
+  transition: all .2s cubic-bezier(.2,.9,.3,1);
+  box-shadow: var(--shadow-sm);
 }
-.btn-reset:hover { background: var(--bg-secondary); }
-.chart-wrap { margin-top: 20px; padding: 18px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 14px; }
+.btn-reset:hover { 
+  background: var(--bg-secondary); 
+  transform: translateY(-2px); 
+  box-shadow: var(--shadow-md);
+}
+.btn-reset:active { transform: scale(0.98); }
+.chart-wrap { margin-top: 20px; padding: 18px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 14px; backdrop-filter: var(--glass-blur); }
 .chart-title { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 14px; font-weight: 700; }
 .bars { display: flex; align-items: flex-end; gap: 12px; height: 160px; padding: 0 8px; }
 .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; height: 100%; justify-content: flex-end; }
@@ -553,13 +812,14 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
   border-radius: 8px 8px 0 0;
   transition: height 1s cubic-bezier(.2,.9,.3,1);
   position: relative;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 .bar.new { background: linear-gradient(180deg, #94a3b8, #64748b); }
-.bar.fair { background: linear-gradient(180deg, #38bdf8, #818cf8); }
-.bar.ask { background: linear-gradient(180deg, #fbbf24, #f59e0b); }
+.bar.fair { background: linear-gradient(180deg, #38bdf8, #818cf8); box-shadow: 0 4px 12px rgba(56,189,248,0.3); }
+.bar.ask { background: linear-gradient(180deg, #fbbf24, #f59e0b); box-shadow: 0 4px 12px rgba(251,191,36,0.3); }
 .bar-val { font-size: 0.72rem; color: var(--text-secondary); white-space: nowrap; direction: ltr; }
 .bar-lbl { font-size: 0.78rem; color: var(--text-primary); font-weight: 700; }
-.feedback { margin-top: 18px; padding: 16px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 14px; text-align: center; }
+.feedback { margin-top: 18px; padding: 16px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 14px; text-align: center; backdrop-filter: var(--glass-blur); }
 .feedback-q { font-size: 0.92rem; color: var(--text-secondary); margin-bottom: 12px; }
 .fb-btns { display: flex; gap: 10px; justify-content: center; }
 .fb-btn {
@@ -570,14 +830,32 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
   color: var(--text-primary);
   font-size: 1.3rem;
   cursor: pointer;
-  transition: all .2s;
+  transition: all .2s cubic-bezier(.2,.9,.3,1);
   display: flex; align-items: center; justify-content: center;
+  box-shadow: var(--shadow-sm);
 }
-.fb-btn:hover { border-color: var(--accent-blue); transform: scale(1.08); }
-.fb-btn.thumbs-up.active { background: var(--accent-green); color: #0f172a; border-color: transparent; }
-.fb-btn.thumbs-down.active { background: var(--accent-red); color: #fff; border-color: transparent; }
-.fb-thanks { color: var(--accent-green); font-size: 0.88rem; margin-top: 10px; display: none; }
+.fb-btn:hover { 
+  border-color: var(--accent-blue); 
+  transform: scale(1.1) rotate(5deg); 
+  box-shadow: var(--shadow-md);
+}
+.fb-btn.thumbs-up.active { 
+  background: var(--accent-green); 
+  color: #0f172a; 
+  border-color: transparent; 
+  transform: scale(1.15);
+  box-shadow: 0 0 20px rgba(52,211,153,0.4);
+}
+.fb-btn.thumbs-down.active { 
+  background: var(--accent-red); 
+  color: #fff; 
+  border-color: transparent; 
+  transform: scale(1.15) rotate(-5deg);
+  box-shadow: 0 0 20px rgba(248,113,113,0.4);
+}
+.fb-thanks { color: var(--accent-green); font-size: 0.88rem; margin-top: 10px; display: none; animation: fadeInOut .5s; }
 .fb-thanks.show { display: block; }
+@keyframes fadeInOut { from{opacity:0;transform:translateY(-5px)} to{opacity:1;transform:translateY(0)} }
 .action-row { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
 .act-btn {
   flex: 1;
@@ -591,11 +869,64 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
   font-size: 0.9rem;
   font-weight: 700;
   cursor: pointer;
-  transition: all .2s;
+  transition: all .2s cubic-bezier(.2,.9,.3,1);
   display: flex; align-items: center; justify-content: center; gap: 6px;
+  box-shadow: var(--shadow-sm);
 }
-.act-btn:hover { border-color: var(--accent-blue); background: rgba(56,189,248,0.08); }
+.act-btn:hover { 
+  border-color: var(--accent-blue); 
+  background: rgba(56,189,248,0.08); 
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+.act-btn:active { transform: scale(0.95); }
 .act-btn svg { width: 18px; height: 18px; }
+
+/* History Filters & Empty State */
+.hist-filters {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+.hist-filter-btn {
+  padding: 8px 14px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  color: var(--text-secondary);
+  font-family: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all .2s;
+}
+.hist-filter-btn.active {
+  background: var(--gradient-main);
+  color: #0f172a;
+  border-color: transparent;
+  font-weight: 700;
+}
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-muted);
+}
+.empty-state svg {
+  width: 120px;
+  height: 120px;
+  margin-bottom: 20px;
+  opacity: 0.5;
+}
+.empty-state h3 {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+.empty-state p {
+  font-size: 0.9rem;
+  line-height: 1.8;
+}
+
 .hist-item {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
@@ -606,9 +937,16 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
   align-items: center;
   gap: 12px;
   cursor: pointer;
-  transition: border-color .2s;
+  transition: all .2s cubic-bezier(.2,.9,.3,1);
+  backdrop-filter: var(--glass-blur);
+  box-shadow: var(--shadow-sm);
 }
-.hist-item:hover { border-color: var(--accent-blue); }
+.hist-item:hover { 
+  border-color: var(--accent-blue); 
+  transform: translateX(4px) scale(1.01);
+  box-shadow: var(--shadow-md);
+}
+[dir="rtl"] .hist-item:hover { transform: translateX(-4px) scale(1.01); }
 .hist-info { flex: 1; min-width: 0; }
 .hist-model { font-size: 0.95rem; font-weight: 700; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .hist-meta { font-size: 0.78rem; color: var(--text-muted); margin-top: 3px; }
@@ -622,9 +960,13 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
   cursor: pointer;
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
-  transition: all .2s;
+  transition: all .2s cubic-bezier(.2,.9,.3,1);
 }
-.hist-del:hover { background: rgba(239,68,68,0.12); border-color: rgba(239,68,68,0.4); }
+.hist-del:hover { 
+  background: rgba(239,68,68,0.12); 
+  border-color: rgba(239,68,68,0.4); 
+  transform: scale(1.1) rotate(90deg);
+}
 .hist-empty { text-align: center; color: var(--text-muted); padding: 40px 20px; font-size: 0.95rem; line-height: 2; }
 .hist-actions { display: flex; gap: 10px; margin-bottom: 14px; }
 .hist-action-btn {
@@ -638,16 +980,29 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
   font-size: 0.85rem;
   font-weight: 700;
   cursor: pointer;
-  transition: all .2s;
+  transition: all .2s cubic-bezier(.2,.9,.3,1);
+  box-shadow: var(--shadow-sm);
 }
-.hist-action-btn:hover { border-color: var(--accent-blue); }
-.hist-action-btn.danger:hover { border-color: var(--accent-red); color: var(--accent-red); }
+.hist-action-btn:hover { 
+  border-color: var(--accent-blue); 
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+.hist-action-btn.danger:hover { 
+  border-color: var(--accent-red); 
+  color: var(--accent-red); 
+  background: rgba(239,68,68,0.08);
+}
+
 .home-hero {
   text-align: center;
   padding: 40px 20px 30px;
   background: radial-gradient(ellipse at top, rgba(56,189,248,0.12), transparent 70%);
   border-radius: 24px;
   margin-bottom: 24px;
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-md);
 }
 .home-logo {
   width: 96px; height: 96px;
@@ -656,8 +1011,9 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
   box-shadow: 0 10px 40px rgba(56,189,248,0.25);
   animation: logoFloat 3s ease-in-out infinite;
   object-fit: cover;
+  border: 2px solid rgba(255,255,255,0.1);
 }
-@keyframes logoFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+@keyframes logoFloat { 0%,100%{transform:translateY(0) rotate(0deg)} 50%{transform:translateY(-8px) rotate(2deg)} }
 .home-title { font-size: 1.7rem; font-weight: 700; background: var(--gradient-main); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 6px; }
 .home-subtitle { color: var(--text-secondary); font-size: 0.95rem; }
 .menu-grid { display: grid; gap: 12px; }
@@ -674,11 +1030,25 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
   display: flex;
   align-items: center;
   gap: 14px;
-  transition: transform .2s, box-shadow .2s;
+  transition: all .2s cubic-bezier(.2,.9,.3,1);
   box-shadow: 0 8px 24px rgba(56,189,248,0.25);
+  position: relative;
+  overflow: hidden;
 }
-.menu-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(56,189,248,0.35); }
-.menu-primary:active { transform: translateY(0); }
+.menu-primary::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  transition: left .5s;
+}
+.menu-primary:hover::after { left: 100%; }
+.menu-primary:hover { 
+  transform: translateY(-3px) scale(1.02); 
+  box-shadow: 0 12px 32px rgba(56,189,248,0.35); 
+}
+.menu-primary:active { transform: translateY(0) scale(0.98); }
 .menu-primary svg { width: 28px; height: 28px; flex-shrink: 0; }
 .menu-secondary {
   padding: 16px 18px;
@@ -693,16 +1063,25 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
   display: flex;
   align-items: center;
   gap: 12px;
-  transition: all .2s;
+  transition: all .2s cubic-bezier(.2,.9,.3,1);
   width: 100%;
   text-align: right;
+  backdrop-filter: var(--glass-blur);
+  box-shadow: var(--shadow-sm);
 }
-.menu-secondary:hover { border-color: var(--accent-blue); background: rgba(56,189,248,0.06); }
+.menu-secondary:hover { 
+  border-color: var(--accent-blue); 
+  background: rgba(56,189,248,0.06); 
+  transform: translateX(4px);
+  box-shadow: var(--shadow-md);
+}
+[dir="rtl"] .menu-secondary:hover { transform: translateX(-4px); }
 .menu-secondary svg.mi { width: 22px; height: 22px; color: var(--accent-blue); flex-shrink: 0; }
-.menu-secondary .arrow { margin-right: auto; color: var(--text-muted); width: 18px; height: 18px; flex-shrink: 0; }
+.menu-secondary .arrow { margin-right: auto; color: var(--text-muted); width: 18px; height: 18px; flex-shrink: 0; transition: transform .2s; }
+.menu-secondary:hover .arrow { transform: translateX(-4px); }
 .page { display: none; }
-.page.active { display: block; animation: fadeIn .3s ease; }
-@keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+.page.active { display: block; animation: fadeIn .3s cubic-bezier(.2,.9,.3,1); }
+@keyframes fadeIn { from{opacity:0;transform:translateY(8px) scale(0.99)} to{opacity:1;transform:translateY(0) scale(1)} }
 .back-bar {
   display: flex;
   align-items: center;
@@ -719,10 +1098,15 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
   color: var(--text-primary);
   cursor: pointer;
   display: flex; align-items: center; justify-content: center;
-  transition: all .2s;
-  flex-shrink: 0;
+  transition: all .2s cubic-bezier(.2,.9,.3,1);
+  box-shadow: var(--shadow-sm);
 }
-.back-btn:hover { border-color: var(--accent-blue); }
+.back-btn:hover { 
+  border-color: var(--accent-blue); 
+  transform: translateX(4px) scale(1.05);
+  box-shadow: var(--shadow-md);
+}
+[dir="rtl"] .back-btn:hover { transform: translateX(-4px) scale(1.05); }
 .back-btn svg { width: 20px; height: 20px; }
 .back-title { font-size: 1.15rem; font-weight: 700; color: var(--text-primary); }
 .faq-item {
@@ -731,7 +1115,11 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
   border-radius: 12px;
   margin-bottom: 10px;
   overflow: hidden;
+  backdrop-filter: var(--glass-blur);
+  box-shadow: var(--shadow-sm);
+  transition: all .2s;
 }
+.faq-item:hover { box-shadow: var(--shadow-md); }
 .faq-q {
   padding: 14px 16px;
   font-weight: 700;
@@ -742,10 +1130,11 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
   justify-content: space-between;
   gap: 10px;
   color: var(--text-primary);
+  transition: background .2s;
 }
 .faq-q:hover { background: rgba(56,189,248,0.06); }
-.faq-q .chev-sm { width: 18px; height: 18px; color: var(--text-muted); transition: transform .2s; flex-shrink: 0; }
-.faq-item.open .faq-q .chev-sm { transform: rotate(180deg); }
+.faq-q .chev-sm { width: 18px; height: 18px; color: var(--text-muted); transition: transform .2s cubic-bezier(.2,.9,.3,1); flex-shrink: 0; }
+.faq-item.open .faq-q .chev-sm { transform: rotate(180deg); color: var(--accent-blue); }
 .faq-a {
   max-height: 0;
   overflow: hidden;
@@ -763,6 +1152,8 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
   padding: 22px;
   text-align: center;
   margin-bottom: 16px;
+  backdrop-filter: var(--glass-blur);
+  box-shadow: var(--shadow-md);
 }
 .about-version { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 6px; }
 .about-brand { font-size: 1.2rem; font-weight: 700; color: var(--accent-blue); margin-bottom: 14px; }
@@ -806,7 +1197,7 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
   background: var(--gradient-main);
   opacity: 0;
   transform: scaleX(.4);
-  transition: all .25s;
+  transition: all .25s cubic-bezier(.2,.9,.3,1);
 }
 .nb.active { color: var(--accent-blue); }
 .nb.active .pill { opacity: 1; transform: scaleX(1); }
@@ -826,7 +1217,8 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
 }
 .modal.open { opacity: 1; pointer-events: auto; }
 .sheet {
-  background: var(--bg-secondary);
+  background: rgba(30,41,59,0.98);
+  backdrop-filter: blur(20px);
   width: 100%;
   max-width: 520px;
   border-radius: 24px 24px 0 0;
@@ -836,11 +1228,14 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
   line-height: 2;
   max-height: 78vh;
   overflow: auto;
-  transform: translateY(100%);
+  transform: translateY(100%) scale(0.95);
   transition: transform .32s cubic-bezier(.2,.9,.3,1);
   box-shadow: 0 -10px 40px rgba(0,0,0,.5);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-bottom: none;
 }
-.modal.open .sheet { transform: translateY(0); }
+[data-theme="light"] .sheet { background: rgba(255,255,255,0.98); }
+.modal.open .sheet { transform: translateY(0) scale(1); }
 .sheet .handle { width: 42px; height: 4px; border-radius: 4px; background: var(--border-color); margin: 6px auto 12px; }
 .sheet h3 { color: var(--accent-blue); font-size: 16px; margin-bottom: 6px; }
 #appSplash {
@@ -861,6 +1256,7 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
   box-shadow: 0 10px 40px rgba(56,189,248,.25), 0 4px 18px rgba(0,0,0,.6);
   animation: logoIn .7s cubic-bezier(.2,.9,.3,1.2);
   object-fit: cover;
+  border: 2px solid rgba(255,255,255,0.1);
 }
 #appSplash .t1 { color: #e2e8f0; font-family: 'Vazirmatn', Tahoma; font-size: 17px; font-weight: 700; }
 #appSplash .t2 { color: #64748b; font-family: 'Vazirmatn', Tahoma; font-size: 11px; letter-spacing: 3px; }
@@ -879,11 +1275,11 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
   body * { visibility: hidden !important; }
   #printArea, #printArea * { visibility: visible !important; }
   #printArea { position: absolute; top: 0; right: 0; left: 0; padding: 20px; background: #fff !important; color: #000 !important; }
-  #printArea .card { background: #fff !important; border: 1px solid #ccc !important; color: #000 !important; }
+  #printArea .card { background: #fff !important; border: 1px solid #ccc !important; color: #000 !important; box-shadow: none !important; }
   #printArea table { color: #000 !important; }
   #printArea th, #printArea td { color: #000 !important; border-color: #ddd !important; }
   #printArea .btn-reset, #printArea .act-btn, #printArea .feedback, #bottomNav, .back-bar, .top-header { display: none !important; }
-  #printArea .verdict { border: 1px solid #999 !important; background: #f9f9f9 !important; }
+  #printArea .verdict { border: 1px solid #999 !important; background: #f9f9f9 !important; box-shadow: none !important; }
   #printArea .verdict h3, #printArea .verdict p { color: #000 !important; }
 }
 </style>
@@ -892,7 +1288,39 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
 
 <div id="appSplash"><img src="icon.png" alt=""><div class="t1">کارشناسی قیمت خودرو</div><div class="t2">AUTOSCOPE</div></div>
 
-<!-- ===== Drawer Overlay & Panel ===== -->
+<!-- Onboarding Overlay -->
+<div id="onboardingOverlay">
+  <div class="ob-slide active" data-step="1">
+    <div class="ob-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+    </div>
+    <div class="ob-title">به AutoScope خوش آمدید!</div>
+    <div class="ob-desc">ابزار هوشمند کارشناسی و قیمت‌گذاری خودرو. با تحلیل دقیق عوامل فنی و ظاهری، قیمت منطقی هر خودرو را تخمین بزنید.</div>
+    <div class="ob-dots"><span class="ob-dot active"></span><span class="ob-dot"></span><span class="ob-dot"></span></div>
+    <button class="ob-btn" onclick="nextObStep()">بعدی</button>
+    <br><button class="ob-skip" onclick="skipOnboarding()">رد کردن</button>
+  </div>
+  <div class="ob-slide" data-step="2">
+    <div class="ob-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+    </div>
+    <div class="ob-title">سه گام ساده</div>
+    <div class="ob-desc">۱. اطلاعات پایه خودرو را وارد کنید.<br>۲. روی بدنه کلیک کرده و نواحی آسیب‌دیده یا رنگ‌شده را مشخص کنید.<br>۳. وضعیت فنی و شاسی را تکمیل و دکمه محاسبه را بزنید.</div>
+    <div class="ob-dots"><span class="ob-dot"></span><span class="ob-dot active"></span><span class="ob-dot"></span></div>
+    <button class="ob-btn" onclick="nextObStep()">بعدی</button>
+  </div>
+  <div class="ob-slide" data-step="3">
+    <div class="ob-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+    </div>
+    <div class="ob-title">نتیجه بگیرید و ذخیره کنید</div>
+    <div class="ob-desc">قیمت منطقی، نمودار مقایسه و گزارش کامل دریافت کنید. می‌توانید نتیجه را اشتراک‌گذاری، PDF بگیرید یا در تاریخچه ذخیره شود.</div>
+    <div class="ob-dots"><span class="ob-dot"></span><span class="ob-dot"></span><span class="ob-dot active"></span></div>
+    <button class="ob-btn" onclick="finishOnboarding()">شروع کنید!</button>
+  </div>
+</div>
+
+<!-- Drawer Overlay & Panel -->
 <div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
 <aside class="drawer-panel" id="drawerPanel">
   <div class="drawer-head">
@@ -902,7 +1330,7 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
   </div>
   <div class="drawer-body">
     <button class="dr-item" data-page="home" onclick="drawerGo('home')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9 21v-6h6v6"/></svg>
+      <svg viewBox="0 0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9 21v-6h6v6"/></svg>
       خانه
     </button>
     <button class="dr-item" data-page="pricing" onclick="drawerGo('pricing')">
@@ -916,6 +1344,15 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
     <button class="dr-item" data-page="pdf" onclick="drawerGo('pdf')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
       خروجی PDF
+    </button>
+    <div class="dr-sep"></div>
+    <button class="dr-item" onclick="backupData()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      پشتیبان‌گیری از داده‌ها
+    </button>
+    <button class="dr-item" onclick="restoreDataPrompt()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      بازیابی از فایل
     </button>
     <div class="dr-sep"></div>
     <button class="dr-item" data-page="guide" onclick="drawerGo('guide')">
@@ -932,12 +1369,12 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
       <span id="themeLabel">حالت روشن/تیره</span>
     </button>
   </div>
-  <div class="dr-foot">نسخهٔ ۱٫۲ — AutoScope © ۱۴۰۵</div>
+  <div class="dr-foot">نسخهٔ ۱٫۴ — AutoScope © ۱۴۰۵</div>
 </aside>
 
 <div class="container">
 
-<!-- ===== هدر ثابت بالا ===== -->
+<!-- Top Header -->
 <div class="top-header">
   <div class="header-brand">AutoScope</div>
   <div class="header-actions">
@@ -947,7 +1384,7 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
   </div>
 </div>
 
-<!-- ==================== صفحهٔ خانه (منوی اصلی) ==================== -->
+<!-- Home Page -->
 <div class="page active" id="pageHome">
   <div class="home-hero">
     <img src="icon.png" alt="لوگوی AutoScope" class="home-logo">
@@ -970,6 +1407,11 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
       خروجی PDF نتیجه
       <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
     </button>
+    <button class="menu-secondary" onclick="goTo('loan')">
+      <svg class="mi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+      ماشین‌حساب اقساط
+      <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
     <button class="menu-secondary" onclick="goTo('guide')">
       <svg class="mi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
       راهنما و سوالات متداول
@@ -983,17 +1425,20 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
   </div>
 </div>
 
-<!-- ==================== صفحهٔ قیمت‌گذاری ==================== -->
+<!-- Pricing Page -->
 <div class="page" id="pagePricing">
   <form id="carForm" novalidate>
     <div class="card">
       <h2><span class="step">۱</span> اطلاعات پایه خودرو</h2>
       <div class="field" style="margin-bottom: 16px;">
         <label>انتخاب سریع از لیست خودروهای بازار ایران:</label>
-        <button type="button" class="selectbox placeholder" id="carSelectBtn" onclick="openCar()">
-          <span id="carSelectText">انتخاب از لیست (۷۴ خودرو) یا تایپ دستی</span>
-          <svg class="chev" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-        </button>
+        <div class="voice-search-wrap">
+          <input type="text" class="searchbox" id="carSearchInput" placeholder="نام خودرو را تایپ کنید یا دکمه میکروفون را بزنید..." oninput="renderCarList(this.value)">
+          <button type="button" class="voice-search-btn" id="voiceBtn" onclick="startVoiceSearch()" title="جستجوی صوتی">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+          </button>
+        </div>
+        <div class="carlist" id="carList"></div>
         <div class="hint">با کلیک روی کادر بالا، لیست همراه با جستجو باز می‌شود.</div>
       </div>
       <div class="grid2">
@@ -1010,7 +1455,7 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
         </div>
         <div class="field">
           <label for="km">کیلومتر کارکرد *</label>
-          <input type="text" id="km" inputmode="numeric" placeholder="مثلاً: ۸۵۰۰">
+          <input type="text" id="km" inputmode="numeric" placeholder="مثلاً: ۸۵۰۰۰">
           <div class="hint">میانگین کارکرد استاندارد: ۲۰٬۰۰ کیلومتر در سال</div>
         </div>
         <div class="field">
@@ -1024,6 +1469,7 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
         </div>
       </div>
     </div>
+    <!-- ... Other Cards Same As Before ... -->
     <div class="card">
       <h2><span class="step">۲</span> جاهایی که ضربه خورده</h2>
       <div class="car-section">
@@ -1177,9 +1623,15 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
   </div>
 </div>
 
-<!-- ==================== صفحهٔ تاریخچه ==================== -->
+<!-- History Page -->
 <div class="page" id="pageHistory">
   <input type="text" class="searchbox" id="histSearch" placeholder="جستجو در تاریخچه... مثلاً: پژو ۲۰۷" oninput="renderHistory()">
+  <div class="hist-filters">
+    <button class="hist-filter-btn active" data-filter="all" onclick="setHistFilter('all',this)">همه</button>
+    <button class="hist-filter-btn" data-filter="iran" onclick="setHistFilter('iran',this)">ایران‌خودرو</button>
+    <button class="hist-filter-btn" data-filter="saipa" onclick="setHistFilter('saipa',this)">سایپا</button>
+    <button class="hist-filter-btn" data-filter="montage" onclick="setHistFilter('montage',this)">مونتاژی</button>
+  </div>
   <div class="hist-actions">
     <button type="button" class="hist-action-btn" onclick="exportCSV()">📥 خروجی CSV</button>
     <button type="button" class="hist-action-btn danger" onclick="clearAllHistory()">🗑 پاک کردن همه</button>
@@ -1187,8 +1639,47 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
   <div id="histList"></div>
 </div>
 
-<!-- ==================== صفحهٔ PDF ==================== -->
+<!-- Loan Calculator Page -->
+<div class="page" id="pageLoan">
+  <div class="back-bar">
+    <button class="back-btn" onclick="goTo('home')" aria-label="بازگشت">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+    <div class="back-title">ماشین‌حساب اقساط خرید</div>
+  </div>
+  <div class="card">
+    <h2><span class="step">💳</span> محاسبه اقساط ماهانه</h2>
+    <div class="grid2">
+      <div class="field">
+        <label for="loanAmount">مبلغ وام (تومان)</label>
+        <input type="text" id="loanAmount" inputmode="numeric" placeholder="مثلاً: ۵۰۰۰۰۰۰۰">
+      </div>
+      <div class="field">
+        <label for="loanRate">نرخ سود سالانه (%)</label>
+        <input type="text" id="loanRate" inputmode="decimal" placeholder="مثلاً: ۲۳" value="۲۳">
+      </div>
+      <div class="field">
+        <label for="loanMonths">مدت بازپرداخت (ماه)</label>
+        <input type="number" id="loanMonths" min="6" max="84" value="36">
+      </div>
+    </div>
+    <button type="button" class="btn-calc" onclick="calcLoan()">محاسبه قسط ماهانه</button>
+    <div id="loanResult" style="display:none; margin-top:20px; padding:20px; background:rgba(56,189,248,0.1); border-radius:14px; text-align:center;">
+      <div style="font-size:0.9rem; color:var(--text-secondary); margin-bottom:8px;">قسط ماهانه تقریبی:</div>
+      <div id="loanMonthly" style="font-size:1.5rem; font-weight:700; color:var(--accent-blue); direction:ltr;"></div>
+      <div style="font-size:0.8rem; color:var(--text-muted); margin-top:8px;">* محاسبه بر اساس فرمول اقساط ثابت (Annuity) انجام شده است.</div>
+    </div>
+  </div>
+</div>
+
+<!-- PDF Page -->
 <div class="page" id="pagePdf">
+  <div class="back-bar">
+    <button class="back-btn" onclick="goTo('home')" aria-label="بازگشت">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+    <div class="back-title">خروجی PDF نتیجه</div>
+  </div>
   <div class="card">
     <h2><span class="step">📄</span> انتخاب رکورد برای چاپ</h2>
     <p style="color:var(--text-secondary);font-size:.92rem;line-height:1.9;margin-bottom:14px;">ابتدا یک خودرو را قیمت‌گذاری کنید یا از تاریخچه انتخاب نمایید. سپس دکمهٔ «چاپ / ذخیرهٔ PDF» را بزنید.</p>
@@ -1201,8 +1692,14 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
   </div>
 </div>
 
-<!-- ==================== صفحهٔ راهنما ==================== -->
+<!-- Guide Page -->
 <div class="page" id="pageGuide">
+  <div class="back-bar">
+    <button class="back-btn" onclick="goTo('home')" aria-label="بازگشت">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+    <div class="back-title">راهنما و سوالات متداول</div>
+  </div>
   <div class="card">
     <h2><span class="step">📖</span> راهنمای استفاده</h2>
     <ol style="padding-right:20px;color:var(--text-secondary);line-height:2.2;font-size:.92rem;">
@@ -1218,7 +1715,7 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
   <div class="card">
     <h2><span class="step">❓</span> سوالات متداول</h2>
     <div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">گلگیر چیست و چرا روی قیمت اثر دارد؟<svg class="chev-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a">گلگیر قطعهٔ فلزی بالاجنبین چرخ‌هاست که هم نقش زیبایی دارد و هم محافظتی. چون تعویض آن ساده است ولی رنگ‌شدگی‌اش نشانهٔ تصادف تلقی می‌شود، حدود ۳٪ از قیمت را کاهش می‌دهد.</div></div>
-    <div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">شاسی کجاست و آسیب آن چه قدر مهم است؟<svg class="chev-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a">شاسی اسکلت فلزی زیرین خودروست که تمام اجزا روی آن سوار می‌شوند. آسیب شاسی خطرناک‌ترین نوع خسارت است چون تعمیر آن پیچیده و گران است و ایمنی خودرو را تهدید می‌کند. بسته به شدت، بین ۸ تا ۲۲ درصد افت قیمت ایجاد می‌کند.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">شاسی کجاست و آسیب آن چه قدر مهم است؟<svg class="chev-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a">شاسی اسکلت فلزی زیرین خودروست که تمام اجزا روی آن سوار می‌شوند. آسیب شاسی خطرناک‌ترین نوع خسارت است چون تعمیر آن پیچیده و گران است و ایمنی خودرو را تهدید می‌کند. بسته به شدت، بین ۸ تا ۲ درصد افت قیمت ایجاد می‌کند.</div></div>
     <div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">رنگ‌شدگی یعنی چه؟ دور رنگ و تمام رنگ چه فرقی دارند؟<svg class="chev-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a">رنگ‌شدگی یعنی بخشی از بدنه رنگ مجدد شده است. «دور رنگ» یعنی فقط نمای بیرونی (کاپوت، درب‌ها، گلگیرها، سپرها، صندوق) رنگ شده و سقف سالم است. «تمام رنگ» یعنی حتی سقف هم رنگ شده که افت بیشتری دارد.</div></div>
     <div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">چرا سقف و شیشه‌ها افت بیشتری دارند؟<svg class="chev-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a">چون آسیب به سقف معمولاً نشانهٔ تصادف شدید (واژگونی یا برخورد از بالا) است و تعمیر آن پرهزینه و تخصصی می‌باشد. بنابراین خریداران از چنین خودروهایی فاصله می‌گیرند.</div></div>
     <div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">آیا قیمت محاسبه‌شده دقیق است؟<svg class="chev-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a">این قیمت یک تخمین منطقی بر اساس عوامل استاندارد بازار است، نه قیمت قطعی. قیمت نهایی به عرضه و تقاضا، منطقه، فصل و مذاکره بستگی دارد. همیشه این عدد را با آگهی‌های مشابه در دیوار و باما مقایسه کنید.</div></div>
@@ -1226,11 +1723,17 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
   </div>
 </div>
 
-<!-- ==================== صفحهٔ درباره ==================== -->
+<!-- About Page -->
 <div class="page" id="pageAbout">
+  <div class="back-bar">
+    <button class="back-btn" onclick="goTo('home')" aria-label="بازگشت">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+    <div class="back-title">دربارهٔ ما</div>
+  </div>
   <div class="about-card">
-    <img src="icon.png" alt="لوگوی AutoScope" style="width:80px;height:80px;border-radius:20px;margin-bottom:12px;object-fit:cover;">
-    <div class="about-version">نسخهٔ ۱٫۲</div>
+    <img src="icon.png" alt="لوگوی AutoScope" style="width:80px;height:80px;border-radius:20px;margin-bottom:12px;object-fit:cover;border:2px solid rgba(255,255,255,0.1);">
+    <div class="about-version">نسخهٔ ۱٫۴</div>
     <div class="about-brand">AutoScope</div>
     <div class="about-desc">
       AutoScope یک ابزار کارشناسی و قیمت‌گذاری خودرو است که با تحلیل عوامل متعددی مانند سن، کارکرد، وضعیت بدنه، رنگ‌شدگی، آسیب شاسی و تجهیزات ایمنی، قیمت منطقی هر خودرو را تخمین می‌زند.<br><br>
@@ -1245,9 +1748,9 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
   </div>
 </div>
 
-</div><!-- پایان container -->
+</div><!-- End Container -->
 
-<!-- نوار پایین -->
+<!-- Bottom Nav -->
 <nav id="bottomNav">
   <button class="nb active" id="navHome" onclick="goTo('home')"><span class="pill"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9 21v-6h6v6"/></svg><span class="lb">خانه</span></button>
   <button class="nb" id="navBack" onclick="goBack()"><span class="pill"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg><span class="lb">بازگشت</span></button>
@@ -1258,15 +1761,14 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
 <div class="toast plain" id="alertBox"><span id="alertMsg"></span></div>
 <div class="toast success" id="successBox"><span id="successMsg"></span></div>
 
-<!-- مودال انتخاب خودرو -->
+<!-- Modals -->
 <div class="modal" id="carModal"><div class="sheet">
   <div class="handle"></div>
   <h3>انتخاب خودرو</h3>
   <input type="text" class="searchbox" id="carSearch" placeholder="جستجو... مثلاً: پژو ۲۰۷ یا شاهین">
-  <div class="carlist" id="carList"></div>
+  <div class="carlist" id="carListModal"></div>
 </div></div>
 
-<!-- مودال پیکر سال (جدید و ساده) -->
 <div class="modal" id="yearModal"><div class="sheet">
   <div class="handle"></div>
   <h3>انتخاب سال تولید</h3>
@@ -1277,7 +1779,6 @@ header p { color: var(--text-secondary); font-size: 0.95rem; }
   <div class="year-list" id="yearList"></div>
 </div></div>
 
-<!-- ناحیهٔ چاپ -->
 <div id="printArea"></div>
 
 <script>
@@ -1299,16 +1800,49 @@ function formatNumber(n){return toPersianDigits(Math.round(n).toLocaleString('en
 function faNum(s){return String(s).replace(/[0-9]/g,function(d){return faDigits[d];}).replace(/[٠-٩]/g,function(d){return faDigits[arDigits.indexOf(d)];});}
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
 
+// Haptic Feedback Helper
+function vibrate(ms) {
+  if (navigator.vibrate) navigator.vibrate(ms || 10);
+}
+
 var alertBox=document.getElementById('alertBox'),alertTimer=null;
 function notify(msg){document.getElementById('alertMsg').textContent=msg;alertBox.classList.add('show');clearTimeout(alertTimer);alertTimer=setTimeout(function(){alertBox.classList.remove('show');},2600);}
 var successBox=document.getElementById('successBox'),successTimer=null;
 function succeed(msg){document.getElementById('successMsg').textContent=msg;successBox.classList.add('show');clearTimeout(successTimer);successTimer=setTimeout(function(){successBox.classList.remove('show');},2600);}
 
+/* ===== Onboarding Logic ===== */
+let obStep = 1;
+const totalSteps = 3;
+window.nextObStep = function() {
+  vibrate(20);
+  if (obStep < totalSteps) {
+    document.querySelector(`.ob-slide[data-step="${obStep}"]`).classList.remove('active');
+    obStep++;
+    document.querySelector(`.ob-slide[data-step="${obStep}"]`).classList.add('active');
+    // Update dots
+    const dots = document.querySelectorAll('.ob-dot');
+    dots.forEach((d,i)=>d.classList.toggle('active', i===obStep-1));
+  } else {
+    finishOnboarding();
+  }
+};
+window.skipOnboarding = function() {
+  vibrate(10);
+  finishOnboarding();
+};
+window.finishOnboarding = function() {
+  vibrate(30);
+  try { localStorage.setItem('autoscope_onboarded', 'true'); } catch(e){}
+  const overlay = document.getElementById('onboardingOverlay');
+  overlay.style.opacity = '0';
+  setTimeout(() => { overlay.style.display = 'none'; }, 500);
+};
+
 /* ===== Drawer ===== */
 window.openDrawer=function(){
+  vibrate(10);
   document.getElementById('drawerOverlay').classList.add('open');
   document.getElementById('drawerPanel').classList.add('open');
-  // highlight current page
   var cur=pageStack[pageStack.length-1];
   document.querySelectorAll('.dr-item[data-page]').forEach(function(it){it.classList.toggle('active',it.getAttribute('data-page')===cur);});
 };
@@ -1321,11 +1855,12 @@ window.drawerGo=function(name){
   goTo(name,true);
 };
 
-/* ===== ناوبری صفحات ===== */
+/* ===== Navigation ===== */
 var pageStack=['home'];
 window.goTo=function(name,isFromDrawer){
+  vibrate(15);
   document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
-  var map={home:'pageHome',pricing:'pagePricing',history:'pageHistory',pdf:'pagePdf',guide:'pageGuide',about:'pageAbout'};
+  var map={home:'pageHome',pricing:'pagePricing',history:'pageHistory',pdf:'pagePdf',guide:'pageGuide',about:'pageAbout',loan:'pageLoan'};
   var el=document.getElementById(map[name]);
   if(el){el.classList.add('active');}
   if(isFromDrawer){pageStack=[name];}
@@ -1340,7 +1875,7 @@ window.goBack=function(){
     pageStack.pop();
     var prev=pageStack[pageStack.length-1];
     document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
-    var map={home:'pageHome',pricing:'pagePricing',history:'pageHistory',pdf:'pagePdf',guide:'pageGuide',about:'pageAbout'};
+    var map={home:'pageHome',pricing:'pagePricing',history:'pageHistory',pdf:'pagePdf',guide:'pageGuide',about:'pageAbout',loan:'pageLoan'};
     var el=document.getElementById(map[prev]);
     if(el){el.classList.add('active');}
     document.getElementById('navHome').classList.toggle('active',prev==='home');
@@ -1350,7 +1885,7 @@ window.goBack=function(){
   }
 };
 
-/* ===== تم روشن/تیره ===== */
+/* ===== Theme Toggle ===== */
 window.toggleTheme=function(){
   var cur=document.documentElement.getAttribute('data-theme')||'dark';
   var next=cur==='dark'?'light':'dark';
@@ -1360,12 +1895,57 @@ window.toggleTheme=function(){
   var lbl=document.getElementById('themeLabel');
   if(lbl)lbl.textContent=(next==='light'?'حالت تیره':'حالت روشن');
 };
-function updateThemeIcon(theme){
-  // icon stays the same in drawer; optional
-}
+function updateThemeIcon(theme){}
 try{var savedTheme=localStorage.getItem('autoscope_theme')||'dark';document.documentElement.setAttribute('data-theme',savedTheme);var tl=document.getElementById('themeLabel');if(tl)tl.textContent=(savedTheme==='light'?'حالت تیره':'حالت روشن');}catch(e){}
 
-/* ===== Year Picker (ساده: لیست سال‌ها ۱۳۵۰–۱۴۱۰) ===== */
+/* ===== Backup & Restore ===== */
+window.backupData = function() {
+  vibrate(20);
+  var history = loadHistory();
+  var settings = { theme: document.documentElement.getAttribute('data-theme') || 'dark', version: '1.4' };
+  var data = { history: history, settings: settings, date: new Date().toISOString() };
+  
+  var blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = 'autoscope-backup-' + new Date().toISOString().slice(0,10) + '.json';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  succeed('فایل پشتیبان دانلود شد');
+};
+
+window.restoreDataPrompt = function() {
+  vibrate(10);
+  var input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.json';
+  input.onchange = function(e) {
+    var file = e.target.files[0];
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function(ev) {
+      try {
+        var data = JSON.parse(ev.target.result);
+        if (data.history && Array.isArray(data.history)) {
+          saveHistory(data.history);
+          renderHistory();
+          updateHistCount();
+          succeed('تاریخچه با موفقیت بازیابی شد (' + data.history.length + ' رکورد)');
+        } else {
+          notify('فایل معتبر نیست');
+        }
+      } catch(err) {
+        notify('خطا در خواندن فایل');
+      }
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+};
+
+/* ===== Year Picker ===== */
 window.yearVal='';
 window.buildYearList=function(){
   var box=document.getElementById('yearList');
@@ -1375,14 +1955,13 @@ window.buildYearList=function(){
     html+='<button type="button" class="'+cls+'" data-y="'+y+'">'+toPersianDigits(y)+'</button>';
   }
   box.innerHTML=html;
-  // bind clicks
   box.querySelectorAll('.yr-item').forEach(function(btn){
     btn.addEventListener('click',function(){
+      vibrate(10);
       var y=this.getAttribute('data-y');
       selectYear(y);
     });
   });
-  // scroll to selected
   if(window.yearVal){
     var sel=box.querySelector('.yr-item.selected');
     if(sel)setTimeout(function(){sel.scrollIntoView({block:'center'});},300);
@@ -1395,18 +1974,20 @@ function selectYear(y){
   closeModals();
 }
 window.applyManualYear=function(){
+  vibrate(10);
   var v=parseInt(toEnglishDigits(document.getElementById('yrManual').value),10);
   if(isNaN(v)||v<MIN_YEAR||v>MAX_YEAR){notify('سال باید بین '+toPersianDigits(MIN_YEAR)+' و '+toPersianDigits(MAX_YEAR)+' باشد');return;}
   selectYear(String(v));
 };
 window.openYearPicker=function(){
+  vibrate(10);
   closeModals();
   document.getElementById('yearModal').classList.add('open');
   document.getElementById('yrManual').value='';
   buildYearList();
 };
 
-/* ===== دیاگرام بدنه ===== */
+/* ===== Body Diagram Zones ===== */
 var ZONES=[
 {name:'سپر جلو',type:'normal',x:70,y:10,w:80,h:30,rx:6},
 {name:'کاپوت',type:'normal',x:70,y:44,w:80,h:66,rx:4},
@@ -1436,18 +2017,46 @@ var selectedHits=[],selectedPaints=[];
 var hitChips=document.getElementById('hitChips'),paintChips=document.getElementById('paintChips');
 function renderChips(el,names,emptyText,extra){if(names.length===0){el.innerHTML='<span class="chip empty">'+emptyText+'</span>';}else{el.innerHTML=names.map(function(n){return '<span class="chip'+(extra?' '+extra:'')+'">'+n+'</span>';}).join('');}}
 function bindZones(svg,mode){
-svg.querySelectorAll('.zone').forEach(function(z){z.addEventListener('click',function(){if(z.classList.contains('disabled'))return;var name=z.getAttribute('data-name'),type=z.getAttribute('data-type');if(mode==='hit'){z.classList.toggle('hit');if(z.classList.contains('hit'))selectedHits.push({name:name,type:type});else selectedHits=selectedHits.filter(function(h){return h.name!==name;});renderChips(hitChips,selectedHits.map(function(h){return h.name;}),'هنوز ناحیه‌ای انتخاب نشده','');}else{z.classList.toggle('painted');if(z.classList.contains('painted'))selectedPaints.push({name:name});else selectedPaints=selectedPaints.filter(function(p){return p.name!==name;});renderChips(paintChips,selectedPaints.map(function(p){return p.name;}),'بدنه بدون رنگ‌شدگی','paint');var mr=document.querySelector('input[name="paint"][value="manual"]');if(mr)mr.checked=true;}});});
+svg.querySelectorAll('.zone').forEach(function(z){z.addEventListener('click',function(){
+  if(z.classList.contains('disabled'))return;
+  vibrate(15);
+  var name=z.getAttribute('data-name'),type=z.getAttribute('data-type');
+  if(mode==='hit'){
+    z.classList.toggle('hit');
+    if(z.classList.contains('hit'))selectedHits.push({name:name,type:type});
+    else selectedHits=selectedHits.filter(function(h){return h.name!==name;});
+    renderChips(hitChips,selectedHits.map(function(h){return h.name;}),'هنوز ناحیه‌ای انتخاب نشده','');
+  }else{
+    z.classList.toggle('painted');
+    if(z.classList.contains('painted'))selectedPaints.push({name:name});
+    else selectedPaints=selectedPaints.filter(function(p){return p.name!==name;});
+    renderChips(paintChips,selectedPaints.map(function(p){return p.name;}),'بدنه بدون رنگ‌شدگی','paint');
+    var mr=document.querySelector('input[name="paint"][value="manual"]');
+    if(mr)mr.checked=true;
+  }
+});});
 }
 bindZones(svgHit,'hit');bindZones(svgPaint,'paint');
 function paintPct(name){if(name.indexOf('سقف')>-1)return 3;if(name.indexOf('کاپوت')>-1||name.indexOf('صندوق')>-1)return 2;if(name.indexOf('درب')>-1)return 1.2;if(name.indexOf('گلگیر')>-1)return 1;if(name.indexOf('سپر')>-1)return 0.5;return 1;}
 function clearAllPaint(){svgPaint.querySelectorAll('.zone.painted').forEach(function(z){z.classList.remove('painted');});selectedPaints=[];}
 function paintOuterOnly(){clearAllPaint();svgPaint.querySelectorAll('.zone').forEach(function(z){var n=z.getAttribute('data-name');if(n.indexOf('شیشه')===-1&&n!=='سقف'){z.classList.add('painted');selectedPaints.push({name:n});}});renderChips(paintChips,selectedPaints.map(function(p){return p.name;}),'بدنه بدون رنگ‌شدگی','paint');}
 function paintAllBody(){clearAllPaint();svgPaint.querySelectorAll('.zone').forEach(function(z){var n=z.getAttribute('data-name');if(n.indexOf('شیشه')===-1){z.classList.add('painted');selectedPaints.push({name:n});}});renderChips(paintChips,selectedPaints.map(function(p){return p.name;}),'بدنه بدون رنگ‌شدگی','paint');}
-document.querySelectorAll('input[name="paint"]').forEach(function(input){input.addEventListener('change',function(){if(this.value==='0'){clearAllPaint();renderChips(paintChips,[],'بدنه بدون رنگ‌شدگی','paint');}else if(this.value==='auto-around'){paintOuterOnly();}else if(this.value==='auto-full'){paintAllBody();}});});
-document.querySelectorAll('input[name="hasAirbag"]').forEach(function(input){input.addEventListener('change',function(){document.getElementById('airbagBox').classList.toggle('open',this.value==='yes');});});
-document.querySelectorAll('input[name="chassis"]').forEach(function(input){input.addEventListener('change',function(){document.getElementById('chassisBox').classList.toggle('open',this.value==='no');});});
+document.querySelectorAll('input[name="paint"]').forEach(function(input){input.addEventListener('change',function(){
+  vibrate(10);
+  if(this.value==='0'){clearAllPaint();renderChips(paintChips,[],'بدنه بدون رنگ‌شدگی','paint');}
+  else if(this.value==='auto-around'){paintOuterOnly();}
+  else if(this.value==='auto-full'){paintAllBody();}
+});});
+document.querySelectorAll('input[name="hasAirbag"]').forEach(function(input){input.addEventListener('change',function(){
+  vibrate(10);
+  document.getElementById('airbagBox').classList.toggle('open',this.value==='yes');
+});});
+document.querySelectorAll('input[name="chassis"]').forEach(function(input){input.addEventListener('change',function(){
+  vibrate(10);
+  document.getElementById('chassisBox').classList.toggle('open',this.value==='no');
+});});
 
-/* ===== ضرایب برند ===== */
+/* ===== Brand Factors & Tags ===== */
 function getBrandFactor(model){
 var m=model.toLowerCase();
 if(/پژو|سمند|دنا|رانا|تارا|هایما/.test(m))return 1.0;
@@ -1458,7 +2067,7 @@ return 1.0;
 var TAG_PCT={'sunburn':2,'city':3,'imported':1.5,'taxi':5,'':0};
 var TAG_NAMES={'sunburn':'آفتاب‌سوخته','city':'کارکرده شهری','imported':'وارداتی دست دوم','taxi':'استفادهٔ تاکسی/اسنپ','':''};
 
-/* ===== محاسبه ===== */
+/* ===== Price Calculation ===== */
 function calculatePrice(data){
 var basePrice=data.newPrice,deductions=[],totalDeduction=0;
 var brandF=getBrandFactor(data.model);
@@ -1548,9 +2157,11 @@ if(computing)return;
 var data=collectFormData();
 if(!validateForm(data))return;
 computing=true;btnCalc.disabled=true;toast.classList.add('show');
-setTimeout(function(){var result=calculatePrice(data);toast.classList.remove('show');btnCalc.disabled=false;computing=false;showResults(data,result);},1500);
+vibrate(20);
+setTimeout(function(){var result=calculatePrice(data);toast.classList.remove('show');btnCalc.disabled=false;computing=false;showResults(data,result);vibrate(30);},1500);
 });
 document.getElementById('btnReset').addEventListener('click',function(){
+vibrate(10);
 form.reset();window.yearVal='';
 document.getElementById('yearText').textContent='انتخاب سال تولید';
 document.getElementById('yearBtn').classList.add('placeholder');
@@ -1568,7 +2179,7 @@ lastResult=null;lastData=null;
 window.scrollTo({top:0,behavior:'smooth'});
 });
 
-/* ===== تاریخچه ===== */
+/* ===== History Management ===== */
 function loadHistory(){try{return JSON.parse(localStorage.getItem('autoscope_history')||'[]');}catch(e){return[];}}
 function saveHistory(arr){try{localStorage.setItem('autoscope_history',JSON.stringify(arr.slice(0,50)));}catch(e){}}
 function saveToHistory(data,result){
@@ -1580,13 +2191,47 @@ function updateHistCount(){
 var c=loadHistory().length,el=document.getElementById('histCount');
 if(c>0){el.textContent=toPersianDigits(c);el.style.display='inline-block';}else{el.style.display='none';}
 }
+var currentHistFilter = 'all';
+window.setHistFilter = function(filter, btn) {
+  vibrate(10);
+  currentHistFilter = filter;
+  document.querySelectorAll('.hist-filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderHistory();
+};
 window.renderHistory=function(){
 var q=(document.getElementById('histSearch').value||'').trim();
 var fq=q?faNum(q).toLowerCase():'';
-var arr=loadHistory().filter(function(it){return !fq||it.model.toLowerCase().indexOf(fq)>-1;});
+var allArr = loadHistory();
+var filteredArr = allArr.filter(function(it){
+  if (fq && it.model.toLowerCase().indexOf(fq) === -1) return false;
+  if (currentHistFilter !== 'all') {
+    var m = it.model.toLowerCase();
+    if (currentHistFilter === 'iran' && !/پژو|سمند|دنا|رانا|تارا|هایما/.test(m)) return false;
+    if (currentHistFilter === 'saipa' && !/پراید|تیبا|ساینا|کوییک|شاهین|اطلس|سهند/.test(m)) return false;
+    if (currentHistFilter === 'montage' && !/تندر|ساندرو|جک|ام‌وی‌ام|چری|برلیانس|دانگ|فیدلیتی|دیگنیتی|لاماری|ریسپکت|آریزو|بسترن|فونیکس/.test(m)) return false;
+  }
+  return true;
+});
 var list=document.getElementById('histList');
-if(arr.length===0){list.innerHTML='<div class="hist-empty">'+(loadHistory().length===0?'هنوز محاسبه‌ای ثبت نشده است.<br>اولین خودروی خود را قیمت‌گذاری کنید!':'خودرویی با این نام یافت نشد.')+'</div>';return;}
-list.innerHTML=arr.map(function(it){
+if(filteredArr.length===0){
+  if(allArr.length===0){
+    list.innerHTML=`
+      <div class="empty-state">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="7" width="20" height="14" rx="2"/>
+          <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+          <circle cx="12" cy="14" r="2"/>
+        </svg>
+        <h3>تاریخچه خالی است</h3>
+        <p>هنوز هیچ خودرویی را قیمت‌گذاری نکرده‌اید.<br>از صفحه اصلی وارد بخش «قیمت‌گذاری» شوید.</p>
+      </div>`;
+  } else {
+    list.innerHTML='<div class="hist-empty">خودرویی با این فیلتر یافت نشد.</div>';
+  }
+  return;
+}
+list.innerHTML=filteredArr.map(function(it){
 var dt=new Date(it.date);
 var mm=String(dt.getMonth()+1).padStart(2,'0');
 var dd=String(dt.getDate()).padStart(2,'0');
@@ -1597,6 +2242,7 @@ return '<div class="hist-item" onclick="viewHist('+it.id+')"><div class="hist-in
 window.viewHist=function(id){
 var it=loadHistory().find(function(x){return x.id===id;});
 if(!it)return;
+vibrate(15);
 document.getElementById('model').value=it.model;
 window.yearVal=String(it.year);
 document.getElementById('yearText').textContent=toPersianDigits(it.year)+' (سال تولید)';
@@ -1620,16 +2266,19 @@ succeed('رکورد بارگذاری شد — می‌توانید ویرایش �
 function setRadio(name,val){var r=document.querySelector('input[name="'+name+'"][value="'+val+'"]');if(r)r.checked=true;}
 window.delHist=function(id){
 if(!confirm('این رکورد حذف شود؟'))return;
+vibrate(20);
 saveHistory(loadHistory().filter(function(x){return x.id!==id;}));
 renderHistory();updateHistCount();succeed('رکورد حذف شد');
 };
 window.clearAllHistory=function(){
 if(!confirm('همهٔ تاریخچه پاک شود؟ این عمل قابل بازگشت نیست.'))return;
+vibrate(30);
 saveHistory([]);renderHistory();updateHistCount();succeed('تاریخچه پاک شد');
 };
 window.exportCSV=function(){
 var arr=loadHistory();
 if(arr.length===0){notify('تاریخچه‌ای وجود ندارد');return;}
+vibrate(10);
 var rows=[['مدل','سال','کارکرد','قیمت نو','قیمت اعلامی','قیمت منطقی','تاریخ']];
 arr.forEach(function(it){rows.push([it.model,it.year,it.km,it.newPrice,it.askPrice||'',it.fairPrice,new Date(it.date).toLocaleDateString('fa-IR')]);});
 var csv='\uFEFF'+rows.map(function(r){return r.map(function(c){return '"'+String(c).replace(/"/g,'""')+'"';}).join(',');}).join('\n');
@@ -1638,7 +2287,35 @@ var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='a
 succeed('فایل CSV دانلود شد');
 };
 
-/* ===== PDF / چاپ ===== */
+/* ===== Loan Calculator ===== */
+window.calcLoan = function() {
+  vibrate(15);
+  var amountStr = document.getElementById('loanAmount').value;
+  var rateStr = document.getElementById('loanRate').value;
+  var months = parseInt(document.getElementById('loanMonths').value, 10);
+  
+  var P = parseFloat(toEnglishDigits(amountStr.replace(/,/g, '')));
+  var annualRate = parseFloat(toEnglishDigits(rateStr.replace(/,/g, '')));
+  
+  if (isNaN(P) || P <= 0 || isNaN(months) || months <= 0) {
+    notify('لطفاً مبلغ و مدت را صحیح وارد کنید');
+    return;
+  }
+  
+  var monthlyRate = (annualRate / 100) / 12;
+  var payment;
+  
+  if (monthlyRate === 0) {
+    payment = P / months;
+  } else {
+    payment = P * (monthlyRate * Math.pow(1 + monthlyRate, months)) / (Math.pow(1 + monthlyRate, months) - 1);
+  }
+  
+  document.getElementById('loanMonthly').textContent = formatNumber(payment) + ' تومان';
+  document.getElementById('loanResult').style.display = 'block';
+};
+
+/* ===== PDF Print ===== */
 window.savePdf=function(){goTo('pdf',true);};
 function preparePdf(){
 var pv=document.getElementById('pdfPreview'),btn=document.getElementById('btnPrint');
@@ -1652,24 +2329,27 @@ btn.disabled=true;
 }
 window.doPrint=function(){
 if(!lastData||!lastResult){notify('ابتدا یک خودرو را قیمت‌گذاری کنید');return;}
+vibrate(20);
 var pa=document.getElementById('printArea');
 pa.innerHTML='<div class="card"><h2>گزارش کارشناسی AutoScope</h2><p><strong>خودرو:</strong> '+escapeHtml(lastData.model)+'</p><p><strong>سال تولید:</strong> '+toPersianDigits(lastData.year)+'</p><p><strong>کارکرد:</strong> '+formatNumber(lastData.km)+' کیلومتر</p><p><strong>قیمت نو/بازار:</strong> '+formatNumber(lastData.newPrice)+' تومان</p>'+(lastData.askPrice?'<p><strong>قیمت اعلامی فروشنده:</strong> '+formatNumber(lastData.askPrice)+' تومان</p>':'')+'<hr style="margin:14px 0;border:none;border-top:1px solid #ddd;"><p><strong style="font-size:1.2rem;">قیمت منطقی محاسبه‌شده: '+formatNumber(lastResult.fairPrice)+' تومان</strong></p><table class="breakdown" style="width:100%;border-collapse:collapse;margin-top:12px;"><thead><tr><th style="text-align:right;padding:8px;border-bottom:1px solid #ddd;">عامل</th><th style="text-align:center;padding:8px;border-bottom:1px solid #ddd;">درصد افت</th><th style="text-align:left;padding:8px;border-bottom:1px solid #ddd;">مبلغ کسر شده</th></tr></thead><tbody>'+lastResult.deductions.map(function(d){return '<tr><td style="padding:8px;border-bottom:1px solid #eee;">'+d.factor+'</td><td style="text-align:center;padding:8px;border-bottom:1px solid #eee;">-'+toPersianDigits(d.percentage)+'٪</td><td style="text-align:left;padding:8px;border-bottom:1px solid #eee;direction:ltr;">'+formatNumber(d.amount)+'</td></tr>';}).join('')+'</tbody></table><p style="margin-top:16px;font-size:.85rem;color:#666;">تاریخ گزارش: '+new Date().toLocaleDateString('fa-IR')+' | این قیمت تخمینی است و مبنای معامله قرار نمی‌گیرد.</p></div>';
 document.body.classList.add('print-mode');
 setTimeout(function(){window.print();setTimeout(function(){document.body.classList.remove('print-mode');},500);},200);
 };
 
-/* ===== اشتراک‌گذاری ===== */
+/* ===== Share Result ===== */
 window.shareResult=function(){
 if(!lastData||!lastResult){notify('ابتدا یک خودرو را قیمت‌گذاری کنید');return;}
+vibrate(15);
 var txt='🚗 کارشناسی خودرو با AutoScope\n\nمدل: '+lastData.model+'\nسال: '+toPersianDigits(lastData.year)+'\nکارکرد: '+formatNumber(lastData.km)+' کیلومتر\nقیمت نو: '+formatNumber(lastData.newPrice)+' تومان\nقیمت منطقی: '+formatNumber(lastResult.fairPrice)+' تومان'+(lastData.askPrice?'\nقیمت فروشنده: '+formatNumber(lastData.askPrice)+' تومان':'');
 if(navigator.share){navigator.share({title:'کارشناسی '+lastData.model,text:txt}).catch(function(){});}
 else if(navigator.clipboard){navigator.clipboard.writeText(txt).then(function(){succeed('متن نتیجه کپی شد — حالا در هر جایی Paste کنید');}).catch(function(){prompt('متن را کپی کنید:',txt);});}
 else{prompt('متن را کپی کنید:',txt);}
 };
 
-/* ===== بازخورد کاربر ===== */
+/* ===== User Feedback ===== */
 window.giveFeedback=function(pos,btn){
 if(!lastData||!lastResult)return;
+vibrate(pos ? 10 : 20);
 document.querySelectorAll('.fb-btn').forEach(function(b){b.classList.remove('active');});
 if(btn)btn.classList.add('active');
 var fb=[];try{fb=JSON.parse(localStorage.getItem('autoscope_feedback')||'[]');}catch(e){}
@@ -1678,7 +2358,7 @@ try{localStorage.setItem('autoscope_feedback',JSON.stringify(fb.slice(0,200)));}
 document.getElementById('fbThanks').classList.add('show');
 };
 
-/* ===== مودال خودرو ===== */
+/* ===== Car List & Voice Search ===== */
 var CARS=[
 {g:'ایران خودرو',items:['پژو ۲۰۶ تیپ ۲','پژو ۲۰۶ تیپ ۵','پژو ۲۰۶ صندوق‌دار V8','پژو ۲۰۷ دنده‌ای','پژو ۲۰۷ اتوماتیک','پژو ۲۰۷ سقف شیشه‌ای','پژو پارس TU5','پژو پارس XU7','پژو پارس ELX','پژو پارس LX','پژو ۴۰۵ SLX','پژو ۴۰۵ GLX','سمند LX','سمند EF7','سمند سریر','سمند سورن','سمند سورن پلاس','دنا معمولی','دنا پلاس','دنا پلاس توربو','دنا پلاس اتوماتیک','رانا معمولی','رانا پلاس','تارا دنده‌ای','تارا اتوماتیک','هایما S5','هایما S7','هایما 8S']},
 {g:'سایپا',items:['پراید ۱۱۱','پراید ۱۳۱','پراید ۱۳۲','پراید ۱۵۱ (وانت)','تیبا صندوق‌دار','تیبا ۲ هاچ‌بک','ساینا معمولی','ساینا S','ساینا EX','کوییک معمولی','کوییک R','کوییک S','کوییک GX','کوییک پلاس اتوماتیک','شاهین G','شاهین اتوماتیک','اطلس','سهند']},
@@ -1698,12 +2378,14 @@ box.innerHTML=html;
 };
 window.pickCar=function(el){
 var n=el.textContent;
+vibrate(10);
 document.getElementById('model').value=n;
 document.getElementById('carSelectText').textContent=n;
 document.getElementById('carSelectBtn').classList.remove('placeholder');
 closeModals();
 };
 window.openCar=function(){
+vibrate(10);
 closeModals();document.getElementById('carModal').classList.add('open');
 document.getElementById('carSearch').value='';renderCarList('');
 setTimeout(function(){document.getElementById('carSearch').focus();},350);
@@ -1712,10 +2394,52 @@ document.getElementById('carSearch').addEventListener('input',function(){renderC
 document.querySelectorAll('.modal').forEach(function(m){m.addEventListener('click',function(e){if(e.target===m)closeModals();});});
 window.closeModals=function(){document.querySelectorAll('.modal').forEach(function(m){m.classList.remove('open');});};
 
-/* ===== اسپلش ===== */
+// Voice Search Implementation
+window.startVoiceSearch = function() {
+  const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+  recognition.lang = 'fa-IR';
+  recognition.interimResults = false;
+  recognition.maxAlternatives = 1;
+
+  const voiceBtn = document.getElementById('voiceBtn');
+  const searchInput = document.getElementById('carSearchInput');
+  
+  voiceBtn.classList.add('listening');
+  recognition.start();
+
+  recognition.onresult = (event) => {
+    const transcript = event.results[0][0].transcript;
+    searchInput.value = transcript;
+    renderCarList(transcript);
+    voiceBtn.classList.remove('listening');
+    vibrate(20);
+  };
+
+  recognition.onerror = (event) => {
+    console.error('Voice error:', event.error);
+    notify('خطا در شناسایی صدا. لطفاً دوباره تلاش کنید.');
+    voiceBtn.classList.remove('listening');
+  };
+
+  recognition.onend = () => {
+    voiceBtn.classList.remove('listening');
+  };
+};
+
+/* ===== Init ===== */
 window.addEventListener('load',function(){
-updateHistCount();
-setTimeout(function(){var s=document.getElementById('appSplash');s.classList.add('hide');setTimeout(function(){s.remove();},500);},1500);
+  // Check Onboarding
+  let onboarded = false;
+  try { onboarded = localStorage.getItem('autoscope_onboarded') === 'true'; } catch(e){}
+  
+  if (!onboarded) {
+    setTimeout(() => {
+      document.getElementById('onboardingOverlay').classList.add('show');
+    }, 1800); // After splash screen fades
+  }
+
+  updateHistCount();
+  setTimeout(function(){var s=document.getElementById('appSplash');s.classList.add('hide');setTimeout(function(){s.remove();},500);},1500);
 });
 })();
 </script>
